@@ -26,7 +26,7 @@
 #include <Milieu_base.h>
 #include <Champ_Uniforme.h>
 #include <Probleme_base.h>
-#include <Convection_Diffusion_Concentration.h>
+//#include <Convection_Diffusion_Concentration.h>
 
 Implemente_instanciable(Neumann_paroi,"Neumann_paroi",Neumann);
 
