@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <Process.h>
-#include <Statistiques.h>
+// #include <Statistiques.h>
 #include <verif_cast.h>
 #include <Comm_Group.h>
 #include <PE_Groups.h>
@@ -30,7 +30,7 @@
 #include <Journal.h>
 #include <SFichier.h>
 #include <Synonyme_info.h>
-#include <petsc_for_kernel.h>
+// #include <petsc_for_kernel.h>
 #include <comm_incl.h>
 #include <TriouError.h>
 #include <Comm_Group_MPI.h>
@@ -38,7 +38,7 @@
 #include <stat_counters.h>
 
 #include <SChaine.h>
-#include <FichierHDFPar.h>
+//#include <FichierHDFPar.h>
 
 // Chacun des fichiers Cerr, Cout et Journal(i)
 // peut etre redirige vers l'un des quatre fichiers suivants:
@@ -447,10 +447,10 @@ void end_journal(int verbose_level)
   // ecrit dans le journal !
   if(journal_shared_)
     {
-      FichierHDFPar fic_hdf;
-      fic_hdf.create(journal_file_name_);
-      fic_hdf.create_and_fill_dataset_MW("/log", journal_shared_stream_);
-      fic_hdf.close();
+      // FichierHDFPar fic_hdf;
+      // fic_hdf.create(journal_file_name_);
+      // fic_hdf.create_and_fill_dataset_MW("/log", journal_shared_stream_);
+      // fic_hdf.close();
     }
   else
     journal_file_.close();
