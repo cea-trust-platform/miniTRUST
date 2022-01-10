@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <Discretiser.h>
-#include <Probleme_Couple.h>
+// #include <Probleme_Couple.h>
 #include <Discretisation_base.h>
 #include <Probleme_base.h>
 
@@ -144,22 +144,22 @@ saisie :
       Cerr << "Discretization of " << pb.le_nom() << " in progress..." << finl;
       pb.discretiser(typ);
     }
-  else if( sub_type(Probleme_Couple, ob1) )
-    {
-      Probleme_Couple& pbc=ref_cast(Probleme_Couple,ob1);
-      if(!pbc.schema_temps().lu())
-        {
-          Cerr << "it must have read the time scheme before to discretize" << finl;
-          exit();
-        }
-      Cerr << "The chosen time scheme is of type " << pbc.schema_temps().que_suis_je() << finl;
-      Cerr << "We treat the problem " << pbc.le_nom() << " of type " << pbc.que_suis_je() << finl;
-      Cerr << "It corresponds to the coupling of the following problems: " << finl;
-      for(int i=0; i< pbc.nb_problemes(); i++)
-        Cerr << " " <<  pbc.probleme(i).le_nom() << " of type " << pbc.probleme(i).que_suis_je() << finl;
-      Cerr << "Discretization of " << pbc.le_nom() << " in progress..." << finl;
-      pbc.discretiser(typ);
-    }
+  // else if( sub_type(Probleme_Couple, ob1) )
+  //   {
+  //     Probleme_Couple& pbc=ref_cast(Probleme_Couple,ob1);
+  //     if(!pbc.schema_temps().lu())
+  //       {
+  //         Cerr << "it must have read the time scheme before to discretize" << finl;
+  //         exit();
+  //       }
+  //     Cerr << "The chosen time scheme is of type " << pbc.schema_temps().que_suis_je() << finl;
+  //     Cerr << "We treat the problem " << pbc.le_nom() << " of type " << pbc.que_suis_je() << finl;
+  //     Cerr << "It corresponds to the coupling of the following problems: " << finl;
+  //     for(int i=0; i< pbc.nb_problemes(); i++)
+  //       Cerr << " " <<  pbc.probleme(i).le_nom() << " of type " << pbc.probleme(i).que_suis_je() << finl;
+  //     Cerr << "Discretization of " << pbc.le_nom() << " in progress..." << finl;
+  //     pbc.discretiser(typ);
+  //   }
   else
     {
       Cerr << "It is not known discretize a : " << ob1.que_suis_je()        << finl;
