@@ -26,7 +26,7 @@
 #include <Op_VDF_Elem.h>
 #include <Zone_Cl_VDF.h>
 #include <Array_tools.h>
-#include <Periodique.h>
+// #include <Periodique.h>
 #include <Champ_Inc.h>
 #include <Zone_VDF.h>
 
@@ -63,29 +63,29 @@ void Op_VDF_Elem::dimensionner(const Zone_VDF& la_zone, const Zone_Cl_VDF& la_zo
   for (int i = 0; i < les_cl.size(); i++)
     {
       const Cond_lim& la_cl = les_cl[i];
-      if (sub_type(Periodique,la_cl.valeur()))
-        {
-          const Periodique& la_cl_perio = ref_cast(Periodique,la_cl.valeur());
-          const Front_VF& la_front_dis = ref_cast(Front_VF,la_cl.frontiere_dis());
-          const int numdeb = la_front_dis.num_premiere_face(), nfaces = la_front_dis.nb_faces();
-          int ind_face_global;
-          IntVect fait(nfaces);
-          fait = 0;
-          for (int face = 0; face < nfaces; face++)
-            {
-              if (fait[face] == 0)
-                {
-                  fait[face] = 1;
-                  fait[la_cl_perio.face_associee(face)] = 1;
-                  ind_face_global = face+numdeb;
+      // if (sub_type(Periodique,la_cl.valeur()))
+      //   {
+      //     const Periodique& la_cl_perio = ref_cast(Periodique,la_cl.valeur());
+      //     const Front_VF& la_front_dis = ref_cast(Front_VF,la_cl.frontiere_dis());
+      //     const int numdeb = la_front_dis.num_premiere_face(), nfaces = la_front_dis.nb_faces();
+      //     int ind_face_global;
+      //     IntVect fait(nfaces);
+      //     fait = 0;
+      //     for (int face = 0; face < nfaces; face++)
+      //       {
+      //         if (fait[face] == 0)
+      //           {
+      //             fait[face] = 1;
+      //             fait[la_cl_perio.face_associee(face)] = 1;
+      //             ind_face_global = face+numdeb;
 
-                  const int elem1 = face_voisins(ind_face_global,0), elem2 = face_voisins(ind_face_global,1);
+      //             const int elem1 = face_voisins(ind_face_global,0), elem2 = face_voisins(ind_face_global,1);
 
-                  (rang_voisin(elem2))++;
-                  (rang_voisin(elem1))++;
-                }
-            }
-        }
+      //             (rang_voisin(elem2))++;
+      //             (rang_voisin(elem1))++;
+      //           }
+      //       }
+      //   }
     }
 
   // on balaye les elements pour dimensionner tab1 et tab2
@@ -118,34 +118,34 @@ void Op_VDF_Elem::dimensionner(const Zone_VDF& la_zone, const Zone_Cl_VDF& la_zo
   for (int i=0; i<les_cl.size(); i++)
     {
       const Cond_lim& la_cl = les_cl[i];
-      if (sub_type(Periodique,la_cl.valeur()) )
-        {
-          const Periodique& la_cl_perio = ref_cast(Periodique,la_cl.valeur());
-          const Front_VF& la_front_dis = ref_cast(Front_VF,la_cl.frontiere_dis());
-          const int numdeb = la_front_dis.num_premiere_face(), nfaces = la_front_dis.nb_faces();
-          IntVect fait(nfaces);
-          fait = 0;
-          for (int ind_face_local = 0; ind_face_local < nfaces; ind_face_local++)
-            {
-              if (fait[ind_face_local] == 0)
-                {
-                  const int num_face = numdeb + ind_face_local;
-                  fait[ind_face_local] = 1;
-                  fait[la_cl_perio.face_associee(ind_face_local)] = 1;
+      // if (sub_type(Periodique,la_cl.valeur()) )
+      //   {
+      //     const Periodique& la_cl_perio = ref_cast(Periodique,la_cl.valeur());
+      //     const Front_VF& la_front_dis = ref_cast(Front_VF,la_cl.frontiere_dis());
+      //     const int numdeb = la_front_dis.num_premiere_face(), nfaces = la_front_dis.nb_faces();
+      //     IntVect fait(nfaces);
+      //     fait = 0;
+      //     for (int ind_face_local = 0; ind_face_local < nfaces; ind_face_local++)
+      //       {
+      //         if (fait[ind_face_local] == 0)
+      //           {
+      //             const int num_face = numdeb + ind_face_local;
+      //             fait[ind_face_local] = 1;
+      //             fait[la_cl_perio.face_associee(ind_face_local)] = 1;
 
-                  const int elem1 = face_voisins(num_face,0), elem2 = face_voisins(num_face,1);
+      //             const int elem1 = face_voisins(num_face,0), elem2 = face_voisins(num_face,1);
 
-                  for (int k = 0; k < nb_comp; k++)
-                    {
-                      tab2[rang_voisin[elem2*nb_comp+k]] = elem1*nb_comp+1+k;
-                      rang_voisin[elem2*nb_comp+k]++;
+      //             for (int k = 0; k < nb_comp; k++)
+      //               {
+      //                 tab2[rang_voisin[elem2*nb_comp+k]] = elem1*nb_comp+1+k;
+      //                 rang_voisin[elem2*nb_comp+k]++;
 
-                      tab2[rang_voisin[elem1*nb_comp+k]] = elem2*nb_comp+1+k;
-                      rang_voisin[elem1*nb_comp+k]++;
-                    }
-                }
-            }
-        }
+      //                 tab2[rang_voisin[elem1*nb_comp+k]] = elem2*nb_comp+1+k;
+      //                 rang_voisin[elem1*nb_comp+k]++;
+      //               }
+      //           }
+      //       }
+      //   }
     }
 }
 

@@ -25,7 +25,7 @@
 #include <Probleme_base.h>
 #include <Dirichlet.h>
 #include <Dirichlet_homogene.h>
-#include <Symetrie.h>
+// #include <Symetrie.h>
 #include <strings.h>
 #include <Zone_VF.h>
 #include <Format_Post_base.h>
@@ -866,55 +866,55 @@ int Champ_base::calculer_valeurs_som_post(DoubleTab& les_valeurs,int nb_som,Nom&
                           compteur(sommet) += 1;
                         }
                   }
-                else if((sub_type(Symetrie, la_cl.valeur()))&&old_traitement_symetrie)
-                  {
-                    if(nb_compo_==dimension)
-                      {
-                        ArrOfDouble normale(dimension);
-                        DoubleTab delta(dimension-1,dimension);
-                        int nb_faces_tot=faces.nb_faces_tot();
-                        for(int num_face=0; num_face<nb_faces_tot ; num_face++)
-                          {
-                            // calcul de la normale :
-                            int sommet0=faces.sommet(num_face, 0);
-                            for (int k=1; k<dimension; k++)
-                              {
-                                int sommet=faces.sommet(num_face, k);
-                                for(int compo=0; compo<dimension; compo++)
-                                  delta(k-1,compo)=coord_sommets(sommet,compo)-coord_sommets(sommet0,compo);
-                              }
-                            if(dimension==2)
-                              {
-                                normale(0)=-delta(0,1);
-                                normale(1)=delta(0,0);
-                              }
-                            else if(dimension==3)
-                              {
-                                normale(0)=delta(0,1)*delta(1,2) - delta(0,2)*delta(1,1);
-                                normale(1)=delta(0,2)*delta(1,0) - delta(0,0)*delta(1,2);
-                                normale(2)=delta(0,0)*delta(1,1) - delta(0,1)*delta(1,0);
-                              }
-                            else
-                              {
-                                Cerr << "We do not know treating the dimension : " << dimension << finl;
-                                exit();
-                              }
-                            normale *= 1. / norme_array(normale);
-                            for(int num_som=0; num_som<nb_som_faces; num_som++)
-                              {
-                                int sommet=faces.sommet(num_face, num_som);
-                                if (sommet<dom.nb_som()) // Sommet reel
-                                  {
-                                    double psc=0;
-                                    for(int k=0; k< dimension; k++)
-                                      psc+=normale(k)*les_valeurs(sommet,k);
-                                    for(int compo=0; compo<nb_compo_; compo++)
-                                      les_valeurs(sommet, compo) -= psc*normale(compo);
-                                  }
-                              }
-                          }
-                      }
-                  }
+                // else if((sub_type(Symetrie, la_cl.valeur()))&&old_traitement_symetrie)
+                //   {
+                //     if(nb_compo_==dimension)
+                //       {
+                //         ArrOfDouble normale(dimension);
+                //         DoubleTab delta(dimension-1,dimension);
+                //         int nb_faces_tot=faces.nb_faces_tot();
+                //         for(int num_face=0; num_face<nb_faces_tot ; num_face++)
+                //           {
+                //             // calcul de la normale :
+                //             int sommet0=faces.sommet(num_face, 0);
+                //             for (int k=1; k<dimension; k++)
+                //               {
+                //                 int sommet=faces.sommet(num_face, k);
+                //                 for(int compo=0; compo<dimension; compo++)
+                //                   delta(k-1,compo)=coord_sommets(sommet,compo)-coord_sommets(sommet0,compo);
+                //               }
+                //             if(dimension==2)
+                //               {
+                //                 normale(0)=-delta(0,1);
+                //                 normale(1)=delta(0,0);
+                //               }
+                //             else if(dimension==3)
+                //               {
+                //                 normale(0)=delta(0,1)*delta(1,2) - delta(0,2)*delta(1,1);
+                //                 normale(1)=delta(0,2)*delta(1,0) - delta(0,0)*delta(1,2);
+                //                 normale(2)=delta(0,0)*delta(1,1) - delta(0,1)*delta(1,0);
+                //               }
+                //             else
+                //               {
+                //                 Cerr << "We do not know treating the dimension : " << dimension << finl;
+                //                 exit();
+                //               }
+                //             normale *= 1. / norme_array(normale);
+                //             for(int num_som=0; num_som<nb_som_faces; num_som++)
+                //               {
+                //                 int sommet=faces.sommet(num_face, num_som);
+                //                 if (sommet<dom.nb_som()) // Sommet reel
+                //                   {
+                //                     double psc=0;
+                //                     for(int k=0; k< dimension; k++)
+                //                       psc+=normale(k)*les_valeurs(sommet,k);
+                //                     for(int compo=0; compo<nb_compo_; compo++)
+                //                       les_valeurs(sommet, compo) -= psc*normale(compo);
+                //                   }
+                //               }
+                //           }
+                //       }
+                //   }
               }
             // Ajoute la contribution des autres processeurs a valeurs et compteur
             add_sommets_communs(dom, les_valeurs, compteur);
