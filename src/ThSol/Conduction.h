@@ -27,7 +27,7 @@
 #include <Operateur_Diff.h>
 #include <Schema_Temps.h>
 #include <Ref_Solide.h>
-#include <Traitement_particulier_Solide.h>
+//#include <Traitement_particulier_Solide.h>
 
 class Milieu_base;
 class Champ_Don;
@@ -90,7 +90,7 @@ private :
 
 protected :
 
-  Traitement_particulier_Solide le_traitement_particulier;
+  // Traitement_particulier_Solide le_traitement_particulier;
 //  Champ_Fonc temperature_paroi;
 
 

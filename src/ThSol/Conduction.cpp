@@ -87,7 +87,7 @@ void Conduction::set_param(Param& param)
   Equation_base::set_param(param);
   param.ajouter_non_std("diffusion",(this));
   param.ajouter_condition("is_read_diffusion","The diffusion operator must be read, select negligeable type if you want to neglect it.");
-  param.ajouter_non_std("Traitement_particulier",(this));
+  // param.ajouter_non_std("Traitement_particulier",(this));
 }
 
 //  Modification par rapport a Conduction::lire_motcle_non_standard()!
@@ -129,10 +129,10 @@ int Conduction::lire_motcle_non_standard(const Motcle& mot, Entree& is)
             discr = "VEF";
           type+=discr;
           Cerr << type << finl;
-          le_traitement_particulier.typer(type);
-          le_traitement_particulier.associer_eqn(*this);
-          le_traitement_particulier.lire(is);
-          le_traitement_particulier.preparer_calcul_particulier();
+          // le_traitement_particulier.typer(type);
+          // le_traitement_particulier.associer_eqn(*this);
+          // le_traitement_particulier.lire(is);
+          // le_traitement_particulier.preparer_calcul_particulier();
           return 1;
         }
       else
@@ -409,15 +409,15 @@ const Champ_base& Conduction::get_champ(const Motcle& nom) const
 
     }
 
-  if (le_traitement_particulier.non_nul())
-    try
-      {
-        return le_traitement_particulier->get_champ(nom);
-      }
-    catch (Champs_compris_erreur)
-      {
+  // if (le_traitement_particulier.non_nul())
+  //   try
+  //     {
+  //       return le_traitement_particulier->get_champ(nom);
+  //     }
+  //   catch (Champs_compris_erreur)
+  //     {
 
-      }
+  //     }
   throw Champs_compris_erreur();
   REF(Champ_base) ref_champ;
   return ref_champ;
@@ -431,8 +431,8 @@ void Conduction::get_noms_champs_postraitables(Noms& nom,Option opt) const
   else
     nom.add(champs_compris_.liste_noms_compris());
 
-  if (le_traitement_particulier.non_nul())
-    le_traitement_particulier->get_noms_champs_postraitables(nom,opt);
+  // if (le_traitement_particulier.non_nul())
+  //   le_traitement_particulier->get_noms_champs_postraitables(nom,opt);
 }
 
 // Description:
@@ -504,6 +504,6 @@ void Conduction::mettre_a_jour(double temps)
 {
   Equation_base::mettre_a_jour(temps);
 
-  if (le_traitement_particulier.non_nul())
-    le_traitement_particulier.post_traitement_particulier();
+  // if (le_traitement_particulier.non_nul())
+  //   le_traitement_particulier.post_traitement_particulier();
 }
