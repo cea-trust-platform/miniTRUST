@@ -26,7 +26,7 @@
 
 
 #include <math.h>
-#include <blas1.h>
+//#include <blas1.h>
 #include <Objet_U.h>
 
 # ifndef M_E
@@ -160,7 +160,9 @@ inline double norme(int n, const double* const a)
 {
   const integer un=1;
   const integer m=n ;
-  return F77NAME(DNRM2)(&m, a, &un);
+  throw;
+  return 0.0;
+  //return F77NAME(DNRM2)(&m, a, &un);
 }
 
 
