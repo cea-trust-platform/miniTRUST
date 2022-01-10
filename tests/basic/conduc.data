@@ -1,0 +1,57 @@
+dimension 2
+
+Pb_conduction pb
+Domaine dom
+
+
+
+VDF dis
+
+Scheme_euler_explicit sch
+Read sch
+{
+	tinit 0
+	tmax 300.
+	dt_min 0.00001
+	dt_max 0.1
+	dt_impr 5
+	dt_sauv 100
+	seuil_statio 1.e-8
+}
+
+Solide sol
+Read sol
+{
+	rho Champ_Uniforme 1 2
+	lambda Champ_Uniforme 1 0.01
+	Cp Champ_Uniforme 1 0.5
+}
+
+Associate pb dom
+Associate pb sch
+Associate pb sol
+
+Discretize pb dis
+
+Read pb
+{
+	Conduction
+	{
+		diffusion { }
+		initial_conditions {
+			temperature Champ_Uniforme 1 0. 
+			}
+		boundary_conditions {
+			Haut paroi_adiabatique
+			Bas paroi_temperature_imposee
+			        Champ_Front_Uniforme 1 5.
+			Droit paroi_adiabatique
+			Gauche paroi_adiabatique
+		}
+	}
+} /* Read pb */
+
+Solve pb
+
+End
+
