@@ -21,6 +21,8 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <Milieu_base.h>
+#include <Domaine.h>
+#include <Zone_VF.h>
 #include <Champ.h>
 #include <Champ_Fonc_Tabule.h>
 #include <Champ_Uniforme.h>
@@ -28,10 +30,10 @@
 #include <Probleme_base.h>
 #include <Equation_base.h>
 #include <Param.h>
-#include <Champ_Fonc_MED.h>
+// #include <Champ_Fonc_MED.h>
 #include <Discretisation_tools.h>
 #include <Schema_Temps_base.h>
-#include <Champ_Tabule_Morceaux.h>
+// #include <Champ_Tabule_Morceaux.h>
 #include <EChaine.h>
 
 Implemente_base_sans_constructeur(Milieu_base,"Milieu_base",Objet_U);
@@ -118,18 +120,18 @@ void Milieu_base::discretiser(const Probleme_base& pb, const  Discretisation_bas
     {
       // Returns number of components of lambda field
       lambda_nb_comp = ch_lambda.nb_comp( );
-      if (sub_type(Champ_Fonc_MED,ch_lambda.valeur()))
-        {
-          double temps=ch_lambda.valeur().temps();
-          Cerr<<"Convert Champ_fonc_MED lambda in Champ_Don..."<<finl;
-          Champ_Don ch_lambda_prov;
-          dis.discretiser_champ("champ_elem",zone_dis,"neant","neant",lambda_nb_comp,temps,ch_lambda_prov);
-          ch_lambda_prov.affecter_(ch_lambda.valeur());
-          ch_lambda.detach();
-          ch_alpha.detach();
-          dis.discretiser_champ("champ_elem",zone_dis,"neant","neant",lambda_nb_comp,temps,ch_lambda);
-          ch_lambda.valeur().valeurs()=ch_lambda_prov.valeur().valeurs();
-        }
+      // if (sub_type(Champ_Fonc_MED,ch_lambda.valeur()))
+      //   {
+      //     double temps=ch_lambda.valeur().temps();
+      //     Cerr<<"Convert Champ_fonc_MED lambda in Champ_Don..."<<finl;
+      //     Champ_Don ch_lambda_prov;
+      //     dis.discretiser_champ("champ_elem",zone_dis,"neant","neant",lambda_nb_comp,temps,ch_lambda_prov);
+      //     ch_lambda_prov.affecter_(ch_lambda.valeur());
+      //     ch_lambda.detach();
+      //     ch_alpha.detach();
+      //     dis.discretiser_champ("champ_elem",zone_dis,"neant","neant",lambda_nb_comp,temps,ch_lambda);
+      //     ch_lambda.valeur().valeurs()=ch_lambda_prov.valeur().valeurs();
+      //   }
 
       if(lambda_nb_comp >1) // Pour anisotrope
         ch_lambda.valeur().fixer_nature_du_champ(multi_scalaire);
@@ -142,13 +144,13 @@ void Milieu_base::discretiser(const Probleme_base& pb, const  Discretisation_bas
           double temps=ch_lambda.valeur().temps();
           dis.discretiser_champ("champ_elem",zone_dis,"neant","neant",lambda_nb_comp,temps,ch_alpha);
         }
-      if (sub_type(Champ_Tabule_Morceaux,ch_lambda.valeur()))
-        {
-          Champ_Tabule_Morceaux& lambda_tabule = ref_cast(Champ_Tabule_Morceaux,ch_lambda.valeur());
+      // if (sub_type(Champ_Tabule_Morceaux,ch_lambda.valeur()))
+      //   {
+      //     Champ_Tabule_Morceaux& lambda_tabule = ref_cast(Champ_Tabule_Morceaux,ch_lambda.valeur());
 
-          for (int i=0 ; i<lambda_tabule.nb_champs_tabules(); i++)
-            dis.nommer_completer_champ_physique(zone_dis,"conductivite","W/m/K",lambda_tabule.champ_tabule(i),pb);
-        }
+      //     for (int i=0 ; i<lambda_tabule.nb_champs_tabules(); i++)
+      //       dis.nommer_completer_champ_physique(zone_dis,"conductivite","W/m/K",lambda_tabule.champ_tabule(i),pb);
+      //   }
 
       champs_compris_.ajoute_champ(ch_lambda.valeur());
     }
@@ -172,26 +174,26 @@ void Milieu_base::discretiser(const Probleme_base& pb, const  Discretisation_bas
     {
       dis.nommer_completer_champ_physique(zone_dis,"capacite_calorifique","J/kg/K",Cp.valeur(),pb);
 
-      if (sub_type(Champ_Tabule_Morceaux,Cp.valeur()))
-        {
-          Champ_Tabule_Morceaux& Cp_tabule = ref_cast(Champ_Tabule_Morceaux,Cp.valeur());
+      // if (sub_type(Champ_Tabule_Morceaux,Cp.valeur()))
+      //   {
+      //     Champ_Tabule_Morceaux& Cp_tabule = ref_cast(Champ_Tabule_Morceaux,Cp.valeur());
 
-          for (int i=0 ; i<Cp_tabule.nb_champs_tabules(); i++)
-            dis.nommer_completer_champ_physique(zone_dis,"capacite_calorifique","J/kg/K",Cp_tabule.champ_tabule(i),pb);
-        }
+      //     for (int i=0 ; i<Cp_tabule.nb_champs_tabules(); i++)
+      //       dis.nommer_completer_champ_physique(zone_dis,"capacite_calorifique","J/kg/K",Cp_tabule.champ_tabule(i),pb);
+      //   }
       champs_compris_.ajoute_champ(Cp.valeur());
     }
   if  (rho.non_nul())
     {
       dis.nommer_completer_champ_physique(zone_dis,"masse_volumique","kg/m^3",rho.valeur(),pb);
 
-      if (sub_type(Champ_Tabule_Morceaux,rho.valeur()))
-        {
-          Champ_Tabule_Morceaux& rho_tabule = ref_cast(Champ_Tabule_Morceaux,rho.valeur());
+      // if (sub_type(Champ_Tabule_Morceaux,rho.valeur()))
+      //   {
+      //     Champ_Tabule_Morceaux& rho_tabule = ref_cast(Champ_Tabule_Morceaux,rho.valeur());
 
-          for (int i=0 ; i<rho_tabule.nb_champs_tabules(); i++)
-            dis.nommer_completer_champ_physique(zone_dis,"masse_volumique","J/kg/K",rho_tabule.champ_tabule(i),pb);
-        }
+      //     for (int i=0 ; i<rho_tabule.nb_champs_tabules(); i++)
+      //       dis.nommer_completer_champ_physique(zone_dis,"masse_volumique","J/kg/K",rho_tabule.champ_tabule(i),pb);
+      //   }
       champs_compris_.ajoute_champ(rho.valeur());
     }
   if (rho.non_nul() && Cp.non_nul())
