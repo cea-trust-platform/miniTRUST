@@ -22,7 +22,7 @@
 
 #include <Sous_Zone.h>
 #include <Domaine.h>
-#include <Polynomes.h>
+// #include <Polynomes.h>
 #include <LecFicDistribue.h>
 #include <communications.h>
 #include <Parser_U.h>
@@ -173,73 +173,75 @@ Entree& Sous_Zone::readOn(Entree& is)
       is >> les_polys_;
       break;
     case 1 :
-      {
-        Cerr<<"Sous_Zone::readOn : Reading of the polynomials"<<finl;
-        LIST(Polynome) les_polynomes;
-        is >> motlu;
-        if(motlu!=Motcle("{"))
-          {
-            Cerr << "We expected a { " << finl;
-            exit();
-          }
-        while (1)
-          {
-            Polynome un_poly;
-            is >> un_poly;
-            les_polynomes.add(un_poly);
-            is >> motlu;
-            Motcle Et("et");
-            if(motlu==Motcle("}")) break;
-            if(motlu!=Motcle("et"))
-              {
-                Cerr << "We expected " << Et << " or } " << finl;
-                exit();
-              }
-          }
-        {
-          const Zone& la_zone=la_zone_.valeur();
-          int le_poly, nbsom=la_zone.nb_som_elem();
-          DoubleVect x(dimension);
-          int compteur=0;
+    throw; 
+    break;
+      // {
+      //   Cerr<<"Sous_Zone::readOn : Reading of the polynomials"<<finl;
+      //   LIST(Polynome) les_polynomes;
+      //   is >> motlu;
+      //   if(motlu!=Motcle("{"))
+      //     {
+      //       Cerr << "We expected a { " << finl;
+      //       exit();
+      //     }
+      //   while (1)
+      //     {
+      //       Polynome un_poly;
+      //       is >> un_poly;
+      //       les_polynomes.add(un_poly);
+      //       is >> motlu;
+      //       Motcle Et("et");
+      //       if(motlu==Motcle("}")) break;
+      //       if(motlu!=Motcle("et"))
+      //         {
+      //           Cerr << "We expected " << Et << " or } " << finl;
+      //           exit();
+      //         }
+      //     }
+      //   {
+      //     const Zone& la_zone=la_zone_.valeur();
+      //     int le_poly, nbsom=la_zone.nb_som_elem();
+      //     DoubleVect x(dimension);
+      //     int compteur=0;
 
-          les_polys_.resize(nb_pol_possible);
-          for (int n_pol=0; n_pol<nb_pol_possible; n_pol++)
-            {
-              le_poly=les_polys_possibles_[n_pol];
-              x=0;
-              for(int le_som=0; le_som<nbsom; le_som++)
-                {
-                  for(int k=0; k<dimension; k++)
-                    x(k)+=dom.coord(lazone.sommet_elem(le_poly,le_som),k);
-                }
-              x/=((double)(nbsom));
-              LIST_CURSEUR(Polynome) curseur=les_polynomes;
-              int test = 1;
-              while(curseur)
-                {
-                  if (dimension==2)
-                    {
-                      if (curseur.valeur()(x(0), x(1)) <0) test = -1;
-                    }
+      //     les_polys_.resize(nb_pol_possible);
+      //     for (int n_pol=0; n_pol<nb_pol_possible; n_pol++)
+      //       {
+      //         le_poly=les_polys_possibles_[n_pol];
+      //         x=0;
+      //         for(int le_som=0; le_som<nbsom; le_som++)
+      //           {
+      //             for(int k=0; k<dimension; k++)
+      //               x(k)+=dom.coord(lazone.sommet_elem(le_poly,le_som),k);
+      //           }
+      //         x/=((double)(nbsom));
+      //         LIST_CURSEUR(Polynome) curseur=les_polynomes;
+      //         int test = 1;
+      //         while(curseur)
+      //           {
+      //             if (dimension==2)
+      //               {
+      //                 if (curseur.valeur()(x(0), x(1)) <0) test = -1;
+      //               }
 
-                  if (dimension==3)
-                    {
-                      if (curseur.valeur()(x(0), x(1),x(2)) <0) test = -1;
-                    }
-                  ++curseur;
-                }
+      //             if (dimension==3)
+      //               {
+      //                 if (curseur.valeur()(x(0), x(1),x(2)) <0) test = -1;
+      //               }
+      //             ++curseur;
+      //           }
 
-              if(test > 0)
-                {
-                  les_polys_(compteur)=le_poly;
-                  compteur++;
-                }
-            }
-          les_polys_.resize(compteur);
-          Cerr << "Construction of the subarea OK" << finl;
-        }
-        break;
-      }
+      //         if(test > 0)
+      //           {
+      //             les_polys_(compteur)=le_poly;
+      //             compteur++;
+      //           }
+      //       }
+      //     les_polys_.resize(compteur);
+      //     Cerr << "Construction of the subarea OK" << finl;
+      //   }
+      //   break;
+      // }
     case 2 :
       {
         // Boite

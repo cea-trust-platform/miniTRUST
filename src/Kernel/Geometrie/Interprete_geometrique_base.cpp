@@ -22,7 +22,7 @@
 
 #include <Interprete_geometrique_base.h>
 #include <Domaine.h>
-#include <Scatter.h>
+//#include <Scatter.h>
 #include <EChaine.h>
 #include <Sous_Zone.h>
 
