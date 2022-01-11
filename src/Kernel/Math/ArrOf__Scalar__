@@ -1615,15 +1615,17 @@ ArrOf__Scalar__& ArrOf__Scalar__::operator/= (const __scalar__ dy)
 //    Contraintes:
 __scalar__ dotproduct_array (const ArrOf__Scalar__& dx, const ArrOf__Scalar__& dy)
 {
-  const int size = dx.size_array();
-  assert(size == dy.size_array());
-  __scalar__ resultat = 0.;
-  if (size > 0) {
-    integer n = size;
-    integer incx = 1;
-    resultat = F77NAME(DDOT)(&n, dx.addr(), &incx, dy.addr(), &incx);
-  }
-  return resultat;
+  // const int size = dx.size_array();
+  // assert(size == dy.size_array());
+  // __scalar__ resultat = 0.;
+  // if (size > 0) {
+  //   integer n = size;
+  //   integer incx = 1;
+  //   resultat = F77NAME(DDOT)(&n, dx.addr(), &incx, dy.addr(), &incx);
+  // }
+  // return resultat;
+  throw;
+  return 0;
 }
 
 // Description:
@@ -1631,13 +1633,15 @@ __scalar__ dotproduct_array (const ArrOf__Scalar__& dx, const ArrOf__Scalar__& d
 //   soit racine carree(somme des dx[i]*dx[i]).
 __scalar__ norme_array(const ArrOf__Scalar__& dx)
 {
-  integer n = dx.size_array();
-  __scalar__ resultat = 0.;
-  if (n > 0) {
-    integer incx = 1;
-    resultat = F77NAME(DNRM2)(&n, &dx(0), &incx);
-  }
-  return resultat;
+  // integer n = dx.size_array();
+  // __scalar__ resultat = 0.;
+  // if (n > 0) {
+  //   integer incx = 1;
+  //   resultat = F77NAME(DNRM2)(&n, &dx(0), &incx);
+  // }
+  // return resultat;
+  throw;
+  return 0;
 }
 #Pendif
 #Pendmacro(implementeArr)

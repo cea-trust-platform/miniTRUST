@@ -1276,16 +1276,17 @@ ArrOfDouble& ArrOfDouble::operator/= (const double dy)
 //    Contraintes:
 double dotproduct_array (const ArrOfDouble& dx, const ArrOfDouble& dy)
 {
-  const int size = dx.size_array();
-  assert(size == dy.size_array());
-  double resultat = 0.;
-  if (size > 0)
-    {
-      integer n = size;
-      integer incx = 1;
-      resultat = F77NAME(DDOT)(&n, dx.addr(), &incx, dy.addr(), &incx);
-    }
-  return resultat;
+  // const int size = dx.size_array();
+  // assert(size == dy.size_array());
+  // double resultat = 0.;
+  // if (size > 0) {
+  //   integer n = size;
+  //   integer incx = 1;
+  //   resultat = F77NAME(DDOT)(&n, dx.addr(), &incx, dy.addr(), &incx);
+  // }
+  // return resultat;
+  throw;
+  return 0;
 }
 
 // Description:
@@ -1293,13 +1294,14 @@ double dotproduct_array (const ArrOfDouble& dx, const ArrOfDouble& dy)
 //   soit racine carree(somme des dx[i]*dx[i]).
 double norme_array(const ArrOfDouble& dx)
 {
-  integer n = dx.size_array();
-  double resultat = 0.;
-  if (n > 0)
-    {
-      integer incx = 1;
-      resultat = F77NAME(DNRM2)(&n, &dx(0), &incx);
-    }
-  return resultat;
+  // integer n = dx.size_array();
+  // double resultat = 0.;
+  // if (n > 0) {
+  //   integer incx = 1;
+  //   resultat = F77NAME(DNRM2)(&n, &dx(0), &incx);
+  // }
+  // return resultat;
+  throw;
+  return 0;
 }
 
