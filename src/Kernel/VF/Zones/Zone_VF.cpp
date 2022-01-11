@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include <Zone_VF.h>
-#include <Periodique.h>
+// #include <Periodique.h>
 #include <Conds_lim.h>
 #include <Static_Int_Lists.h>
 #include <Connectivite_som_elem.h>
@@ -30,8 +30,8 @@
 #include <MD_Vector_tools.h>
 #include <Scatter.h>
 #include <MD_Vector_base.h>
-#include <Analyse_Angle.h>
-#include <Linear_algebra_tools_impl.h>
+// #include <Analyse_Angle.h>
+// #include <Linear_algebra_tools_impl.h>
 
 
 Implemente_base(Zone_VF,"Zone_VF",Zone_dis_base);
@@ -114,7 +114,7 @@ void Zone_VF::discretiser()
   Cerr << "<<<<<< Discretization VF >>>>>>>>>>" << finl;
 
   Zone& lazone=zone();
-  histogramme_angle(lazone.domaine(),Cerr);
+  // histogramme_angle(lazone.domaine(),Cerr);
   Faces* les_faces_ptr=creer_faces();
   Faces& les_faces= *les_faces_ptr;
   {
@@ -280,44 +280,44 @@ void Zone_VF::modifier_pour_Cl(const Conds_lim& conds_lim)
     {
       // for( cl ...
       const Cond_lim_base& cl=conds_lim[i].valeur();
-      if (sub_type(Periodique, cl))
-        {
-          // if (perio ...
-          // Modifications du tableau face_voisins
-          // Une face de type periodicite doit avoir les memes voisins que
-          // sa face associee
-          //      face_voisins(face,j) = face_voisins(face_associee(face),j)  j=1,2
-          //
+//       if (sub_type(Periodique, cl))
+//         {
+//           // if (perio ...
+//           // Modifications du tableau face_voisins
+//           // Une face de type periodicite doit avoir les memes voisins que
+//           // sa face associee
+//           //      face_voisins(face,j) = face_voisins(face_associee(face),j)  j=1,2
+//           //
 
-          const Periodique& la_cl_period = ref_cast(Periodique,cl);
-          const Front_VF& frontieredis = ref_cast(Front_VF,la_cl_period.frontiere_dis());
+//           const Periodique& la_cl_period = ref_cast(Periodique,cl);
+//           const Front_VF& frontieredis = ref_cast(Front_VF,la_cl_period.frontiere_dis());
 
-          int nb_face_bord = frontieredis.nb_faces();
-          int ndeb =0;
-          int nfin = frontieredis.nb_faces_tot();
-#ifndef NDEBUG
-          int num_premiere_face = frontieredis.num_premiere_face();
-          int num_derniere_face = num_premiere_face+nfin;
-#endif
-          int face;
+//           int nb_face_bord = frontieredis.nb_faces();
+//           int ndeb =0;
+//           int nfin = frontieredis.nb_faces_tot();
+// #ifndef NDEBUG
+//           int num_premiere_face = frontieredis.num_premiere_face();
+//           int num_derniere_face = num_premiere_face+nfin;
+// #endif
+//           int face;
 
-          for (int ind_face=ndeb; ind_face<nfin; ind_face++)
-            {
-              face = frontieredis.num_face(ind_face);
-              int faassociee = la_cl_period.face_associee(ind_face);
-              faassociee = frontieredis.num_face(faassociee);
-              if (ind_face<nb_face_bord)
-                {
-                  assert(faassociee>=num_premiere_face);
-                  assert(faassociee<num_derniere_face);
-                }
+//           for (int ind_face=ndeb; ind_face<nfin; ind_face++)
+//             {
+//               face = frontieredis.num_face(ind_face);
+//               int faassociee = la_cl_period.face_associee(ind_face);
+//               faassociee = frontieredis.num_face(faassociee);
+//               if (ind_face<nb_face_bord)
+//                 {
+//                   assert(faassociee>=num_premiere_face);
+//                   assert(faassociee<num_derniere_face);
+//                 }
 
-              if (face_voisins_(face,0) == -1)
-                face_voisins_(face,0) = face_voisins_(faassociee,0);
-              else if (face_voisins_(face,1) == -1)
-                face_voisins_(face,1) = face_voisins_(faassociee,1);
-            }
-        }
+//               if (face_voisins_(face,0) == -1)
+//                 face_voisins_(face,0) = face_voisins_(faassociee,0);
+//               else if (face_voisins_(face,1) == -1)
+//                 face_voisins_(face,1) = face_voisins_(faassociee,1);
+//             }
+//         }
     }
 
 
@@ -518,18 +518,18 @@ void Zone_VF::marquer_faces_double_contrib(const Conds_lim& conds_lim)
   for (int i=0; i<nb_cond_lim; i++)
     {
       const Cond_lim_base& cl=conds_lim[i].valeur();
-      if (sub_type(Periodique, cl))
-        {
-          const Periodique& la_cl_period = ref_cast(Periodique,cl);
-          const Front_VF& frontieredis = ref_cast(Front_VF,la_cl_period.frontiere_dis());
-          int ndeb = frontieredis.num_premiere_face();
-          int nfin = ndeb + frontieredis.nb_faces();
+      // if (sub_type(Periodique, cl))
+      //   {
+      //     const Periodique& la_cl_period = ref_cast(Periodique,cl);
+      //     const Front_VF& frontieredis = ref_cast(Front_VF,la_cl_period.frontiere_dis());
+      //     int ndeb = frontieredis.num_premiere_face();
+      //     int nfin = ndeb + frontieredis.nb_faces();
 
-          for (int face=ndeb; face<nfin; face++)
-            {
-              faces_doubles_(face)=1;
-            }
-        }
+      //     for (int face=ndeb; face<nfin; face++)
+      //       {
+      //         faces_doubles_(face)=1;
+      //       }
+      //   }
     }
 
   // marquage des faces items communs
