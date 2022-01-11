@@ -23,8 +23,8 @@
 #include <Equation_base.h>
 #include <Milieu_base.h>
 #include <Operateur_base.h>
-#include <Operateur_Conv_base.h>
-#include <Op_Conv_negligeable.h>
+// #include <Operateur_Conv_base.h>
+// #include <Op_Conv_negligeable.h>
 #include <Operateur_Diff_base.h>
 #include <Operateur.h>
 #include <Avanc.h>
@@ -382,160 +382,161 @@ int Equation_base::lire_motcle_non_standard(const Motcle& mot, Entree& is)
 // Postcondition:
 void Equation_base::ecrire_fichier_xyz() const
 {
-  for (int numero_champ_xyz=0; numero_champ_xyz<nombre_champ_xyz; numero_champ_xyz++)
-    {
-      Noms vide;
-      const double& dt_ecrire_fic = dt_ecrire_fic_xyz[numero_champ_xyz];
-      const Motcle& nom_champ = nom_champ_xyz[numero_champ_xyz];
-      const int& nb_bords_post = nb_bords_post_xyz[numero_champ_xyz];
-      const Noms& noms_bord = (nb_bords_post?noms_bord_xyz[numero_champ_xyz]:vide);
+  throw;
+  // for (int numero_champ_xyz=0; numero_champ_xyz<nombre_champ_xyz; numero_champ_xyz++)
+  //   {
+  //     Noms vide;
+  //     const double& dt_ecrire_fic = dt_ecrire_fic_xyz[numero_champ_xyz];
+  //     const Motcle& nom_champ = nom_champ_xyz[numero_champ_xyz];
+  //     const int& nb_bords_post = nb_bords_post_xyz[numero_champ_xyz];
+  //     const Noms& noms_bord = (nb_bords_post?noms_bord_xyz[numero_champ_xyz]:vide);
 
-      REF(Champ_base) champ_a_ecrire;
-      const double temps_courant = le_schema_en_temps->temps_courant();
-      const double dt = le_schema_en_temps->pas_de_temps();
-      const double tmax = le_schema_en_temps->temps_max();
-      const int nb_pas_dt_max = le_schema_en_temps->nb_pas_dt_max();
-      const int nb_pas_dt = le_schema_en_temps->nb_pas_dt();
-      const int stationnaire_atteint = le_schema_en_temps->stationnaire_atteint();
-      int ok;
-      if (dt_ecrire_fic<=dt || tmax<=temps_courant || nb_pas_dt_max<=nb_pas_dt || nb_pas_dt<=1 || stationnaire_atteint || le_schema_en_temps.valeur().stop_lu())
-        ok=1;
-      else
-        {
-          // Voir Schema_Temps_base::limpr pour information sur epsilon et modf
-          double i, j, epsilon = 1.e-8;
-          modf(temps_courant/dt_ecrire_fic + epsilon, &i);
-          modf((temps_courant-dt)/dt_ecrire_fic + epsilon, &j);
-          ok = (i>j);
-        }
-      int champ_ok = 0;
-      int champ_stat = 0;
-      REF(Operateur_Statistique_tps_base) op_stat;
-      if (ok && dt_ecrire_fic>0)
-        {
-          // On recherche le champ dans le probleme contenant l'equation, et les postraitements
-          // dans les postraitements ?
-          CONST_LIST_CURSEUR(DERIV(Postraitement_base)) curseur = mon_probleme->postraitements();
-          while(curseur && !champ_ok)
-            {
-              if (sub_type(Postraitement,curseur.valeur().valeur()))
-                {
-                  const Postraitement& post = ref_cast(Postraitement,curseur.valeur().valeur());
-                  if (champ_ok==0)
-                    {
-                      Motcle nom_test = nom_champ;
-                      //La recherche est faite sur les champs statistiques a partir d un identifiant
-                      //Si le nom indique dans le jeux de donnes est celui d un champ statistiques
-                      //il doit correspondre au nom du champ de postraitement
+  //     REF(Champ_base) champ_a_ecrire;
+  //     const double temps_courant = le_schema_en_temps->temps_courant();
+  //     const double dt = le_schema_en_temps->pas_de_temps();
+  //     const double tmax = le_schema_en_temps->temps_max();
+  //     const int nb_pas_dt_max = le_schema_en_temps->nb_pas_dt_max();
+  //     const int nb_pas_dt = le_schema_en_temps->nb_pas_dt();
+  //     const int stationnaire_atteint = le_schema_en_temps->stationnaire_atteint();
+  //     int ok;
+  //     if (dt_ecrire_fic<=dt || tmax<=temps_courant || nb_pas_dt_max<=nb_pas_dt || nb_pas_dt<=1 || stationnaire_atteint || le_schema_en_temps.valeur().stop_lu())
+  //       ok=1;
+  //     else
+  //       {
+  //         // Voir Schema_Temps_base::limpr pour information sur epsilon et modf
+  //         double i, j, epsilon = 1.e-8;
+  //         modf(temps_courant/dt_ecrire_fic + epsilon, &i);
+  //         modf((temps_courant-dt)/dt_ecrire_fic + epsilon, &j);
+  //         ok = (i>j);
+  //       }
+  //     int champ_ok = 0;
+  //     int champ_stat = 0;
+  //     REF(Operateur_Statistique_tps_base) op_stat;
+  //     if (ok && dt_ecrire_fic>0)
+  //       {
+  //         // On recherche le champ dans le probleme contenant l'equation, et les postraitements
+  //         // dans les postraitements ?
+  //         CONST_LIST_CURSEUR(DERIV(Postraitement_base)) curseur = mon_probleme->postraitements();
+  //         while(curseur && !champ_ok)
+  //           {
+  //             if (sub_type(Postraitement,curseur.valeur().valeur()))
+  //               {
+  //                 const Postraitement& post = ref_cast(Postraitement,curseur.valeur().valeur());
+  //                 if (champ_ok==0)
+  //                   {
+  //                     Motcle nom_test = nom_champ;
+  //                     //La recherche est faite sur les champs statistiques a partir d un identifiant
+  //                     //Si le nom indique dans le jeux de donnes est celui d un champ statistiques
+  //                     //il doit correspondre au nom du champ de postraitement
 
-                      post.champ_fonc(nom_test,champ_a_ecrire,op_stat);
-                      if (champ_a_ecrire.non_nul())
-                        {
-                          champ_stat = 1;
-                          champ_ok = 1;
-                        }
-                    }
-                }
-              ++curseur;
-            }
+  //                     post.champ_fonc(nom_test,champ_a_ecrire,op_stat);
+  //                     if (champ_a_ecrire.non_nul())
+  //                       {
+  //                         champ_stat = 1;
+  //                         champ_ok = 1;
+  //                       }
+  //                   }
+  //               }
+  //             ++curseur;
+  //           }
 
-          if (champ_ok==0)
-            //L identifiant correspond ici a un Champ_base
-            champ_a_ecrire = mon_probleme.valeur().get_champ(nom_champ);
+  //         if (champ_ok==0)
+  //           //L identifiant correspond ici a un Champ_base
+  //           champ_a_ecrire = mon_probleme.valeur().get_champ(nom_champ);
 
-          int nb_compo = champ_a_ecrire->nb_comp();
-          if (nb_bords_post>0) // on ne souhaite postraiter que sur certains bords
-            {
-              int nb_cl = la_zone_Cl_dis->nb_cond_lim();
-              for (int j=0; j<nb_bords_post; j++)
-                {
-                  int count = 0 ; // int servant a tester si le nom du bord correspond bien au nom d'une frontiere
-                  for (int i=0; i<nb_cl; i++)
-                    {
-                      const Cond_lim_base& la_cl = la_zone_Cl_dis.valeur().les_conditions_limites(i);
-                      const Frontiere& la_frontiere = la_cl.frontiere_dis().frontiere();
-                      if (la_frontiere.le_nom() == noms_bord[j])
-                        {
-                          // Construction du nom du fichier
-                          Nom nom_fic(probleme().le_nom());
-                          nom_fic+="_";
-                          nom_fic+=nom_champ;
-                          nom_fic+="_";
-                          nom_fic+=noms_bord[j];
-                          nom_fic+="_";
-                          nom_fic+=Nom(temps_courant);
-                          nom_fic+=".dat";
-                          EcrFicPartage fic;
-                          fic.set_bin(ecrit_champ_xyz_bin);
-                          fic.ouvrir(nom_fic);
-                          fic.setf(ios::scientific);
-                          fic.precision(format_precision_geom);
+  //         int nb_compo = champ_a_ecrire->nb_comp();
+  //         if (nb_bords_post>0) // on ne souhaite postraiter que sur certains bords
+  //           {
+  //             int nb_cl = la_zone_Cl_dis->nb_cond_lim();
+  //             for (int j=0; j<nb_bords_post; j++)
+  //               {
+  //                 int count = 0 ; // int servant a tester si le nom du bord correspond bien au nom d'une frontiere
+  //                 for (int i=0; i<nb_cl; i++)
+  //                   {
+  //                     const Cond_lim_base& la_cl = la_zone_Cl_dis.valeur().les_conditions_limites(i);
+  //                     const Frontiere& la_frontiere = la_cl.frontiere_dis().frontiere();
+  //                     if (la_frontiere.le_nom() == noms_bord[j])
+  //                       {
+  //                         // Construction du nom du fichier
+  //                         Nom nom_fic(probleme().le_nom());
+  //                         nom_fic+="_";
+  //                         nom_fic+=nom_champ;
+  //                         nom_fic+="_";
+  //                         nom_fic+=noms_bord[j];
+  //                         nom_fic+="_";
+  //                         nom_fic+=Nom(temps_courant);
+  //                         nom_fic+=".dat";
+  //                         EcrFicPartage fic;
+  //                         fic.set_bin(ecrit_champ_xyz_bin);
+  //                         fic.ouvrir(nom_fic);
+  //                         fic.setf(ios::scientific);
+  //                         fic.precision(format_precision_geom);
 
-                          // Construction du tableau pos contenant les centres des faces frontiere
-                          const int nb_val = la_frontiere.nb_faces();
-                          DoubleTab pos;
-                          la_frontiere.faces().calculer_centres_gravite(pos);
+  //                         // Construction du tableau pos contenant les centres des faces frontiere
+  //                         const int nb_val = la_frontiere.nb_faces();
+  //                         DoubleTab pos;
+  //                         la_frontiere.faces().calculer_centres_gravite(pos);
 
-                          // Construction du tableau val contenant les valeurs aux centres des faces
-                          DoubleTab val(nb_val,nb_compo);
-                          val = 0.;
-                          if (champ_stat == 1)
-                            {
-                              DoubleTab copie(champ_a_ecrire->valeurs());
-                              champ_a_ecrire->valeurs() = op_stat->calculer_valeurs();
-                              champ_a_ecrire->valeur_aux(pos, val);
-                              champ_a_ecrire->valeurs() = copie;
-                            }
-                          else
-                            champ_a_ecrire->valeur_aux(pos, val);
+  //                         // Construction du tableau val contenant les valeurs aux centres des faces
+  //                         DoubleTab val(nb_val,nb_compo);
+  //                         val = 0.;
+  //                         if (champ_stat == 1)
+  //                           {
+  //                             DoubleTab copie(champ_a_ecrire->valeurs());
+  //                             champ_a_ecrire->valeurs() = op_stat->calculer_valeurs();
+  //                             champ_a_ecrire->valeur_aux(pos, val);
+  //                             champ_a_ecrire->valeurs() = copie;
+  //                           }
+  //                         else
+  //                           champ_a_ecrire->valeur_aux(pos, val);
 
-                          // Ecriture du fichier
-                          int nb_val_tot = Process::mp_sum(nb_val);
-                          if (Process::je_suis_maitre())
-                            {
-                              if(ecrit_champ_xyz_bin)
-                                fic << "binary" << finl;
-                              fic  << nb_val_tot << finl;
-                            }
-                          barrier();
-                          fic.lockfile();
-                          for (int i2=0; i2<nb_val; i2++)
-                            {
-                              // Ecriture des coordonees
-                              for (int j2=0; j2<dimension; j2++)
-                                fic << pos(i2,j2) << " ";
-                              // Ecriture des valeurs
-                              for (int nb=0; nb<nb_compo; nb++)
-                                fic << val(i2,nb) << " " ;
-                              fic << finl;
-                            }
-                          fic.unlockfile();
-                          barrier();
-                          fic.syncfile();
-                          fic.close();
-                        }
-                      else
-                        {
-                          count++;
-                        }
-                    }
-                  if (count==nb_cl)
-                    {
-                      Cerr << "You try to use the method Ecrire_fichier_xyz_valeur with an unknow name boundary" << finl;
-                      Cerr << "The boundary named " << noms_bord[j] << " is not recognized"<< finl;
-                      exit();
-                    }
+  //                         // Ecriture du fichier
+  //                         int nb_val_tot = Process::mp_sum(nb_val);
+  //                         if (Process::je_suis_maitre())
+  //                           {
+  //                             if(ecrit_champ_xyz_bin)
+  //                               fic << "binary" << finl;
+  //                             fic  << nb_val_tot << finl;
+  //                           }
+  //                         barrier();
+  //                         fic.lockfile();
+  //                         for (int i2=0; i2<nb_val; i2++)
+  //                           {
+  //                             // Ecriture des coordonees
+  //                             for (int j2=0; j2<dimension; j2++)
+  //                               fic << pos(i2,j2) << " ";
+  //                             // Ecriture des valeurs
+  //                             for (int nb=0; nb<nb_compo; nb++)
+  //                               fic << val(i2,nb) << " " ;
+  //                             fic << finl;
+  //                           }
+  //                         fic.unlockfile();
+  //                         barrier();
+  //                         fic.syncfile();
+  //                         fic.close();
+  //                       }
+  //                     else
+  //                       {
+  //                         count++;
+  //                       }
+  //                   }
+  //                 if (count==nb_cl)
+  //                   {
+  //                     Cerr << "You try to use the method Ecrire_fichier_xyz_valeur with an unknow name boundary" << finl;
+  //                     Cerr << "The boundary named " << noms_bord[j] << " is not recognized"<< finl;
+  //                     exit();
+  //                   }
 
-                }
-            }
-          else // on souhaite postraiter sur tout le domaine
-            {
+  //               }
+  //           }
+  //         else // on souhaite postraiter sur tout le domaine
+  //           {
 
-              Cerr << "The option of post processing the entire domain with Ecrire_fichier_xyz_valeur is now obsolete." <<finl;
-              exit();
-            }
-        }
-    }
+  //             Cerr << "The option of post processing the entire domain with Ecrire_fichier_xyz_valeur is now obsolete." <<finl;
+  //             exit();
+  //           }
+  //       }
+  //   }
 }
 
 
@@ -1613,12 +1614,12 @@ double Equation_base::calculer_pas_de_temps() const
               Cout << " " << finl;
               Cout << "Printing of the next provisional time steps for the equation: " << que_suis_je() << finl;
             }
-          if (sub_type(Operateur_Conv_base,op))
-            Cout << "   convective";
-          else if (sub_type(Operateur_Diff_base,op))
-            Cout << "   diffusive";
-          else
-            Cout << "   operator ";
+          // if (sub_type(Operateur_Conv_base,op))
+          //   Cout << "   convective";
+          // else if (sub_type(Operateur_Diff_base,op))
+          //   Cout << "   diffusive";
+          // else
+          //   Cout << "   operator ";
           Cout<<" time step : "<< dt_op_bak[i] << finl;
         }
       dt_op_bak[i]=dt_op;
@@ -1654,20 +1655,20 @@ void Equation_base::calculer_pas_de_temps_locaux(DoubleTab& dt_op) const
   for(int i=0; i<nb_op; i++)
     {
       const Operateur_base& op=operateur(i).l_op_base();
-      if (sub_type(Operateur_Conv_base,op))
-        {
-          if(sub_type(Op_Conv_negligeable, op))
-            {
-              Cerr<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<finl;
-              Cerr<<"STEADY option is not compatible with the 'CONVECTION { NEGLIGEABLE }' model!"<<finl;
-              Cerr << "Please, contact TRUST support." << finl;
-              Cerr<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<finl;
-              exit();
-            }
-          else
-            operateur(i).calculer_pas_de_temps_locaux(dt_op);
+      // if (sub_type(Operateur_Conv_base,op))
+      //   {
+      //     if(sub_type(Op_Conv_negligeable, op))
+      //       {
+      //         Cerr<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<finl;
+      //         Cerr<<"STEADY option is not compatible with the 'CONVECTION { NEGLIGEABLE }' model!"<<finl;
+      //         Cerr << "Please, contact TRUST support." << finl;
+      //         Cerr<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<finl;
+      //         exit();
+      //       }
+      //     else
+      //       operateur(i).calculer_pas_de_temps_locaux(dt_op);
 
-        }
+      //   }
     }
 
 }
