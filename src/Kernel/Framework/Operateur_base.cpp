@@ -24,7 +24,7 @@
 #include <Probleme_base.h>
 #include <Schema_Temps_base.h>
 #include <EcrFicPartage.h>
-#include <Periodique.h>
+// #include <Periodique.h>
 #include <sys/stat.h>
 #include <Champ.h>
 #include <Front_VF.h>
@@ -481,14 +481,14 @@ void Operateur_base::ouvrir_fichier(SFichier& os,const Nom& type, const int& fla
                       }
                   else os.add_col(ch.getChar());
                   // if periodic BC, we write the boundary name twice on the header of .out files
-                  if ((sub_type(Periodique,les_cls[num_cl].valeur())) && (Objet_U::nom_du_cas()+"_"+eqn.probleme().le_nom()+"_Force_pression"!=out_))
-                    {
-                      if (nb_compo > 1) for (int d = 0; d < nb_compo; ++d)
-                          {
-                            os.add_col((ch + "_" + noms_compo_courts[d]).getChar());
-                          }
-                      else os.add_col(ch.getChar());
-                    }
+                  // if ((sub_type(Periodique,les_cls[num_cl].valeur())) && (Objet_U::nom_du_cas()+"_"+eqn.probleme().le_nom()+"_Force_pression"!=out_))
+                  //   {
+                  //     if (nb_compo > 1) for (int d = 0; d < nb_compo; ++d)
+                  //         {
+                  //           os.add_col((ch + "_" + noms_compo_courts[d]).getChar());
+                  //         }
+                  //     else os.add_col(ch.getChar());
+                  //   }
                 }
             }
         }
