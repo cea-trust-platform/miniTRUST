@@ -31,8 +31,9 @@ extern "C"
                            const integer* const ix, const double* const y,
                            const integer* const iy)
   {
+    throw;
     double resu=0.;
-    resu = F77NAME(ddot)(n,x,ix,y,iy);
+    // resu = F77NAME(ddot)(n,x,ix,y,iy);
     return Process::mp_sum(resu);
   }
 #else
