@@ -24,10 +24,10 @@
 #include <stat_counters.h>
 #include <ICoCoExceptions.h>
 #include <sys/stat.h>
-#include <Ch_front_input_uniforme.h>
-#include <Ch_front_input.h>
-#include <Ch_input_uniforme.h>
-#include <Champ_input_P0.h>
+// #include <Ch_front_input_uniforme.h>
+// #include <Ch_front_input.h>
+// #include <Ch_input_uniforme.h>
+// #include <Champ_input_P0.h>
 
 #ifdef VTRACE
 #include <vt_user.h>
@@ -36,7 +36,7 @@
 #include <Domaine.h>
 #include <Zone.h>
 #include <Champ_Generique_base.h>
-#include <Convert_ICoCoTrioField.h>
+// #include <Convert_ICoCoTrioField.h>
 
 
 Implemente_base(Probleme_U,"Probleme_U",Objet_U);
@@ -704,16 +704,16 @@ REF(Champ_Generique_base) Probleme_U::findOutputField(const Nom& name) const
 // Problem unchanged
 void Probleme_U::getInputFieldTemplate(const Nom& name, TrioField& afield) const
 {
-  REF(Field_base) ch=findInputField(name);
-  if (!ch.non_nul())
-    throw WrongArgument(le_nom().getChar(),"getInputFieldTemplate",name.getString(),"no input field of that name");
+  // REF(Field_base) ch=findInputField(name);
+  // if (!ch.non_nul())
+  //   throw WrongArgument(le_nom().getChar(),"getInputFieldTemplate",name.getString(),"no input field of that name");
 
-  // Du au fait qu'on ne peut pas faire une ref sur Champ_Input_Proto qui n'est pas un Objet_U...
-  Champ_Input_Proto * chip = dynamic_cast<Champ_Input_Proto *>(ch.operator->());
-  if (!chip)
-    throw WrongArgument(le_nom().getChar(),"getInputFieldTemplate",name.getString(),"field of this name is not an input field");
+  // // Du au fait qu'on ne peut pas faire une ref sur Champ_Input_Proto qui n'est pas un Objet_U...
+  // Champ_Input_Proto * chip = dynamic_cast<Champ_Input_Proto *>(ch.operator->());
+  // if (!chip)
+  //   throw WrongArgument(le_nom().getChar(),"getInputFieldTemplate",name.getString(),"field of this name is not an input field");
 
-  chip->getTemplate(afield);
+  // chip->getTemplate(afield);
 }
 
 // Description:
@@ -733,48 +733,48 @@ void Probleme_U::getInputFieldTemplate(const Nom& name, TrioField& afield) const
 // Values of afield have been used (copied inside the Problem).
 void Probleme_U::setInputField(const Nom& name, const TrioField& afield)
 {
-  REF(Field_base) ch=findInputField(name);
-  if (!ch.non_nul())
-    throw WrongArgument(le_nom().getChar(),"setInputField",name.getString(),"no input field of that name");
-  if (!est_egal(afield._time1,presentTime()))
-    throw WrongArgument(le_nom().getChar(),"setInputField","afield","Should be defined on current time interval");
-  if (!est_egal(afield._time2,futureTime()))
-    throw WrongArgument(le_nom().getChar(),"setInputField","afield","Should be defined on current time interval");
-  if (strcmp(name.getChar(),afield.getCharName()))
-    throw WrongArgument(le_nom().getChar(),"setInputField","afield","Should have the same name as the argument name ");
+  // REF(Field_base) ch=findInputField(name);
+  // if (!ch.non_nul())
+  //   throw WrongArgument(le_nom().getChar(),"setInputField",name.getString(),"no input field of that name");
+  // if (!est_egal(afield._time1,presentTime()))
+  //   throw WrongArgument(le_nom().getChar(),"setInputField","afield","Should be defined on current time interval");
+  // if (!est_egal(afield._time2,futureTime()))
+  //   throw WrongArgument(le_nom().getChar(),"setInputField","afield","Should be defined on current time interval");
+  // if (strcmp(name.getChar(),afield.getCharName()))
+  //   throw WrongArgument(le_nom().getChar(),"setInputField","afield","Should have the same name as the argument name ");
 
-  // Du au fait qu'on ne peut pas faire une ref sur Champ_Input_Proto qui n'est pas un Objet_U...
-  Champ_Input_Proto * chip = dynamic_cast<Champ_Input_Proto *>(ch.operator->());
-  if (!chip)
-    throw WrongArgument(le_nom().getChar(),"setInputField",name.getString(),"field of this name is not an input field");
+  // // Du au fait qu'on ne peut pas faire une ref sur Champ_Input_Proto qui n'est pas un Objet_U...
+  // Champ_Input_Proto * chip = dynamic_cast<Champ_Input_Proto *>(ch.operator->());
+  // if (!chip)
+  //   throw WrongArgument(le_nom().getChar(),"setInputField",name.getString(),"field of this name is not an input field");
 
-  chip->setValue(afield);
+  // chip->setValue(afield);
 }
 
 void Probleme_U::getOutputField(const Nom& name,  TrioField& afield) const
 {
 
-  REF(Champ_Generique_base) ref_ch=findOutputField(name);
-  if (!ref_ch.non_nul())
-    throw WrongArgument(le_nom().getChar(),"getOutputField",name.getString(),"no output field of that name");
+  // REF(Champ_Generique_base) ref_ch=findOutputField(name);
+  // if (!ref_ch.non_nul())
+  //   throw WrongArgument(le_nom().getChar(),"getOutputField",name.getString(),"no output field of that name");
 
-  const Champ_Generique_base& ch = ref_ch.valeur();
-  build_triofield(ch, afield);
-  afield.setName(name.getString());
+  // const Champ_Generique_base& ch = ref_ch.valeur();
+  // build_triofield(ch, afield);
+  // afield.setName(name.getString());
 }
 
 // For now: set a field value provided the field has only one item.
 void Probleme_U::setInputDoubleValue(const Nom& name, const double& val)
 {
-  REF(Field_base) ch = findInputField(name);
-  if (!ch.non_nul())
-    throw WrongArgument(le_nom().getChar(),"setInputDoubleValue",name.getString(),"no input field of that name");
-  if (ch->nb_comp() != 1)
-    throw WrongArgument(le_nom().getChar(),"getOutputDoubleValue",name.getString(),"invalid field size!!");
+  // REF(Field_base) ch = findInputField(name);
+  // if (!ch.non_nul())
+  //   throw WrongArgument(le_nom().getChar(),"setInputDoubleValue",name.getString(),"no input field of that name");
+  // if (ch->nb_comp() != 1)
+  //   throw WrongArgument(le_nom().getChar(),"getOutputDoubleValue",name.getString(),"invalid field size!!");
 
-  // Wa can not do a REF on Champ_Input_Proto which is not an Objet_U...
-  Champ_Input_Proto * chip = dynamic_cast<Champ_Input_Proto *>(ch.operator ->());
-  if (!chip)
-    throw WrongArgument(le_nom().getChar(),"setInputField",name.getString(),"field of this name is not an input field");
-  chip->setDoubleValue(val);
+  // // Wa can not do a REF on Champ_Input_Proto which is not an Objet_U...
+  // Champ_Input_Proto * chip = dynamic_cast<Champ_Input_Proto *>(ch.operator ->());
+  // if (!chip)
+  //   throw WrongArgument(le_nom().getChar(),"setInputField",name.getString(),"field of this name is not an input field");
+  // chip->setDoubleValue(val);
 }
