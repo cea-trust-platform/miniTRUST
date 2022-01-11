@@ -22,7 +22,7 @@
 
 #include <Probleme_base.h>
 #include <Equation.h>
-#include <Periodique.h>
+// #include <Periodique.h>
 #include <Schema_Euler_Implicite.h>
 #include <Milieu_base.h>
 #include <LecFicDistribueBin.h>
@@ -36,13 +36,13 @@
 #include <stat_counters.h>
 #include <Debog.h>
 #include <List_Ref_Postraitement.h>
-#include <Champ_Gen_de_Champs_Gen.h>
+// #include <Champ_Gen_de_Champs_Gen.h>
 #include <communications.h>
 #include <Avanc.h>
 #include <Deriv_Entree_Fichier_base.h>
 #include <sys/stat.h>
 #include <Loi_Fermeture_base.h>
-#include <FichierHDFPar.h>
+// #include <FichierHDFPar.h>
 
 #define CHECK_ALLOCATE 0
 #ifdef CHECK_ALLOCATE
@@ -1096,16 +1096,16 @@ void Probleme_base::sauver() const
           (ficsauv_.valeur()).flush();
           (ficsauv_.valeur()).syncfile();
         }
-      else if(Motcle(format_sauv)=="single_hdf")
-        {
-          *osauv_hdf_ << Nom("fin");
-          FichierHDFPar fic_hdf;
-          fic_hdf.create(nom_fich);
-          fic_hdf.create_and_fill_dataset_MW("/sauv", *osauv_hdf_);
-          fic_hdf.close();
-          delete osauv_hdf_;
-          osauv_hdf_ = 0;
-        }
+      // else if(Motcle(format_sauv)=="single_hdf")
+      //   {
+      //     *osauv_hdf_ << Nom("fin");
+      //     FichierHDFPar fic_hdf;
+      //     fic_hdf.create(nom_fich);
+      //     fic_hdf.create_and_fill_dataset_MW("/sauv", *osauv_hdf_);
+      //     fic_hdf.close();
+      //     delete osauv_hdf_;
+      //     osauv_hdf_ = 0;
+      //   }
       else
         {
           ficsauv_.valeur() << Nom("fin");
@@ -1151,16 +1151,16 @@ void Probleme_base::finir()
           (ficsauv_.valeur()).flush();
           (ficsauv_.valeur()).syncfile();
         }
-      else if(Motcle(format_sauv) == "single_hdf")
-        {
-          *osauv_hdf_ << Nom("fin");
-          FichierHDFPar fic_hdf;
-          fic_hdf.create(nom_fich);
-          fic_hdf.create_and_fill_dataset_MW("/sauv", *osauv_hdf_);
-          fic_hdf.close();
-          delete osauv_hdf_;
-          osauv_hdf_ = 0;
-        }
+      // else if(Motcle(format_sauv) == "single_hdf")
+      //   {
+      //     *osauv_hdf_ << Nom("fin");
+      //     FichierHDFPar fic_hdf;
+      //     fic_hdf.create(nom_fich);
+      //     fic_hdf.create_and_fill_dataset_MW("/sauv", *osauv_hdf_);
+      //     fic_hdf.close();
+      //     delete osauv_hdf_;
+      //     osauv_hdf_ = 0;
+      //   }
       else
         {
           ficsauv_.valeur() << Nom("fin");
