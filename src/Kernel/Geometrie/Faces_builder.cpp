@@ -25,7 +25,7 @@
 #include <LecFicDistribueBin.h>
 #include <EcrFicCollecteBin.h>
 #include <Faces2.h>
-#include <NettoieNoeuds.h>
+//#include <NettoieNoeuds.h>
 #include <Connectivite_som_elem.h>
 #include <Scatter.h>
 #include <stdio.h>
@@ -81,11 +81,11 @@ void Faces_builder::creer_faces_reeles(Zone& zone,
   // Remplissage du tableau des faces de l'element de reference
 
   is_polyedre_=0;
-  if (sub_type(Poly_geom_base,zone.type_elem().valeur()))
-    {
-      is_polyedre_=1;
-    }
-  else
+  // if (sub_type(Poly_geom_base,zone.type_elem().valeur()))
+  //   {
+  //     is_polyedre_=1;
+  //   }
+  // else
     zone.type_elem().valeur().get_tab_faces_sommets_locaux(faces_element_reference_old_);
   // Tableau de taille (nb_faces, nb_sommets par face),
   // pour chaque face, les indices de ses sommets dans le domaine.
@@ -293,7 +293,7 @@ void Faces_builder::check_erreur_faces(const char * message,
           sptr += sprintf(sptr, "%4ld %4ld", (long)face_elem(iface,0),(long) face_elem(iface,1));
           J << s << finl;
         }
-      NettoieNoeuds::verifie_noeuds(ref_zone_.valeur().domaine());
+//      NettoieNoeuds::verifie_noeuds(ref_zone_.valeur().domaine());
       Process::exit();
     }
 }

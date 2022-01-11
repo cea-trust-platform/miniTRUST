@@ -22,7 +22,8 @@
 
 #include <Faces.h>
 #include <Faces2.h>
-#include <DomaineAxi1d.h>
+#include <Domaine.h>
+// #include <DomaineAxi1d.h>
 #include <communications.h>
 #include <Linear_algebra_tools_impl.h>
 
@@ -800,22 +801,23 @@ void Faces::calculer_surfaces(DoubleVect& surfaces) const
       }
     case Faces::point_1D_axi:
       {
-        assert(dimension==3);
+        throw;
+        // assert(dimension==3);
 
-        const DomaineAxi1d& domax = ref_cast(DomaineAxi1d,dom);
+        // const DomaineAxi1d& domax = ref_cast(DomaineAxi1d,dom);
 
-        for(int face=0; face <nb_faces_tot(); face++)
-          {
-            int elem = voisin(face,0)==-1 ? voisin(face,1) : voisin(face,0);
+        // for(int face=0; face <nb_faces_tot(); face++)
+        //   {
+        //     int elem = voisin(face,0)==-1 ? voisin(face,1) : voisin(face,0);
 
-            double x0 = domax.origine_repere(elem,0);
-            double y0 = domax.origine_repere(elem,1);
-            double x = dom.coord(sommet(face ,0), 0);
-            double y = dom.coord(sommet(face ,0), 1);
+        //     double x0 = domax.origine_repere(elem,0);
+        //     double y0 = domax.origine_repere(elem,1);
+        //     double x = dom.coord(sommet(face ,0), 0);
+        //     double y = dom.coord(sommet(face ,0), 1);
 
-            double r = sqrt((x-x0)*(x-x0)+(y-y0)*(y-y0));
-            surfaces(face) = 2.*M_PI*r;
-          }
+        //     double r = sqrt((x-x0)*(x-x0)+(y-y0)*(y-y0));
+        //     surfaces(face) = 2.*M_PI*r;
+        //   }
         break;
       }
     case Faces::polygone_3D:
