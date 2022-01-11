@@ -24,8 +24,8 @@
 #include <Equation_base.h>
 #include <Frontiere_dis_base.h>
 #include <Schema_Temps_base.h>
-#include <Champ_front_var_instationnaire.h>
-#include <Champ_front_instationnaire_base.h>
+// #include <Champ_front_var_instationnaire.h>
+// #include <Champ_front_instationnaire_base.h>
 #include <Cond_lim_utilisateur_base.h>
 #include <Probleme_base.h>
 
@@ -488,17 +488,17 @@ void Zone_Cl_dis_base::Gpoint(double t1, double t2)
     {
       Champ_front_base& champ=les_conditions_limites(i)->champ_front().valeur();
 
-      if (sub_type(Champ_front_var_instationnaire,champ))
-        {
-          Champ_front_var_instationnaire& champ_insta=ref_cast(Champ_front_var_instationnaire,champ);
-          champ_insta.Gpoint(t1,t2);
-        }
+      // if (sub_type(Champ_front_var_instationnaire,champ))
+      //   {
+      //     Champ_front_var_instationnaire& champ_insta=ref_cast(Champ_front_var_instationnaire,champ);
+      //     champ_insta.Gpoint(t1,t2);
+      //   }
 
-      if (sub_type(Champ_front_instationnaire_base,champ))
-        {
-          Champ_front_instationnaire_base& champ_insta=ref_cast(Champ_front_instationnaire_base,champ);
-          champ_insta.Gpoint(t1,t2);
-        }
+      // if (sub_type(Champ_front_instationnaire_base,champ))
+      //   {
+      //     Champ_front_instationnaire_base& champ_insta=ref_cast(Champ_front_instationnaire_base,champ);
+      //     champ_insta.Gpoint(t1,t2);
+      //   }
 
     }
 }
