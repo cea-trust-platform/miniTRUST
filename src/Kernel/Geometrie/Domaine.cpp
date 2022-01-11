@@ -24,12 +24,12 @@
 #include <math.h>
 #include <Sous_Zone.h>
 #include <Zone_VF.h>
-#include <Periodique.h>
+// #include <Periodique.h>
 #include <Zone_Cl_dis.h>
-#include <Extraire_surface.h>
+// #include <Extraire_surface.h>
 #include <Frontiere_dis_base.h>
-#include <NettoieNoeuds.h>
-#include <Reordonner_faces_periodiques.h>
+//#include <NettoieNoeuds.h>
+// #include <Reordonner_faces_periodiques.h>
 #include <MD_Vector_tools.h>
 #include <Scatter.h>
 #include <Octree_Double.h>
@@ -112,12 +112,12 @@ Entree& Domaine::readOn(Entree& s)
   Cerr << " Number of nodes: " << nbsom << finl;
   s >> les_zones;
   //s >> les_ss_zones;
-  if ( (Process::nproc()==1) && (NettoieNoeuds::NettoiePasNoeuds==0) )
-    {
-      NettoieNoeuds::nettoie(*this);
-      nbsom = mp_sum(sommets.dimension(0));
-      Cerr << " Number of nodes after node-cleanup: " << nbsom << finl;
-    }
+//  if ( (Process::nproc()==1) && (NettoieNoeuds::NettoiePasNoeuds==0) )
+//    {
+//      NettoieNoeuds::nettoie(*this);
+//      nbsom = mp_sum(sommets.dimension(0));
+//      Cerr << " Number of nodes after node-cleanup: " << nbsom << finl;
+//    }
   les_zones.associer_domaine(*this);
 
   // On initialise les descripteurs "sequentiels" (attention, cela bloque le resize des tableaux sommets et elements !)
@@ -418,16 +418,17 @@ void Domaine::reordonner()
 void Domaine::construire_renum_som_perio(const Conds_lim& les_cl,
                                          const Zone_dis& zone_dis)
 {
-  Noms bords_perio;
-  const int nb_bords = les_cl.size();
-  for (int n_bord = 0; n_bord < nb_bords; n_bord++)
-    {
-      if (sub_type(Periodique, les_cl[n_bord].valeur()))
-        bords_perio.add(les_cl[n_bord].frontiere_dis().frontiere().le_nom());
-    }
+  throw;
+  // Noms bords_perio;
+  // const int nb_bords = les_cl.size();
+  // for (int n_bord = 0; n_bord < nb_bords; n_bord++)
+  //   {
+  //     // if (sub_type(Periodique, les_cl[n_bord].valeur()))
+  //     //   bords_perio.add(les_cl[n_bord].frontiere_dis().frontiere().le_nom());
+  //   }
 
-  Reordonner_faces_periodiques::renum_som_perio(*this, bords_perio, renum_som_perio,
-                                                1 /* Calculer les valeurs pour les sommets virtuels */);
+  // Reordonner_faces_periodiques::renum_som_perio(*this, bords_perio, renum_som_perio,
+  //                                               1 /* Calculer les valeurs pour les sommets virtuels */);
 }
 
 // Description: Cree un tableau ayant une "ligne" par sommet du maillage.
@@ -467,43 +468,43 @@ void Domaine::creer_tableau_elements(Array_base& v, Array_base::Resize_Options o
 // chaque domaine de connaitre le premier element
 void Domaine::creer_mes_domaines_frontieres(const Zone_VF& zone_vf)
 {
-  const Nom expr_elements("1");
-  const Nom expr_faces("1");
-  int nb_frontieres = zone(0).nb_front_Cl();
-  domaines_frontieres_.vide();
-  for (int i=0; i<nb_frontieres; i++)
-    {
-      // Nom de la frontiere
-      Noms nom_frontiere(1);
-      nom_frontiere[0]=zone(0).frontiere(i).le_nom();
-      // Nom du domaine surfacique que l'on va construire
-      Nom nom_domaine_surfacique=le_nom();
-      nom_domaine_surfacique+="_boundaries_";
-      nom_domaine_surfacique+=zone(0).frontiere(i).le_nom();
-      // Creation
-      Cerr << "Creating a surface domain named " << nom_domaine_surfacique << " for the boundary " << nom_frontiere[0] << " of the domain " << le_nom() << finl;
+  // const Nom expr_elements("1");
+  // const Nom expr_faces("1");
+  // int nb_frontieres = zone(0).nb_front_Cl();
+  // domaines_frontieres_.vide();
+  // for (int i=0; i<nb_frontieres; i++)
+  //   {
+  //     // Nom de la frontiere
+  //     Noms nom_frontiere(1);
+  //     nom_frontiere[0]=zone(0).frontiere(i).le_nom();
+  //     // Nom du domaine surfacique que l'on va construire
+  //     Nom nom_domaine_surfacique=le_nom();
+  //     nom_domaine_surfacique+="_boundaries_";
+  //     nom_domaine_surfacique+=zone(0).frontiere(i).le_nom();
+  //     // Creation
+  //     Cerr << "Creating a surface domain named " << nom_domaine_surfacique << " for the boundary " << nom_frontiere[0] << " of the domain " << le_nom() << finl;
 
-      Interprete_bloc& interp = Interprete_bloc::interprete_courant();
-      if (interp.objet_global_existant(nom_domaine_surfacique))
-        {
-          Cerr << "Domain " << nom_domaine_surfacique
-               << " already exists, writing to this object." << finl;
+  //     Interprete_bloc& interp = Interprete_bloc::interprete_courant();
+  //     if (interp.objet_global_existant(nom_domaine_surfacique))
+  //       {
+  //         Cerr << "Domain " << nom_domaine_surfacique
+  //              << " already exists, writing to this object." << finl;
 
-          Domaine& dom_new = ref_cast(Domaine, interprete().objet(nom_domaine_surfacique));
-          Scatter::uninit_sequential_domain(dom_new);
-        }
-      else
-        {
-          DerObjU ob;
-          ob.typer("Domaine");
-          interp.ajouter(nom_domaine_surfacique, ob);
-        }
-      Domaine& dom_new = ref_cast(Domaine, interprete().objet(nom_domaine_surfacique));
+  //         Domaine& dom_new = ref_cast(Domaine, interprete().objet(nom_domaine_surfacique));
+  //         // Scatter::uninit_sequential_domain(dom_new);
+  //       }
+  //     else
+  //       {
+  //         DerObjU ob;
+  //         ob.typer("Domaine");
+  //         interp.ajouter(nom_domaine_surfacique, ob);
+  //       }
+  //     Domaine& dom_new = ref_cast(Domaine, interprete().objet(nom_domaine_surfacique));
 
-      Extraire_surface::extraire_surface(dom_new,*this,nom_domaine_surfacique,zone_vf,expr_elements,expr_faces,0,nom_frontiere);
-      REF(Domaine)& ref_dom_new=domaines_frontieres_.add(REF(Domaine)());
-      ref_dom_new=dom_new;
-    }
+  //     Extraire_surface::extraire_surface(dom_new,*this,nom_domaine_surfacique,zone_vf,expr_elements,expr_faces,0,nom_frontiere);
+  //     REF(Domaine)& ref_dom_new=domaines_frontieres_.add(REF(Domaine)());
+  //     ref_dom_new=dom_new;
+    // }
 }
 
 DoubleTab Domaine::getBoundingBox() const
