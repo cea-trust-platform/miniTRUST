@@ -26,10 +26,10 @@
 #include <Zone_VF.h>
 #include <sys/stat.h>
 #include <communications.h>
-#include <Champ_Generique_Interpolation.h>
+// #include <Champ_Generique_Interpolation.h>
 #include <Entree_complete.h>
 
-#include <Champ_Generique_refChamp.h>
+// #include <Champ_Generique_refChamp.h>
 #include <Champ_Inc_base.h>
 #include <Zone_Cl_dis.h>
 
@@ -831,15 +831,15 @@ void Sonde::initialiser()
           Cerr << "Error: the domain " << zoneVF.zone().domaine().le_nom() << " is not discretized." << finl;
           exit();
         }
-      if (sub_type(Champ_Generique_Interpolation,mon_champ.valeur()))
-        {
-          Motcle dom_interp=mon_champ->get_ref_domain().le_nom();
-          Cerr << finl;
-          Cerr << "Error in your probe : " << nom_ << finl;
-          Cerr << "You can not project to nodes, the field " << nom_champ[0] << finl;
-          Cerr << "which is interpolated on the domain " << dom_interp << finl;
-          exit();
-        }
+      // if (sub_type(Champ_Generique_Interpolation,mon_champ.valeur()))
+      //   {
+      //     Motcle dom_interp=mon_champ->get_ref_domain().le_nom();
+      //     Cerr << finl;
+      //     Cerr << "Error in your probe : " << nom_ << finl;
+      //     Cerr << "You can not project to nodes, the field " << nom_champ[0] << finl;
+      //     Cerr << "which is interpolated on the domain " << dom_interp << finl;
+      //     exit();
+      //   }
       Cerr<<"The location of the probe named "<<nom_<<" are modified (to faces). Check the .log files to see the new location."<<finl;
       const int nfaces_par_element = zone.nb_faces_elem() ;
       for (int i=0; i<nbre_points_tot; i++)
@@ -881,15 +881,15 @@ void Sonde::initialiser()
     }
   else if (som)
     {
-      if (sub_type(Champ_Generique_Interpolation,mon_champ.valeur()))
-        {
-          Motcle dom_interp=mon_champ->get_ref_domain().le_nom();
-          Cerr << finl;
-          Cerr << "Error in your probe : " << nom_ << finl;
-          Cerr << "You can not project to vertexes, the field " << nom_champ[0] << finl;
-          Cerr << "which is interpolated on the domain " << dom_interp << finl;
-          exit();
-        }
+      // if (sub_type(Champ_Generique_Interpolation,mon_champ.valeur()))
+      //   {
+      //     Motcle dom_interp=mon_champ->get_ref_domain().le_nom();
+      //     Cerr << finl;
+      //     Cerr << "Error in your probe : " << nom_ << finl;
+      //     Cerr << "You can not project to vertexes, the field " << nom_champ[0] << finl;
+      //     Cerr << "which is interpolated on the domain " << dom_interp << finl;
+      //     exit();
+      //   }
       Cerr<<"The location of the probe named "<<nom_<<" are modified (to vertexes). Check the .log files to see the new location."<<finl;
       const IntTab& sommet_elem = zone.les_elems();
       const int sommets_par_element = zone.les_elems().dimension(1);
@@ -1468,33 +1468,33 @@ void Sonde::init_bords()
   const int nbf = faces_bords_.size_array();
   rang_cl_.resize(nbf);
 
-  if (sub_type(Champ_Generique_refChamp,mon_champ.valeur()))
-    {
-      Probleme_base& Pb = mon_post->probleme();
-      REF(Champ_base) chref = Pb.get_champ(nom_champ_lu_);
-      const Champ_Inc_base& ch_inc = ref_cast(Champ_Inc_base,chref.valeur());
-      const Zone_Cl_dis& zcl = ch_inc.zone_Cl_dis();
+  // if (sub_type(Champ_Generique_refChamp,mon_champ.valeur()))
+  //   {
+  //     Probleme_base& Pb = mon_post->probleme();
+  //     REF(Champ_base) chref = Pb.get_champ(nom_champ_lu_);
+  //     const Champ_Inc_base& ch_inc = ref_cast(Champ_Inc_base,chref.valeur());
+  //     const Zone_Cl_dis& zcl = ch_inc.zone_Cl_dis();
 
-      if (zcl.non_nul())
-        {
-          for (int iface=0; iface<nbf; iface++)
-            {
-              int face = faces_bords_[iface];
-              for (int icl=0; icl<zcl.nb_cond_lim(); icl++)
-                {
-                  const Cond_lim& cl = zcl.les_conditions_limites(icl);
-                  const Front_VF& le_bord = ref_cast(Front_VF,cl.frontiere_dis());
-                  const int& ndeb = le_bord.num_premiere_face();
-                  const int& nfin = ndeb + le_bord.nb_faces();
-                  for (int i=ndeb; i<nfin; i++)
-                    {
-                      if (i==face)
-                        rang_cl_[iface] = icl;
-                    }
-                }
-            }
-        }
-    }
+  //     if (zcl.non_nul())
+  //       {
+  //         for (int iface=0; iface<nbf; iface++)
+  //           {
+  //             int face = faces_bords_[iface];
+  //             for (int icl=0; icl<zcl.nb_cond_lim(); icl++)
+  //               {
+  //                 const Cond_lim& cl = zcl.les_conditions_limites(icl);
+  //                 const Front_VF& le_bord = ref_cast(Front_VF,cl.frontiere_dis());
+  //                 const int& ndeb = le_bord.num_premiere_face();
+  //                 const int& nfin = ndeb + le_bord.nb_faces();
+  //                 for (int i=ndeb; i<nfin; i++)
+  //                   {
+  //                     if (i==face)
+  //                       rang_cl_[iface] = icl;
+  //                   }
+  //               }
+  //           }
+  //       }
+  //   }
 }
 
 void Sonde::ajouter_bords(const DoubleTab& coords_bords)
@@ -1543,48 +1543,48 @@ void Sonde::ajouter_bords(const DoubleTab& coords_bords)
 
 void Sonde::mettre_a_jour_bords()
 {
-  if (sub_type(Champ_Generique_refChamp,mon_champ.valeur()))
-    {
-      Probleme_base& Pb = mon_post->probleme();
-      REF(Champ_base) chref = Pb.get_champ(nom_champ_lu_);
-      const Champ_Inc_base& ch_inc = ref_cast(Champ_Inc_base,chref.valeur());
-      const Zone_Cl_dis& zcl = ch_inc.zone_Cl_dis();
-      const DoubleTab& vals_ch = ch_inc.valeurs();
-      if (zcl.non_nul())
-        {
-          const Zone_VF& zoneVF = ref_cast(Zone_VF,mon_champ->get_ref_zone_dis_base());
-          const IntTab& face_voisins = zoneVF.face_voisins();
+  // if (sub_type(Champ_Generique_refChamp,mon_champ.valeur()))
+  //   {
+  //     Probleme_base& Pb = mon_post->probleme();
+  //     REF(Champ_base) chref = Pb.get_champ(nom_champ_lu_);
+  //     const Champ_Inc_base& ch_inc = ref_cast(Champ_Inc_base,chref.valeur());
+  //     const Zone_Cl_dis& zcl = ch_inc.zone_Cl_dis();
+  //     const DoubleTab& vals_ch = ch_inc.valeurs();
+  //     if (zcl.non_nul())
+  //       {
+  //         const Zone_VF& zoneVF = ref_cast(Zone_VF,mon_champ->get_ref_zone_dis_base());
+  //         const IntTab& face_voisins = zoneVF.face_voisins();
 
-          int nbval = valeurs_locales.dimension(0);
+  //         int nbval = valeurs_locales.dimension(0);
 
-          for (int iface=0; iface<faces_bords_.size_array(); iface++)
-            {
-              int face = faces_bords_[iface];
-              int icl = rang_cl_[iface];
-              const Cond_lim& cl = zcl.les_conditions_limites(icl);
-              const Front_VF& le_bord = ref_cast(Front_VF,cl.frontiere_dis());
-              const int& ndeb = le_bord.num_premiere_face();
-              DoubleVect valcl;
-              cl->champ_front()->valeurs_face(face-ndeb,valcl);
+  //         for (int iface=0; iface<faces_bords_.size_array(); iface++)
+  //           {
+  //             int face = faces_bords_[iface];
+  //             int icl = rang_cl_[iface];
+  //             const Cond_lim& cl = zcl.les_conditions_limites(icl);
+  //             const Front_VF& le_bord = ref_cast(Front_VF,cl.frontiere_dis());
+  //             const int& ndeb = le_bord.num_premiere_face();
+  //             DoubleVect valcl;
+  //             cl->champ_front()->valeurs_face(face-ndeb,valcl);
 
-              if (valcl.size() == 0)
-                {
-                  int elem0 = face_voisins(face,0);
-                  int elem1 = face_voisins(face,1);
+  //             if (valcl.size() == 0)
+  //               {
+  //                 int elem0 = face_voisins(face,0);
+  //                 int elem1 = face_voisins(face,1);
 
-                  if (elem0 != -1)
-                    valeurs_locales(nbval-1) = vals_ch[elem0];
-                  else
-                    valeurs_locales(0) = vals_ch[elem1];
-                }
-              else
-                {
-                  if (face_voisins(face,0) != -1)
-                    valeurs_locales(nbval-1) = valcl[0];
-                  else
-                    valeurs_locales(0) = valcl[0];
-                }
-            }
-        }
-    }
+  //                 if (elem0 != -1)
+  //                   valeurs_locales(nbval-1) = vals_ch[elem0];
+  //                 else
+  //                   valeurs_locales(0) = vals_ch[elem1];
+  //               }
+  //             else
+  //               {
+  //                 if (face_voisins(face,0) != -1)
+  //                   valeurs_locales(nbval-1) = valcl[0];
+  //                 else
+  //                   valeurs_locales(0) = valcl[0];
+  //               }
+  //           }
+  //       }
+  //   }
 }

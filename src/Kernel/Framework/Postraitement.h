@@ -23,7 +23,7 @@
 #ifndef Postraitement_included
 #define Postraitement_included
 
-#include <Operateurs_Statistique_tps.h>
+// #include <Operateurs_Statistique_tps.h>
 #include <Champs_Fonc.h>
 #include <Sondes.h>
 #include <Sondes_Int.h>
@@ -36,7 +36,7 @@
 #include <Probleme_base.h>
 #include <Schema_Temps_base.h>
 #include <Liste_Champ_Generique.h>
-#include <Champ_Gen_de_Champs_Gen.h>
+// #include <Champ_Gen_de_Champs_Gen.h>
 #include <Parser_U.h>
 
 //////////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ public:
   static inline LIST(Nom)& noms_fichiers_sondes() { return noms_fichiers_sondes_; }
   inline int& est_le_premier_postraitement_pour_nom_fich() { return est_le_premier_postraitement_pour_nom_fich_; }
   inline int& est_le_dernier_postraitement_pour_nom_fich() { return est_le_dernier_postraitement_pour_nom_fich_; }
-  inline Operateurs_Statistique_tps& les_statistiques() { return les_statistiques_; }
+  // inline Operateurs_Statistique_tps& les_statistiques() { return les_statistiques_; }
   inline int sondes_demande() { return sondes_demande_; }
   inline int champs_demande() { return champs_demande_; }
   inline int stat_demande() const { return stat_demande_; }
@@ -193,13 +193,13 @@ public:
   void verifie_nom_et_sources(const Champ_Generique& champ);
   static Nom get_nom_localisation(const Entity& loc);
 
-  int champ_fonc(Motcle& nom_champ, REF(Champ_base)& mon_champ, REF(Operateur_Statistique_tps_base)&
-                 operateur_statistique) const;
+  // int champ_fonc(Motcle& nom_champ, REF(Champ_base)& mon_champ, REF(Operateur_Statistique_tps_base)&
+  //                operateur_statistique) const;
 
   inline int& compteur_champ_stat();
   inline const double& tstat_deb() const;
   inline const double& tstat_fin() const;
-  int cherche_stat_dans_les_sources(const Champ_Gen_de_Champs_Gen& ch, Motcle nom);
+  // int cherche_stat_dans_les_sources(const Champ_Gen_de_Champs_Gen& ch, Motcle nom);
 
 protected:
 
@@ -213,7 +213,7 @@ protected:
 
   Sondes les_sondes_;           // Sondes a traiter
   Sondes_Int les_sondes_int_;   // Sondes pour des tableaux d'entiers
-  Operateurs_Statistique_tps les_statistiques_; // Liste d'operateurs statistiques a traiter
+  // Operateurs_Statistique_tps les_statistiques_; // Liste d'operateurs statistiques a traiter
 
   LIST(Nom) noms_champs_a_post_;                 //contient les identifiants des champs a postraiter
   Liste_Champ_Generique champs_post_complet_;   //contient l ensemble des champs generiques dedies au post-traitement

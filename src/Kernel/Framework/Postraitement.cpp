@@ -25,8 +25,8 @@
 #include <Zone_VF.h>
 #include <Champ_Generique_Interpolation.h>
 #include <Champ_Generique_refChamp.h>
-#include <Champ_Generique_Correlation.h>
-#include <Champ_Generique_Statistiques.h>
+//#include <Champ_Generique_Correlation.h>
+//#include <Champ_Generique_Statistiques.h>
 #include <Entree_complete.h>
 #include <EcritureLectureSpecial.h>
 #include <Equation_base.h>
@@ -116,30 +116,30 @@ Motcles Postraitement::formats_supportes=Motcles(0);
 LIST(Nom) Postraitement::noms_fichiers_sondes_=LIST(Nom)();
 
 
-inline void nom_fichier(const Postraitement& post, const Champ_Generique_Statistiques& op, const Domaine& dom, Nom& nom_fichier)
-{
-  nom_fichier+=".";
-  const Entity& loc = op->get_localisation();
-  Nom loc_post;
-
-  //contenu de la methode get_nom_localisation()
-  if (loc==ELEMENT)
-    loc_post = "ELEM";
-  else if (loc==NODE)
-    loc_post = "SOM";
-  else if (loc==FACE)
-    loc_post = "FACES";
-  else
-    {
-      Cerr<<"This location is not valid for the postprocessing"<<finl;
-      Process::exit();
-    }
-
-  nom_fichier+=op->get_nom_post()+"."+loc_post+"."+dom.le_nom()+"."+post.probleme().le_nom()+".";
-  char s[100];
-  sprintf(s,"%.10f", op->get_time());
-  nom_fichier+=Nom(s);
-}
+//inline void nom_fichier(const Postraitement& post, const Champ_Generique_Statistiques& op, const Domaine& dom, Nom& nom_fichier)
+//{
+//  nom_fichier+=".";
+//  const Entity& loc = op->get_localisation();
+//  Nom loc_post;
+//
+//  //contenu de la methode get_nom_localisation()
+//  if (loc==ELEMENT)
+//    loc_post = "ELEM";
+//  else if (loc==NODE)
+//    loc_post = "SOM";
+//  else if (loc==FACE)
+//    loc_post = "FACES";
+//  else
+//    {
+//      Cerr<<"This location is not valid for the postprocessing"<<finl;
+//      Process::exit();
+//    }
+//
+//  nom_fichier+=op->get_nom_post()+"."+loc_post+"."+dom.le_nom()+"."+post.probleme().le_nom()+".";
+//  char s[100];
+//  sprintf(s,"%.10f", op->get_time());
+//  nom_fichier+=Nom(s);
+//}
 
 inline void nom_fichier(const Postraitement& post, const Nom& nom_post, const Nom& loc, const double& temps_ch, const Domaine& dom, Nom& nom_fichier)
 {
@@ -204,22 +204,22 @@ Nom Postraitement::get_nom_localisation(const Entity& loc)
   return loc_post;
 }
 
-int Postraitement::champ_fonc(Motcle& nom_champ, REF(Champ_base)& mon_champ, REF(Operateur_Statistique_tps_base)& operateur_statistique) const
-{
-
-  if (comprend_champ_post(nom_champ))
-    {
-      const REF(Champ_Generique_base)& champ = get_champ_post(nom_champ);
-      if (sub_type(Champ_Generique_Statistiques_base,champ.valeur()))
-        {
-          const Champ_Generique_Statistiques_base& champ_stat = ref_cast(Champ_Generique_Statistiques_base,champ.valeur());
-          mon_champ = champ_stat.integrale();
-          operateur_statistique = champ_stat.Operateur_Statistique();
-          return 1;
-        }
-    }
-  return 0;
-}
+//int Postraitement::champ_fonc(Motcle& nom_champ, REF(Champ_base)& mon_champ, REF(Operateur_Statistique_tps_base)& operateur_statistique) const
+//{
+//
+//  if (comprend_champ_post(nom_champ))
+//    {
+//      const REF(Champ_Generique_base)& champ = get_champ_post(nom_champ);
+//      if (sub_type(Champ_Generique_Statistiques_base,champ.valeur()))
+//        {
+//          const Champ_Generique_Statistiques_base& champ_stat = ref_cast(Champ_Generique_Statistiques_base,champ.valeur());
+//          mon_champ = champ_stat.integrale();
+//          operateur_statistique = champ_stat.Operateur_Statistique();
+//          return 1;
+//        }
+//    }
+//  return 0;
+//}
 
 // Description:
 //    Imprime le type de l'objet sur un flot de sortie.
@@ -962,31 +962,31 @@ int Postraitement::lire_champs_stat_a_postraiter(Entree& s)
   return 1;
 }
 
-// Description:
-// On recherche les champs statistiques dans les sources du champ courant
-int Postraitement::cherche_stat_dans_les_sources(const Champ_Gen_de_Champs_Gen& ch, Motcle nom)
-{
-  if (sub_type(Champ_Generique_Statistiques_base,ch))
-    {
-      // Activer pour lancer la sauvegarde et la reprise des statistiques
-      stat_demande_definition_champs_ = 1;
-      const Champ_Generique_Statistiques_base& champ_stat = ref_cast(Champ_Generique_Statistiques_base,ch);
-      tstat_deb_ = champ_stat.tstat_deb();
-      tstat_fin_ = champ_stat.tstat_fin();
-      probleme().verifie_tdeb_tfin(nom);
-    }
-  else
-    for (int i=0; i<ch.get_nb_sources(); i++)
-      {
-        const Champ_Generique_base& source = ch.get_source(i);
-        if (sub_type(Champ_Gen_de_Champs_Gen,source))
-          {
-            const Champ_Gen_de_Champs_Gen& champ_post = ref_cast(Champ_Gen_de_Champs_Gen,source);
-            cherche_stat_dans_les_sources(champ_post,nom);
-          }
-      }
-  return 1;
-}
+//// Description:
+//// On recherche les champs statistiques dans les sources du champ courant
+//int Postraitement::cherche_stat_dans_les_sources(const Champ_Gen_de_Champs_Gen& ch, Motcle nom)
+//{
+//  if (sub_type(Champ_Generique_Statistiques_base,ch))
+//    {
+//      // Activer pour lancer la sauvegarde et la reprise des statistiques
+//      stat_demande_definition_champs_ = 1;
+//      const Champ_Generique_Statistiques_base& champ_stat = ref_cast(Champ_Generique_Statistiques_base,ch);
+//      tstat_deb_ = champ_stat.tstat_deb();
+//      tstat_fin_ = champ_stat.tstat_fin();
+//      probleme().verifie_tdeb_tfin(nom);
+//    }
+//  else
+//    for (int i=0; i<ch.get_nb_sources(); i++)
+//      {
+//        const Champ_Generique_base& source = ch.get_source(i);
+//        if (sub_type(Champ_Gen_de_Champs_Gen,source))
+//          {
+//            const Champ_Gen_de_Champs_Gen& champ_post = ref_cast(Champ_Gen_de_Champs_Gen,source);
+//            cherche_stat_dans_les_sources(champ_post,nom);
+//          }
+//      }
+//  return 1;
+//}
 
 // Description:
 //Lit les champs a postraiter sur un flot d'entree.
@@ -1030,13 +1030,13 @@ int Postraitement::lire_champs_operateurs(Entree& s)
 void Postraitement::complete_champ(Champ_Generique& champ,const Motcle& motlu)
 {
 
-  if (sub_type(Champ_Gen_de_Champs_Gen,champ.valeur()))
-    {
-      const Champ_Gen_de_Champs_Gen& champ_post = ref_cast(Champ_Gen_de_Champs_Gen,champ.valeur());
-      cherche_stat_dans_les_sources(champ_post,motlu);
-      if (sub_type(Champ_Generique_Statistiques_base,champ_post))
-        nb_champs_stat_ += 1;
-    }
+//  if (sub_type(Champ_Gen_de_Champs_Gen,champ.valeur()))
+//    {
+//      const Champ_Gen_de_Champs_Gen& champ_post = ref_cast(Champ_Gen_de_Champs_Gen,champ.valeur());
+//      cherche_stat_dans_les_sources(champ_post,motlu);
+//      if (sub_type(Champ_Generique_Statistiques_base,champ_post))
+//        nb_champs_stat_ += 1;
+//    }
   champ->nommer(motlu);
   //On teste le nom du champ et de ses sources si elles ont ete specifiees par l utilisateur
   //Methode suivante a reviser ou a ne pas utiliser
@@ -1166,8 +1166,8 @@ void Postraitement::init()
         if ((sub_type(Champ_Gen_de_Champs_Gen,champ.valeur())))
           {
             const Champ_Gen_de_Champs_Gen& champ_post = ref_cast(Champ_Gen_de_Champs_Gen,champ.valeur());
-            if (sub_type(Champ_Generique_Correlation,champ_post.get_source(0)))
-              indic_correlation=1;
+//            if (sub_type(Champ_Generique_Correlation,champ_post.get_source(0)))
+//              indic_correlation=1;
           }
 
         if (!indic_correlation)
@@ -1921,113 +1921,114 @@ void Postraitement::creer_champ_post_stat(const Motcle& motlu1,const Motcle& mot
   Nom ajout;
   Nom nom_champ;
 
-  if (((motlu3=="Moyenne") || (motlu3=="Ecart_type")) || (motlu3=="Correlation"))
-    {
-      ajout = set_expression_champ(motlu1,motlu2,motlu3,motlu4,0);
-      Entree_complete s_complete(ajout,s);
-      s_complete>>champ;
-
-      //if (le_domaine.valeur().le_nom()!=mon_probleme.valeur().domaine().le_nom()) {
-      Champ_Generique_Interpolation& champ_interp = ref_cast(Champ_Generique_Interpolation,champ.valeur());
-      champ_interp.set_domaine(le_domaine.valeur().le_nom());
-      // champ_interp.discretiser_domaine(*this);
-      //}
-
-      if (motlu3!="Correlation")
-        nom_champ = motlu3+"_"+motlu1+"_"+motlu2+"_"+le_domaine.valeur().le_nom();
-      else
-        nom_champ = motlu3+"_"+motlu1+"_"+motlu4+"_"+motlu2+"_"+le_domaine.valeur().le_nom();
-
-      champ->nommer(nom_champ);
-
-      //On nomme les sources du Champ_Generique_Interpolation cree par macro
-      Champ_Generique_Interpolation& champ_post = ref_cast(Champ_Generique_Interpolation,champ.valeur());
-      champ_post.nommer_sources();
-
-      //On fixe l attribut compo_ pour le Champ_Generique_Interpolation cree par cette macro
-      Champ_Generique_Statistiques_base& champ_stat = ref_cast(Champ_Generique_Statistiques_base,champ_post.set_source(0));
-      const Champ_Generique_refChamp& champ_ref = ref_cast(Champ_Generique_refChamp,champ_stat.get_source(0));
-
-      Champ espace_stockage;
-      const Champ_base& champ_discret = champ_ref.get_champ(espace_stockage);
-      const Noms& source_compos = champ_discret.noms_compo();
-      const Nom& nom_dom = champ_post.get_ref_domain().le_nom();
-      int nb_comp = source_compos.size();
-      Noms compo(nb_comp);
-      Nom loc;
-      if (motlu2=="ELEM")
-        loc = "elem";
-      else if (motlu2=="SOM")
-        loc = "som";
-      else if (motlu2=="FACES")
-        loc = "faces";
-
-      for (int i=0; i<nb_comp; i++)
-        {
-          if (motlu3=="Moyenne")
-            {
-              compo[i] = "Moyenne_";
-              compo[i] += source_compos[i] +"_"+loc+"_"+nom_dom;
-            }
-          else if (motlu3=="Ecart_Type")
-            {
-              compo[i] = "Ecart_Type_";
-              compo[i] += source_compos[i] +"_"+loc+"_"+nom_dom;
-            }
-        }
-
-      champ_post.fixer_noms_compo(compo);
-      champ_stat.fixer_tdeb_tfin(t_deb,t_fin);
-      Champ_Generique& champ_a_completer = champs_post_complet_.add_if_not(champ);
-      champ_a_completer->completer(*this);
-
-      //On fixe l attribut compo_ pour le Champ_Generique_Interpolation d une Correlation cree par cette macro
-      /////////////////////////////////////////////////////////////
-      if (motlu3=="Correlation")
-        {
-          Champ_Generique_Interpolation& champ_post_corr = ref_cast(Champ_Generique_Interpolation,champ_a_completer.valeur());
-          const Champ_Generique_Correlation& champ_corr = ref_cast(Champ_Generique_Correlation,champ_post_corr.get_source(0));
-
-          const Noms& source_compos_corr = champ_corr.integrale()->noms_compo();
-          // const Nom& nom_dom = champ_post.get_ref_domain().le_nom();
-          int nb_comp_corr = source_compos_corr.size();
-          Noms compo_corr(nb_comp_corr);
-          Nom loc_corr;
-          if (motlu2=="ELEM")
-            loc_corr = "elem";
-          else if (motlu2=="SOM")
-            loc_corr = "som";
-          else if (motlu2=="FACES")
-            loc_corr = "faces";
-
-          for (int i=0; i<nb_comp_corr; i++)
-            {
-              compo_corr[i] = source_compos_corr[i] +"_"+loc_corr+"_"+nom_dom;
-
-            }
-          champ_post_corr.fixer_noms_compo(compo_corr);
-
-        }
-
-      //////////////////////////////////////////////////////////////
-
-
-      const Noms nom = champ_a_completer->get_property("nom");
-      if (noms_champs_a_post_.contient(nom[0]))
-        {
-          Cerr << "Postraitement::lire_champs_a_postraiter : duplicate field " << nom[0] << finl;
-          exit();
-        }
-      else
-        noms_champs_a_post_.add(nom[0]);
-
-    }
-
-  else
-    {
-      Cerr<<"Verify the syntax of the wanted statistical fields for the postprocessing"<<finl;
-      exit();
-    }
+  throw;
+//  if (((motlu3=="Moyenne") || (motlu3=="Ecart_type")) || (motlu3=="Correlation"))
+//    {
+//      ajout = set_expression_champ(motlu1,motlu2,motlu3,motlu4,0);
+//      Entree_complete s_complete(ajout,s);
+//      s_complete>>champ;
+//
+//      //if (le_domaine.valeur().le_nom()!=mon_probleme.valeur().domaine().le_nom()) {
+//      Champ_Generique_Interpolation& champ_interp = ref_cast(Champ_Generique_Interpolation,champ.valeur());
+//      champ_interp.set_domaine(le_domaine.valeur().le_nom());
+//      // champ_interp.discretiser_domaine(*this);
+//      //}
+//
+//      if (motlu3!="Correlation")
+//        nom_champ = motlu3+"_"+motlu1+"_"+motlu2+"_"+le_domaine.valeur().le_nom();
+//      else
+//        nom_champ = motlu3+"_"+motlu1+"_"+motlu4+"_"+motlu2+"_"+le_domaine.valeur().le_nom();
+//
+//      champ->nommer(nom_champ);
+//
+//      //On nomme les sources du Champ_Generique_Interpolation cree par macro
+//      Champ_Generique_Interpolation& champ_post = ref_cast(Champ_Generique_Interpolation,champ.valeur());
+//      champ_post.nommer_sources();
+//
+//      //On fixe l attribut compo_ pour le Champ_Generique_Interpolation cree par cette macro
+//      Champ_Generique_Statistiques_base& champ_stat = ref_cast(Champ_Generique_Statistiques_base,champ_post.set_source(0));
+//      const Champ_Generique_refChamp& champ_ref = ref_cast(Champ_Generique_refChamp,champ_stat.get_source(0));
+//
+//      Champ espace_stockage;
+//      const Champ_base& champ_discret = champ_ref.get_champ(espace_stockage);
+//      const Noms& source_compos = champ_discret.noms_compo();
+//      const Nom& nom_dom = champ_post.get_ref_domain().le_nom();
+//      int nb_comp = source_compos.size();
+//      Noms compo(nb_comp);
+//      Nom loc;
+//      if (motlu2=="ELEM")
+//        loc = "elem";
+//      else if (motlu2=="SOM")
+//        loc = "som";
+//      else if (motlu2=="FACES")
+//        loc = "faces";
+//
+//      for (int i=0; i<nb_comp; i++)
+//        {
+//          if (motlu3=="Moyenne")
+//            {
+//              compo[i] = "Moyenne_";
+//              compo[i] += source_compos[i] +"_"+loc+"_"+nom_dom;
+//            }
+//          else if (motlu3=="Ecart_Type")
+//            {
+//              compo[i] = "Ecart_Type_";
+//              compo[i] += source_compos[i] +"_"+loc+"_"+nom_dom;
+//            }
+//        }
+//
+//      champ_post.fixer_noms_compo(compo);
+//      champ_stat.fixer_tdeb_tfin(t_deb,t_fin);
+//      Champ_Generique& champ_a_completer = champs_post_complet_.add_if_not(champ);
+//      champ_a_completer->completer(*this);
+//
+//      //On fixe l attribut compo_ pour le Champ_Generique_Interpolation d une Correlation cree par cette macro
+//      /////////////////////////////////////////////////////////////
+//      if (motlu3=="Correlation")
+//        {
+//          Champ_Generique_Interpolation& champ_post_corr = ref_cast(Champ_Generique_Interpolation,champ_a_completer.valeur());
+//          const Champ_Generique_Correlation& champ_corr = ref_cast(Champ_Generique_Correlation,champ_post_corr.get_source(0));
+//
+//          const Noms& source_compos_corr = champ_corr.integrale()->noms_compo();
+//          // const Nom& nom_dom = champ_post.get_ref_domain().le_nom();
+//          int nb_comp_corr = source_compos_corr.size();
+//          Noms compo_corr(nb_comp_corr);
+//          Nom loc_corr;
+//          if (motlu2=="ELEM")
+//            loc_corr = "elem";
+//          else if (motlu2=="SOM")
+//            loc_corr = "som";
+//          else if (motlu2=="FACES")
+//            loc_corr = "faces";
+//
+//          for (int i=0; i<nb_comp_corr; i++)
+//            {
+//              compo_corr[i] = source_compos_corr[i] +"_"+loc_corr+"_"+nom_dom;
+//
+//            }
+//          champ_post_corr.fixer_noms_compo(compo_corr);
+//
+//        }
+//
+//      //////////////////////////////////////////////////////////////
+//
+//
+//      const Noms nom = champ_a_completer->get_property("nom");
+//      if (noms_champs_a_post_.contient(nom[0]))
+//        {
+//          Cerr << "Postraitement::lire_champs_a_postraiter : duplicate field " << nom[0] << finl;
+//          exit();
+//        }
+//      else
+//        noms_champs_a_post_.add(nom[0]);
+//
+//    }
+//
+//  else
+//    {
+//      Cerr<<"Verify the syntax of the wanted statistical fields for the postprocessing"<<finl;
+//      exit();
+//    }
 
 }
 
