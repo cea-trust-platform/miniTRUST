@@ -31,7 +31,7 @@
 #include <Schema_Implicite_base.h>
 #include <vector>
 #include <set>
-class Probleme_Couple;
+// class Probleme_Couple;
 
 class Schema_Euler_Implicite : public Schema_Implicite_base
 {
@@ -65,7 +65,7 @@ public :
   void test_stationnaire(Probleme_base&);
   int Iterer_Pb(Probleme_base&,int ite, int& ok);
   virtual bool iterateTimeStep(bool& converged);
-  virtual int faire_un_pas_de_temps_pb_couple(Probleme_Couple&, int& ok);
+  // virtual int faire_un_pas_de_temps_pb_couple(Probleme_Couple&, int& ok);
   virtual int faire_un_pas_de_temps_eqn_base(Equation_base&);
   inline const double& residu_old() const
   {

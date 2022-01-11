@@ -23,7 +23,7 @@
 #include <Schema_Euler_Implicite.h>
 #include <Equation_base.h>
 #include <Probleme_base.h>
-#include <Probleme_Couple.h>
+// #include <Probleme_Couple.h>
 #include <Milieu_base.h>
 #include <Param.h>
 #include <Debog.h>
@@ -324,153 +324,153 @@ bool Schema_Euler_Implicite::iterateTimeStep(bool& converged)
   return ok;
 }
 
-int Schema_Euler_Implicite::faire_un_pas_de_temps_pb_couple(Probleme_Couple& pbc, int& ok)
-{
-  // Modif B.M. : Si on fait la sauvegarde entre derivee en temps inco et mettre a jour,
-  //  un calcul avec reprise n'est pas equivalent au calcul ininterrompu
-  //  (front-tracking notamment). Donc je mets la sauvegarde au debut du pas de temps.
-  //if (lsauv())
-  //  for (int i=0;i<pbc.nb_problemes();i++)
-  //    ref_cast(Probleme_base,pbc.probleme(i)).sauver();
-
-  int convergence_pbc = 0;
-  int i;
-
-  for(i=0; i<pbc.nb_problemes(); i++)
-    Initialiser_Champs(ref_cast(Probleme_base,pbc.probleme(i)));
-
-
-  int cv = 0;
-  int compteur;
-
-  while (!cv)
-    {
-      compteur=0;
-
-      while ((!convergence_pbc )&&(compteur<nb_ite_max))
-        {
-          compteur++;
-          convergence_pbc=1;
-
-
-          for(i=0; i<pbc.nb_problemes()*1; i++)
-            {
-              Probleme_base& pb = ref_cast(Probleme_base,pbc.probleme(i));
-              const int nb_eqn=pb.nombre_d_equations();
-              for(int ii=0; ii<nb_eqn; ii++)
-                {
-                  pb.equation(ii).zone_Cl_dis()->calculer_coeffs_echange(temps_courant_+pas_de_temps());
-                }
-
-            }
-
-          if (resolution_monolithique_.size())
-            {
-              //make sure all application domains are in resolution_monolithique_
-              std::set<std::string> doms_app, doms_mono;
-              for(i = 0; i < pbc.nb_problemes(); i++) for(int j = 0; j < ref_cast(Probleme_base,pbc.probleme(i)).nombre_d_equations(); j++)
-                  doms_app.insert(ref_cast(Probleme_base,pbc.probleme(i)).equation(j).domaine_application().getString());
-              for (auto && s : resolution_monolithique_) for (auto &&d : s) doms_mono.insert((Nom(d.c_str())).getSuffix("_").getString());
-              if (doms_mono != doms_app)
-                {
-                  Cerr << "Error : all the application domains should be given in the resolution_monolitique block to impose the order of resolution" << finl;
-                  Cerr << "and some are missing among :";
-                  for (auto &&n: doms_app) Cerr << Nom(" ") + n.c_str();
-                  Cerr << finl << "(an underscore can be put at the begining of the application domains for which a standard resolution is wanted)" << finl;
-                  Process::exit();
-                }
-
-              for (auto && s : resolution_monolithique_)
-                {
-                  // serach all equations of this dom app
-                  LIST(REF(Equation_base)) eqs;
-                  for(i = 0; i < pbc.nb_problemes(); i++)
-                    for(int j = 0; j < ref_cast(Probleme_base,pbc.probleme(i)).nombre_d_equations(); j++)
-                      {
-                        const Probleme_base& pb = ref_cast(Probleme_base,pbc.probleme(i));
-                        const Motcle type = pb.equation(j).domaine_application();
-                        if (s.count(type.getString()) || s.count((Nom("_") + type).getString())) eqs.add(pb.equation(j));
-                      }
-
-                  Cout << "RESOLUTION {";
-                  for (auto &&d : s) Cout << Nom(" ") + d.c_str();
-                  Cout << " }" << finl;
-                  Cout << "-------------------------" << finl;
-                  const bool mono = !(s.size() == 1 && Nom((*s.begin()).c_str()).debute_par("_"));
-                  if (mono)
-                    {
-                      Cout << "Resolution monolithique! the equations {";
-                      for (int k = 0; k < eqs.size(); k++)
-                        {
-                          Cout << " " << eqs[k]->que_suis_je();
-                          eqs[k]->probleme().updateGivenFields();
-                        }
-                      Cout << " } are solved by assembling a single matrix." << finl;
-                      bool convergence_eqs = le_solveur.valeur().iterer_eqs(eqs, compteur, ok);
-                      convergence_pbc = convergence_pbc && convergence_eqs;
-                    }
-                  else
-                    {
-                      for (int k = 0; k < eqs.size(); k++)
-                        {
-                          Equation_base& eqn = eqs[k].valeur();
-                          eqn.probleme().updateGivenFields();
-
-                          DoubleTab& present = eqn.inconnue().valeurs();
-                          DoubleTab& futur = eqn.inconnue().futur();
-                          double temps = temps_courant_ + dt_;
-
-                          // imposer_cond_lim   sert pour la pression et pour les echanges entre pbs
-                          eqn.zone_Cl_dis()->imposer_cond_lim(eqn.inconnue(),temps_courant()+pas_de_temps());
-                          Cout<<"Solving " << eqn.que_suis_je() << " equation :" << finl;
-                          const DoubleTab& inut=futur;
-                          bool convergence_eqn=le_solveur.valeur().iterer_eqn(eqn, inut, present, dt_, compteur, ok);
-                          if (!ok) break;
-                          convergence_pbc = convergence_pbc && convergence_eqn;
-                          futur = present;
-                          eqn.zone_Cl_dis()->imposer_cond_lim(eqn.inconnue(),temps_courant()+pas_de_temps());
-                          present = futur;
-
-                          eqn.inconnue().valeur().Champ_base::changer_temps(temps);
-                          Cout << finl;
-                        }
-                    }
-                }
-            }
-          else
-            {
-              for(i=0; ok && i<pbc.nb_problemes(); i++)
-                {
-                  pbc.probleme(i).updateGivenFields();
-                  int convergence_pb = Iterer_Pb(ref_cast(Probleme_base,pbc.probleme(i)),compteur, ok);
-                  convergence_pbc = convergence_pbc * convergence_pb ;
-                }
-
-            }
-        }
-      if (!ok || (!convergence_pbc && compteur==nb_ite_max))
-        {
-          Cout << pbc.le_nom() << (ok ? " : failure" : " : non-convergence") << " at t = "<< temps_courant_ << " with dt = " << dt_<< " !!!" << finl;
-          dt_failed_ = dt_; //pour proposer un pas de temps plus bas au prochain essai
-          return 0;
-        }
-      else
-        {
-          Cout<<"The "<<pbc.que_suis_je()<<" problem " << pbc.le_nom() << " has converged after "<<compteur<<" implicit iterations."<<finl;
-          cv=1;
-        }
-    }
-
-  double residu_1=0;
-  for(i=0; i<pbc.nb_problemes(); i++)
-    {
-      residu_1=residu_;
-      test_stationnaire(ref_cast(Probleme_base,pbc.probleme(i)));
-      residu_=max(residu_,residu_1);
-    }
-
-  return 1;
-}
+//int Schema_Euler_Implicite::faire_un_pas_de_temps_pb_couple(Probleme_Couple& pbc, int& ok)
+//{
+//  // Modif B.M. : Si on fait la sauvegarde entre derivee en temps inco et mettre a jour,
+//  //  un calcul avec reprise n'est pas equivalent au calcul ininterrompu
+//  //  (front-tracking notamment). Donc je mets la sauvegarde au debut du pas de temps.
+//  //if (lsauv())
+//  //  for (int i=0;i<pbc.nb_problemes();i++)
+//  //    ref_cast(Probleme_base,pbc.probleme(i)).sauver();
+//
+//  int convergence_pbc = 0;
+//  int i;
+//
+//  for(i=0; i<pbc.nb_problemes(); i++)
+//    Initialiser_Champs(ref_cast(Probleme_base,pbc.probleme(i)));
+//
+//
+//  int cv = 0;
+//  int compteur;
+//
+//  while (!cv)
+//    {
+//      compteur=0;
+//
+//      while ((!convergence_pbc )&&(compteur<nb_ite_max))
+//        {
+//          compteur++;
+//          convergence_pbc=1;
+//
+//
+//          for(i=0; i<pbc.nb_problemes()*1; i++)
+//            {
+//              Probleme_base& pb = ref_cast(Probleme_base,pbc.probleme(i));
+//              const int nb_eqn=pb.nombre_d_equations();
+//              for(int ii=0; ii<nb_eqn; ii++)
+//                {
+//                  pb.equation(ii).zone_Cl_dis()->calculer_coeffs_echange(temps_courant_+pas_de_temps());
+//                }
+//
+//            }
+//
+//          if (resolution_monolithique_.size())
+//            {
+//              //make sure all application domains are in resolution_monolithique_
+//              std::set<std::string> doms_app, doms_mono;
+//              for(i = 0; i < pbc.nb_problemes(); i++) for(int j = 0; j < ref_cast(Probleme_base,pbc.probleme(i)).nombre_d_equations(); j++)
+//                  doms_app.insert(ref_cast(Probleme_base,pbc.probleme(i)).equation(j).domaine_application().getString());
+//              for (auto && s : resolution_monolithique_) for (auto &&d : s) doms_mono.insert((Nom(d.c_str())).getSuffix("_").getString());
+//              if (doms_mono != doms_app)
+//                {
+//                  Cerr << "Error : all the application domains should be given in the resolution_monolitique block to impose the order of resolution" << finl;
+//                  Cerr << "and some are missing among :";
+//                  for (auto &&n: doms_app) Cerr << Nom(" ") + n.c_str();
+//                  Cerr << finl << "(an underscore can be put at the begining of the application domains for which a standard resolution is wanted)" << finl;
+//                  Process::exit();
+//                }
+//
+//              for (auto && s : resolution_monolithique_)
+//                {
+//                  // serach all equations of this dom app
+//                  LIST(REF(Equation_base)) eqs;
+//                  for(i = 0; i < pbc.nb_problemes(); i++)
+//                    for(int j = 0; j < ref_cast(Probleme_base,pbc.probleme(i)).nombre_d_equations(); j++)
+//                      {
+//                        const Probleme_base& pb = ref_cast(Probleme_base,pbc.probleme(i));
+//                        const Motcle type = pb.equation(j).domaine_application();
+//                        if (s.count(type.getString()) || s.count((Nom("_") + type).getString())) eqs.add(pb.equation(j));
+//                      }
+//
+//                  Cout << "RESOLUTION {";
+//                  for (auto &&d : s) Cout << Nom(" ") + d.c_str();
+//                  Cout << " }" << finl;
+//                  Cout << "-------------------------" << finl;
+//                  const bool mono = !(s.size() == 1 && Nom((*s.begin()).c_str()).debute_par("_"));
+//                  if (mono)
+//                    {
+//                      Cout << "Resolution monolithique! the equations {";
+//                      for (int k = 0; k < eqs.size(); k++)
+//                        {
+//                          Cout << " " << eqs[k]->que_suis_je();
+//                          eqs[k]->probleme().updateGivenFields();
+//                        }
+//                      Cout << " } are solved by assembling a single matrix." << finl;
+//                      bool convergence_eqs = le_solveur.valeur().iterer_eqs(eqs, compteur, ok);
+//                      convergence_pbc = convergence_pbc && convergence_eqs;
+//                    }
+//                  else
+//                    {
+//                      for (int k = 0; k < eqs.size(); k++)
+//                        {
+//                          Equation_base& eqn = eqs[k].valeur();
+//                          eqn.probleme().updateGivenFields();
+//
+//                          DoubleTab& present = eqn.inconnue().valeurs();
+//                          DoubleTab& futur = eqn.inconnue().futur();
+//                          double temps = temps_courant_ + dt_;
+//
+//                          // imposer_cond_lim   sert pour la pression et pour les echanges entre pbs
+//                          eqn.zone_Cl_dis()->imposer_cond_lim(eqn.inconnue(),temps_courant()+pas_de_temps());
+//                          Cout<<"Solving " << eqn.que_suis_je() << " equation :" << finl;
+//                          const DoubleTab& inut=futur;
+//                          bool convergence_eqn=le_solveur.valeur().iterer_eqn(eqn, inut, present, dt_, compteur, ok);
+//                          if (!ok) break;
+//                          convergence_pbc = convergence_pbc && convergence_eqn;
+//                          futur = present;
+//                          eqn.zone_Cl_dis()->imposer_cond_lim(eqn.inconnue(),temps_courant()+pas_de_temps());
+//                          present = futur;
+//
+//                          eqn.inconnue().valeur().Champ_base::changer_temps(temps);
+//                          Cout << finl;
+//                        }
+//                    }
+//                }
+//            }
+//          else
+//            {
+//              for(i=0; ok && i<pbc.nb_problemes(); i++)
+//                {
+//                  pbc.probleme(i).updateGivenFields();
+//                  int convergence_pb = Iterer_Pb(ref_cast(Probleme_base,pbc.probleme(i)),compteur, ok);
+//                  convergence_pbc = convergence_pbc * convergence_pb ;
+//                }
+//
+//            }
+//        }
+//      if (!ok || (!convergence_pbc && compteur==nb_ite_max))
+//        {
+//          Cout << pbc.le_nom() << (ok ? " : failure" : " : non-convergence") << " at t = "<< temps_courant_ << " with dt = " << dt_<< " !!!" << finl;
+//          dt_failed_ = dt_; //pour proposer un pas de temps plus bas au prochain essai
+//          return 0;
+//        }
+//      else
+//        {
+//          Cout<<"The "<<pbc.que_suis_je()<<" problem " << pbc.le_nom() << " has converged after "<<compteur<<" implicit iterations."<<finl;
+//          cv=1;
+//        }
+//    }
+//
+//  double residu_1=0;
+//  for(i=0; i<pbc.nb_problemes(); i++)
+//    {
+//      residu_1=residu_;
+//      test_stationnaire(ref_cast(Probleme_base,pbc.probleme(i)));
+//      residu_=max(residu_,residu_1);
+//    }
+//
+//  return 1;
+//}
 
 int Schema_Euler_Implicite::faire_un_pas_de_temps_eqn_base(Equation_base& eqn)
 {
