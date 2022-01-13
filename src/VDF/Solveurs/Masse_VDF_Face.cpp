@@ -25,7 +25,7 @@
 #include <Zone_VDF.h>
 #include <Dirichlet.h>
 #include <Dirichlet_homogene.h>
-#include <Symetrie.h>
+// #include <Symetrie.h>
 #include <Debog.h>
 
 Implemente_instanciable(Masse_VDF_Face,"Masse_VDF_Face",Solveur_Masse_base);
@@ -92,11 +92,11 @@ DoubleTab& Masse_VDF_Face::appliquer_impl(DoubleTab& sm) const
         for (int f = ndeb; f < nfin; f++)
           for (int n = 0; n < N; n++)
             sm(f, n) = 0;
-      else if (sub_type(Symetrie,la_cl.valeur()))
-        // Pour les faces de Symetrie on met vpoint a 0
-        for (int f = ndeb; f < nfin; f++)
-          for (int n = 0; n < N; n++)
-            sm(f, n) = 0;
+      // else if (sub_type(Symetrie,la_cl.valeur()))
+      //   // Pour les faces de Symetrie on met vpoint a 0
+      //   for (int f = ndeb; f < nfin; f++)
+      //     for (int n = 0; n < N; n++)
+      //       sm(f, n) = 0;
       else
         for (int f = ndeb; f < nfin; f++)
           for (int n = 0; n < N; n++)

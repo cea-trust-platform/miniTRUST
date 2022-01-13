@@ -24,17 +24,17 @@
 #include <math.h>
 #include <Champ_Uniforme_Morceaux.h>
 #include <Champ_Uniforme.h>
-#include <Champ_Don_lu.h>
+// #include <Champ_Don_lu.h>
 #include <Zone_VDF.h>
 #include <Zone_Cl_VDF.h>
 #include <Equation_base.h>
-#include <Periodique.h>
-#include <Symetrie.h>
-#include <Dirichlet_entree_fluide.h>
-#include <Dirichlet_paroi_fixe.h>
-#include <Dirichlet_paroi_defilante.h>
-#include <Champ_front_var_instationnaire.h>
-#include <Champ_front_instationnaire_base.h>
+// #include <Periodique.h>
+// #include <Symetrie.h>
+// #include <Dirichlet_entree_fluide.h>
+// #include <Dirichlet_paroi_fixe.h>
+// #include <Dirichlet_paroi_defilante.h>
+// #include <Champ_front_var_instationnaire.h>
+// #include <Champ_front_instationnaire_base.h>
 
 Implemente_instanciable(Champ_Face,"Champ_Face",Champ_Inc_base);
 
@@ -105,7 +105,8 @@ Champ_base& Champ_Face::affecter_(const Champ_base& ch)
         val(num_face) = v(0,orientation(num_face));
     }
   else if ( (sub_type(Champ_Uniforme_Morceaux,ch))
-            || (sub_type(Champ_Don_lu,ch)) )
+            // || (sub_type(Champ_Don_lu,ch)) )
+  )
     {
       int ndeb_int = zone_VDF.premiere_face_int();
       const IntTab& face_voisins = zone_VDF.face_voisins();
@@ -283,26 +284,26 @@ void Champ_Face::verifie_valeurs_cl()
   for (int i=0; i<nb_cl; i++)
     {
       const Cond_lim_base& la_cl = zcl.les_conditions_limites(i).valeur();
-      if (sub_type(Periodique,la_cl))
-        {
-          const Periodique& la_cl_perio = ref_cast(Periodique,la_cl);
-          const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
-          ndeb = le_bord.num_premiere_face();
-          nfin = ndeb + le_bord.nb_faces();
-          int voisine;
-          double moy;
+      // if (sub_type(Periodique,la_cl))
+      //   {
+      //     const Periodique& la_cl_perio = ref_cast(Periodique,la_cl);
+      //     const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
+      //     ndeb = le_bord.num_premiere_face();
+      //     nfin = ndeb + le_bord.nb_faces();
+      //     int voisine;
+      //     double moy;
 
-          for (num_face=ndeb; num_face<nfin; num_face++)
-            {
-              voisine = la_cl_perio.face_associee(num_face-ndeb) + ndeb;
-              if (ch_tab[num_face] != ch_tab[voisine])
-                {
-                  moy = 0.5*(ch_tab[num_face] + ch_tab[voisine]);
-                  ch_tab[num_face] = moy;
-                  ch_tab[voisine] = moy;
-                }
-            }
-        }
+      //     for (num_face=ndeb; num_face<nfin; num_face++)
+      //       {
+      //         voisine = la_cl_perio.face_associee(num_face-ndeb) + ndeb;
+      //         if (ch_tab[num_face] != ch_tab[voisine])
+      //           {
+      //             moy = 0.5*(ch_tab[num_face] + ch_tab[voisine]);
+      //             ch_tab[num_face] = moy;
+      //             ch_tab[voisine] = moy;
+      //           }
+      //       }
+      //   }
     }
   ch_tab.echange_espace_virtuel();
 }
@@ -341,32 +342,32 @@ double Champ_Face_get_val_imp_face_bord(const double& temp,int face,int comp, co
 
   int face_de_vals=vals.dimension(0)==1 ? 0 : face_locale;
 
-  if(sub_type(Symetrie,cl))
-    {
-      if (comp == ori)
-        return 0;
-      else
-        {
-          Cerr<<"You should call Champ_Face_get_val_imp_face_bord_sym and not  Champ_Face_get_val_imp_face_bord"<<finl;
-          Process::exit();
-          return 1e9;
-        }
-    }
+  // if(sub_type(Symetrie,cl))
+  //   {
+  //     if (comp == ori)
+  //       return 0;
+  //     else
+  //       {
+  //         Cerr<<"You should call Champ_Face_get_val_imp_face_bord_sym and not  Champ_Face_get_val_imp_face_bord"<<finl;
+  //         Process::exit();
+  //         return 1e9;
+  //       }
+  //   }
 
-  else if ( sub_type(Dirichlet_entree_fluide,cl) )
-    {
-      return vals(face_de_vals,comp);
-    }
+  // else if ( sub_type(Dirichlet_entree_fluide,cl) )
+  //   {
+  //     return vals(face_de_vals,comp);
+  //   }
 
-  else if ( sub_type(Dirichlet_paroi_fixe,cl) )
-    {
-      return 0;
-    }
+  // else if ( sub_type(Dirichlet_paroi_fixe,cl) )
+  //   {
+  //     return 0;
+  //   }
 
-  else if ( sub_type(Dirichlet_paroi_defilante,cl) )
-    {
-      return vals(face_de_vals,comp);
-    }
+  // else if ( sub_type(Dirichlet_paroi_defilante,cl) )
+  //   {
+  //     return vals(face_de_vals,comp);
+  //   }
 
   return 0; // All other cases
 
@@ -394,38 +395,38 @@ double Champ_Face_get_val_imp_face_bord_sym(const DoubleTab& tab_valeurs, const 
 
   int face_de_vals=vals.dimension(0)==1 ? 0 : face_locale;
 
-  if(sub_type(Symetrie,cl))
-    {
-      if (comp == ori)
-        return 0;
-      else
-        {
-          int elem=0;
-          if (face_voisins(face_globale,0) != -1)
-            elem = face_voisins(face_globale,0);
-          else
-            elem = face_voisins(face_globale,1);
-          int comp2=comp+Objet_U::dimension;
-          return (tab_valeurs(elem_faces(elem,comp))*porosite[elem_faces(elem,comp)]
-                  + tab_valeurs(elem_faces(elem,comp2))*porosite[elem_faces(elem,comp2)])
-                 /    (porosite[elem_faces(elem,comp)] + porosite[elem_faces(elem,comp2)]) ;
-        }
-    }
+  // if(sub_type(Symetrie,cl))
+  //   {
+  //     if (comp == ori)
+  //       return 0;
+  //     else
+  //       {
+  //         int elem=0;
+  //         if (face_voisins(face_globale,0) != -1)
+  //           elem = face_voisins(face_globale,0);
+  //         else
+  //           elem = face_voisins(face_globale,1);
+  //         int comp2=comp+Objet_U::dimension;
+  //         return (tab_valeurs(elem_faces(elem,comp))*porosite[elem_faces(elem,comp)]
+  //                 + tab_valeurs(elem_faces(elem,comp2))*porosite[elem_faces(elem,comp2)])
+  //                /    (porosite[elem_faces(elem,comp)] + porosite[elem_faces(elem,comp2)]) ;
+  //       }
+  //   }
 
-  else if ( sub_type(Dirichlet_entree_fluide,cl) )
-    {
-      return vals(face_de_vals,comp);
-    }
+  // else if ( sub_type(Dirichlet_entree_fluide,cl) )
+  //   {
+  //     return vals(face_de_vals,comp);
+  //   }
 
-  else if ( sub_type(Dirichlet_paroi_fixe,cl) )
-    {
-      return 0;
-    }
+  // else if ( sub_type(Dirichlet_paroi_fixe,cl) )
+  //   {
+  //     return 0;
+  //   }
 
-  else if ( sub_type(Dirichlet_paroi_defilante,cl) )
-    {
-      return vals(face_de_vals,comp);
-    }
+  // else if ( sub_type(Dirichlet_paroi_defilante,cl) )
+  //   {
+  //     return vals(face_de_vals,comp);
+  //   }
 
   return 0; // All other cases
 

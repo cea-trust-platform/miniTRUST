@@ -22,7 +22,7 @@
 
 #include <mon_main.h>
 #include <LecFicDiffuse_JDD.h>
-#include <instancie_appel.h>
+//#include <instancie_appel.h>
 #include <SFichier.h>
 #include <Comm_Group_MPI.h>
 #include <PE_Groups.h>
@@ -336,9 +336,9 @@ void mon_main::dowork(const Nom& nom_du_cas)
   // on ne les charges que pour le cas nul, pour verifier avec valgrind
   if (Objet_U::nom_du_cas()=="nul")
     {
-      Cerr<<"Chargement des modules:"<<finl;
-#include <instancie_appel_c.h>
-      Cerr<<"Fin chargement des modules "<<finl;
+//       Cerr<<"Chargement des modules:"<<finl;
+// #include <instancie_appel_c.h>
+//       Cerr<<"Fin chargement des modules "<<finl;
     }
 
   Cout<< " " << finl;

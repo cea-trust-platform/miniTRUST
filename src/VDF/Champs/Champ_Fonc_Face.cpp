@@ -22,7 +22,7 @@
 
 #include <Champ_Fonc_Face.h>
 #include <Champ_Uniforme.h>
-#include <Champ_Don_lu.h>
+// #include <Champ_Don_lu.h>
 #include <Champ_Uniforme_Morceaux.h>
 #include <Zone_VDF.h>
 
@@ -115,8 +115,8 @@ Champ_base& Champ_Fonc_Face::affecter_(const Champ_base& ch)
       for (int num_face=0; num_face<nb_faces; num_face++)
         val(num_face) = v(0,orientation(num_face));
     }
-  else if ( (sub_type(Champ_Uniforme_Morceaux,ch))
-            || (sub_type(Champ_Don_lu,ch)) )
+  else if ( (sub_type(Champ_Uniforme_Morceaux,ch)))
+            // || (sub_type(Champ_Don_lu,ch)) )
     {
       int ndeb_int = zone_VDF.premiere_face_int();
       const IntTab& face_voisins = zone_VDF.face_voisins();

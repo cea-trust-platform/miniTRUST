@@ -23,10 +23,10 @@
 #include <Champ_Face.h>
 #include <Champ_Uniforme.h>
 #include <Zone_Cl_VDF.h>
-#include <Dirichlet_paroi_fixe.h>
-#include <Fluide_base.h>
+// #include <Dirichlet_paroi_fixe.h>
+// #include <Fluide_base.h>
 #include <Equation_base.h>
-#include <Mod_turb_hyd_base.h>
+// #include <Mod_turb_hyd_base.h>
 #include <distances_VDF.h>
 
 void calrotord2centelemdim2(DoubleTab& rot, const DoubleTab& val,
@@ -554,121 +554,122 @@ void Champ_Face::calcul_critere_Q(DoubleTab& Q, const Zone_Cl_VDF& zone_Cl_VDF)
 
 void Champ_Face::calcul_y_plus(DoubleTab& y_plus, const Zone_Cl_VDF& zone_Cl_VDF)
 {
-  // On initialise le champ y_plus avec une valeur negative,
-  // comme ca lorsqu'on veut visualiser le champ pres de la paroi,
-  // on n'a qu'a supprimer les valeurs negatives et n'apparaissent
-  // que les valeurs aux parois.
+  throw;
+  // // On initialise le champ y_plus avec une valeur negative,
+  // // comme ca lorsqu'on veut visualiser le champ pres de la paroi,
+  // // on n'a qu'a supprimer les valeurs negatives et n'apparaissent
+  // // que les valeurs aux parois.
 
-  int ndeb,nfin,elem,ori,l_unif;
-  double norm_tau,u_etoile,norm_v=0, dist, val0, val1, val2, d_visco=0, visco=1.;
-  y_plus=-1.;
+  // int ndeb,nfin,elem,ori,l_unif;
+  // double norm_tau,u_etoile,norm_v=0, dist, val0, val1, val2, d_visco=0, visco=1.;
+  // y_plus=-1.;
 
-  const Champ_Face& vit = *this;
-  const Zone_VDF& zone_VDF = la_zone_VDF.valeur();
-  const IntTab& face_voisins = zone_VDF.face_voisins();
-  const IntVect& orientation = zone_VDF.orientation();
-  const Equation_base& eqn_hydr = equation();
-  const Fluide_base& le_fluide = ref_cast(Fluide_base, eqn_hydr.milieu());
-  const Champ_Don& ch_visco_cin = le_fluide.viscosite_cinematique();
-  const DoubleTab& tab_visco = ref_cast(DoubleTab,ch_visco_cin->valeurs());
-  //DoubleTab& tab_visco = ch_visco_cin.valeur().valeurs();
+  // const Champ_Face& vit = *this;
+  // const Zone_VDF& zone_VDF = la_zone_VDF.valeur();
+  // const IntTab& face_voisins = zone_VDF.face_voisins();
+  // const IntVect& orientation = zone_VDF.orientation();
+  // const Equation_base& eqn_hydr = equation();
+  // const Fluide_base& le_fluide = ref_cast(Fluide_base, eqn_hydr.milieu());
+  // const Champ_Don& ch_visco_cin = le_fluide.viscosite_cinematique();
+  // const DoubleTab& tab_visco = ref_cast(DoubleTab,ch_visco_cin->valeurs());
+  // //DoubleTab& tab_visco = ch_visco_cin.valeur().valeurs();
 
-  if (sub_type(Champ_Uniforme, ch_visco_cin.valeur()))
-    {
-      visco = tab_visco(0,0);
-      l_unif = 1;
-    }
-  else
-    l_unif = 0;
+  // if (sub_type(Champ_Uniforme, ch_visco_cin.valeur()))
+  //   {
+  //     visco = tab_visco(0,0);
+  //     l_unif = 1;
+  //   }
+  // else
+  //   l_unif = 0;
 
-  // Changer uniquement les valeurs < DMINFLOAT (l'ancien code n'est pas parallele)
-  /* GF on a pas a change tab_visco ici !
-  if (!l_unif)
-    {
-      const int n = tab_visco.size_array();
-      ArrOfDouble& v = tab_visco;
-      for (int i = 0; i < n; i++)
-        if (v[i] < DMINFLOAT)
-          v[i] = DMINFLOAT;
-    }
-  */
+  // // Changer uniquement les valeurs < DMINFLOAT (l'ancien code n'est pas parallele)
+  // /* GF on a pas a change tab_visco ici !
+  // if (!l_unif)
+  //   {
+  //     const int n = tab_visco.size_array();
+  //     ArrOfDouble& v = tab_visco;
+  //     for (int i = 0; i < n; i++)
+  //       if (v[i] < DMINFLOAT)
+  //         v[i] = DMINFLOAT;
+  //   }
+  // */
 
-  DoubleTab yplus_faces( 1, 1 ); // will contain yplus values if available
-  int yplus_already_computed=0; // flag
+  // DoubleTab yplus_faces( 1, 1 ); // will contain yplus values if available
+  // int yplus_already_computed=0; // flag
 
-  const RefObjU& modele_turbulence = eqn_hydr.get_modele(TURBULENCE);
-  if (modele_turbulence.non_nul() && sub_type(Mod_turb_hyd_base,modele_turbulence.valeur()))
-    {
-      const Mod_turb_hyd_base& mod_turb = ref_cast(Mod_turb_hyd_base,modele_turbulence.valeur());
-      const Turbulence_paroi_base& loipar = mod_turb.loi_paroi();
-      if( loipar.use_shear( ) )
-        {
-          yplus_faces.resize( la_zone_VDF->nb_faces_tot( ) );
-          yplus_faces.ref( loipar.tab_d_plus( ) );
-          yplus_already_computed = 1;
-        }
-    }
+  // const RefObjU& modele_turbulence = eqn_hydr.get_modele(TURBULENCE);
+  // if (modele_turbulence.non_nul() && sub_type(Mod_turb_hyd_base,modele_turbulence.valeur()))
+  //   {
+  //     const Mod_turb_hyd_base& mod_turb = ref_cast(Mod_turb_hyd_base,modele_turbulence.valeur());
+  //     const Turbulence_paroi_base& loipar = mod_turb.loi_paroi();
+  //     if( loipar.use_shear( ) )
+  //       {
+  //         yplus_faces.resize( la_zone_VDF->nb_faces_tot( ) );
+  //         yplus_faces.ref( loipar.tab_d_plus( ) );
+  //         yplus_already_computed = 1;
+  //       }
+  //   }
 
-  for (int n_bord=0; n_bord<zone_VDF.nb_front_Cl(); n_bord++)
-    {
-      const Cond_lim& la_cl = zone_Cl_VDF.les_conditions_limites(n_bord);
+  // for (int n_bord=0; n_bord<zone_VDF.nb_front_Cl(); n_bord++)
+  //   {
+  //     const Cond_lim& la_cl = zone_Cl_VDF.les_conditions_limites(n_bord);
 
-      if ( sub_type(Dirichlet_paroi_fixe,la_cl.valeur()))
-        {
-          const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
-          ndeb = le_bord.num_premiere_face();
-          nfin = ndeb + le_bord.nb_faces();
+  //     // if ( sub_type(Dirichlet_paroi_fixe,la_cl.valeur()))
+  //     //   {
+  //     //     const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
+  //     //     ndeb = le_bord.num_premiere_face();
+  //     //     nfin = ndeb + le_bord.nb_faces();
 
 
-          for (int num_face=ndeb; num_face<nfin; num_face++)
-            {
+  //     //     for (int num_face=ndeb; num_face<nfin; num_face++)
+  //     //       {
 
-              if( face_voisins( num_face, 0 ) != -1 )
-                elem = face_voisins( num_face, 0 ) ;
-              else
-                elem = face_voisins( num_face, 1 ) ;
+  //     //         if( face_voisins( num_face, 0 ) != -1 )
+  //     //           elem = face_voisins( num_face, 0 ) ;
+  //     //         else
+  //     //           elem = face_voisins( num_face, 1 ) ;
 
-              if( yplus_already_computed )
-                {
-                  // y+ is only defined on faces so we take the face value to put in the element
-                  y_plus( elem ) = yplus_faces( num_face );
-                }
-              else
-                {
+  //     //         if( yplus_already_computed )
+  //     //           {
+  //     //             // y+ is only defined on faces so we take the face value to put in the element
+  //     //             y_plus( elem ) = yplus_faces( num_face );
+  //     //           }
+  //     //         else
+  //     //           {
 
-                  if ( dimension == 2 )
-                    {
-                      ori = orientation(num_face);
-                      norm_v=norm_2D_vit(vit,elem,ori,zone_VDF,val0);
-                    }
-                  else if ( dimension == 3)
-                    {
-                      ori = orientation(num_face);
-                      norm_v=norm_3D_vit(vit,elem,ori,zone_VDF,val1,val2);
-                    } // dim 3
+  //     //             if ( dimension == 2 )
+  //     //               {
+  //     //                 ori = orientation(num_face);
+  //     //                 norm_v=norm_2D_vit(vit,elem,ori,zone_VDF,val0);
+  //     //               }
+  //     //             else if ( dimension == 3)
+  //     //               {
+  //     //                 ori = orientation(num_face);
+  //     //                 norm_v=norm_3D_vit(vit,elem,ori,zone_VDF,val1,val2);
+  //     //               } // dim 3
 
-                  if ( axi )
-                    dist=zone_VDF.dist_norm_bord_axi(num_face);
-                  else
-                    dist=zone_VDF.dist_norm_bord(num_face);
-                  if ( l_unif )
-                    d_visco = visco;
-                  else
-                    d_visco = tab_visco[elem];
+  //     //             if ( axi )
+  //     //               dist=zone_VDF.dist_norm_bord_axi(num_face);
+  //     //             else
+  //     //               dist=zone_VDF.dist_norm_bord(num_face);
+  //     //             if ( l_unif )
+  //     //               d_visco = visco;
+  //     //             else
+  //     //               d_visco = tab_visco[elem];
 
-                  // PQ : 01/10/03 : corrections par rapport a la version premiere
-                  norm_tau = d_visco*norm_v/dist;
+  //     //             // PQ : 01/10/03 : corrections par rapport a la version premiere
+  //     //             norm_tau = d_visco*norm_v/dist;
 
-                  u_etoile = sqrt(norm_tau);
-                  y_plus(elem) = dist*u_etoile/d_visco;
+  //     //             u_etoile = sqrt(norm_tau);
+  //     //             y_plus(elem) = dist*u_etoile/d_visco;
 
-                } // else yplus already computed
+  //     //           } // else yplus already computed
 
-            } // loop on faces
+  //     //       } // loop on faces
 
-        } // Fin paroi fixe
+  //     //   } // Fin paroi fixe
 
-    } // Fin boucle sur les bords
+  //   } // Fin boucle sur les bords
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
