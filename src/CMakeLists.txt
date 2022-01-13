@@ -1,4 +1,6 @@
 add_subdirectory(./ThSol)
+add_subdirectory(./ThHyd/Incompressible) ## WTF !!
+add_subdirectory(./ThHyd/Incompressible/Cond_Lim) ## WTF !!
 add_subdirectory(./Kernel/Champs_dis)
 add_subdirectory(./Kernel/Utilitaires)
 add_subdirectory(./Kernel/Framework)

@@ -23,7 +23,7 @@
 #ifndef Eval_Diff_VDF_Face_included
 #define Eval_Diff_VDF_Face_included
 
-#include <Neumann_sortie_libre.h>
+// #include <Neumann_sortie_libre.h>
 #include <Evaluateur_VDF.h>
 #include <Eval_VDF_Face.h>
 
@@ -45,8 +45,8 @@ public:
    * *********  POUR L'EXPLICITE ********** *
    * ************************************** */
 
-  template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::SORTIE_LIBRE, void>
-  flux_fa7(const DoubleTab&, int , const Neumann_sortie_libre&, int, Type_Double& ) const { /* Do nothing */ }
+  // template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::SORTIE_LIBRE, void>
+  // flux_fa7(const DoubleTab&, int , const Neumann_sortie_libre&, int, Type_Double& ) const { /* Do nothing */ }
 
   template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::ELEM, void>
   flux_fa7(const DoubleTab&, int, int, int, Type_Double& ) const;
@@ -81,8 +81,8 @@ public:
    * *********  POUR L'IMPLICITE ********** *
    * ************************************** */
 
-  template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::SORTIE_LIBRE, void>
-  coeffs_fa7(int , const Neumann_sortie_libre&, Type_Double& , Type_Double& ) const;
+  // template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::SORTIE_LIBRE, void>
+  // coeffs_fa7(int , const Neumann_sortie_libre&, Type_Double& , Type_Double& ) const;
 
   template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::ELEM, void>
   coeffs_fa7(int, int, int, Type_Double& , Type_Double& ) const;
@@ -110,8 +110,8 @@ public:
    * *********  POUR L'IMPLICITE ********** *
    * ************************************** */
 
-  template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::SORTIE_LIBRE, void>
-  secmem_fa7(int , const Neumann_sortie_libre&, int, Type_Double& ) const { /* Do nothing */ }
+  // template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::SORTIE_LIBRE, void>
+  // secmem_fa7(int , const Neumann_sortie_libre&, int, Type_Double& ) const { /* Do nothing */ }
 
   template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::ELEM, void>
   secmem_fa7(int, int, int, Type_Double& ) const { /* Do nothing */ }

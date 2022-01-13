@@ -25,7 +25,7 @@
 
 #include <Operateur_Diff_base.h>
 #include <Schema_Temps_base.h>
-#include <Op_Conv_VDF_base.h>
+// #include <Op_Conv_VDF_base.h>
 #include <Champ_Uniforme.h>
 #include <Operateur_base.h>
 #include <communications.h>
@@ -85,7 +85,7 @@ private:
   template <typename Type_Double> DoubleTab& ajouter_interne(const int , const DoubleTab& , DoubleTab& ) const;
 
   template <bool should_calc_flux, typename Type_Double, typename BC> void ajouter_bords_(const BC& , const int , const int , const int , const DoubleTab& , DoubleTab& ) const;
-  template <typename Type_Double> void ajouter_bords_(const Periodique& , const int , const int , const int , const DoubleTab&, const Front_VF& , DoubleTab& ) const;
+  // template <typename Type_Double> void ajouter_bords_(const Periodique& , const int , const int , const int , const DoubleTab&, const Front_VF& , DoubleTab& ) const;
   template <typename Type_Double> void ajouter_bords_(const Echange_externe_impose& , const int , const int , const int , const int , const DoubleTab& , const Front_VF& , DoubleTab& ) const;
 
   void modifier_flux() const;
@@ -94,7 +94,7 @@ private:
   // Inutile, jamais utilise ...
   template <typename Type_Double> void calculer_flux_bord2(const int, const DoubleTab&) const;
   template <bool should_calc_flux, typename Type_Double, typename BC> void calculer_flux_bord_(const BC& , const int , const int , const int , const DoubleTab& ) const;
-  template <typename Type_Double> void calculer_flux_bord_(const Periodique& , const int , const int , const int , const DoubleTab& , const Front_VF& ) const;
+  // template <typename Type_Double> void calculer_flux_bord_(const Periodique& , const int , const int , const int , const DoubleTab& , const Front_VF& ) const;
   template <typename Type_Double> void calculer_flux_bord_(const Echange_externe_impose& , const int , const int , const int, const int , const DoubleTab& ,const Front_VF& ) const;
 
   /* ************************************** *
@@ -105,14 +105,14 @@ private:
   template <typename Type_Double> void ajouter_contribution_interne(const int ,  Matrice_Morse& ) const;
 
   template <bool should_calc_flux, typename Type_Double, typename BC> void ajouter_contribution_bords_(const BC& , const int , const int , const int , Matrice_Morse& ) const;
-  template <typename Type_Double> void ajouter_contribution_bords_(const Periodique& , const int , const int , const int, Matrice_Morse& ) const;
+  // template <typename Type_Double> void ajouter_contribution_bords_(const Periodique& , const int , const int , const int, Matrice_Morse& ) const;
   template <typename Type_Double> void ajouter_contribution_bords_(const Echange_externe_impose& , const int , const int , const int, const int, const Front_VF& , Matrice_Morse& ) const;
 
   template <typename Type_Double> void ajouter_contribution_interne_vitesse(const int , const DoubleTab& , Matrice_Morse& ) const;
   template <typename Type_Double> void ajouter_contribution_bords_vitesse(const int , const DoubleTab& , Matrice_Morse& ) const;
 
   template <bool should_calc_flux, typename Type_Double, typename BC> void ajouter_contribution_bords_vitesse_(const BC& , const int , const int , const int , const DoubleTab& , Matrice_Morse& ) const;
-  template <typename Type_Double> void ajouter_contribution_bords_vitesse_(const Periodique& , const int , const int , const int , const DoubleTab& , const Front_VF& , Matrice_Morse& ) const;
+  // template <typename Type_Double> void ajouter_contribution_bords_vitesse_(const Periodique& , const int , const int , const int , const DoubleTab& , const Front_VF& , Matrice_Morse& ) const;
   template <typename Type_Double> void ajouter_contribution_bords_vitesse_(const Echange_externe_impose& , const int , const int , const int , const int , const DoubleTab& ,const Front_VF& , Matrice_Morse& ) const;
 
   /* ************************************** *

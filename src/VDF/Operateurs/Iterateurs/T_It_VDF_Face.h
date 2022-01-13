@@ -26,7 +26,7 @@
 #include <CL_Types_Aretes_enum.h>
 #include <Iterateur_VDF_base.h>
 #include <Schema_Temps_base.h>
-#include <Op_Conv_VDF_base.h>
+// #include <Op_Conv_VDF_base.h>
 #include <Champ_Uniforme.h>
 #include <Operateur_base.h>
 #include <communications.h>
@@ -113,7 +113,7 @@ private:
 
   template <bool should_calc_flux, Type_Flux_Arete Arete_Type, typename Type_Double> void ajouter_aretes_internes_(const int , const int , const DoubleTab& , DoubleTab& ) const;
   template <bool should_calc_flux, Type_Flux_Arete Arete_Type, typename Type_Double> void ajouter_aretes_mixtes_(const int , const int ,const DoubleTab& , DoubleTab& , DoubleTab& ) const;
-  template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double> void ajouter_fa7_sortie_libre_(const int , const int , const int  , const Neumann_sortie_libre& , const DoubleTab& , DoubleTab& , DoubleTab& ) const;
+  // template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double> void ajouter_fa7_sortie_libre_(const int , const int , const int  , const Neumann_sortie_libre& , const DoubleTab& , DoubleTab& , DoubleTab& ) const;
   template <Type_Flux_Fa7 Fa7_Type, typename Type_Double> void ajouter_fa7_elem_(const int , const int , const DoubleTab& , DoubleTab& , DoubleTab& ) const;
 
   /* ************************************** *
@@ -153,7 +153,7 @@ private:
 
   template <Type_Flux_Arete Arete_Type, typename Type_Double> void ajouter_contribution_aretes_internes_(const int , const int , Matrice_Morse& ) const;
   template <Type_Flux_Arete Arete_Type, typename Type_Double> void ajouter_contribution_aretes_mixtes_(const int , const int , Matrice_Morse& ) const;
-  template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double> void ajouter_contribution_fa7_sortie_libre_(const int , const int , const int , const Neumann_sortie_libre& , Matrice_Morse& ) const;
+  // template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double> void ajouter_contribution_fa7_sortie_libre_(const int , const int , const int , const Neumann_sortie_libre& , Matrice_Morse& ) const;
   template <Type_Flux_Fa7 Fa7_Type, typename Type_Double> void ajouter_contribution_fa7_elem_(const int , const int , Matrice_Morse& ) const;
 
   /* ************************************** *
@@ -188,7 +188,7 @@ private:
 
   template <bool should_calc_flux, Type_Flux_Arete Arete_Type, typename Type_Double> void contribuer_au_second_membre_aretes_internes_(const int , const int , DoubleTab& ) const;
   template <bool should_calc_flux, Type_Flux_Arete Arete_Type, typename Type_Double> void contribuer_au_second_membre_aretes_mixtes_(const int , const int , DoubleTab& ) const;
-  template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double> void contribuer_au_second_membre_fa7_sortie_libre_(const int , const int , const int , const Neumann_sortie_libre& , DoubleTab& ) const;
+  // template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double> void contribuer_au_second_membre_fa7_sortie_libre_(const int , const int , const int , const Neumann_sortie_libre& , DoubleTab& ) const;
   template <Type_Flux_Fa7 Fa7_Type, typename Type_Double> void contribuer_au_second_membre_fa7_elem_(const int , const int , DoubleTab& ) const;
 };
 

@@ -85,16 +85,17 @@ protected:
 inline Type_Cl_VDF Iterateur_VDF_base::type_cl(const Cond_lim& la_cl) const
 {
   Type_Cl_VDF retour=nouvelle_Cl_VDF;
-  if ( sub_type(Symetrie,la_cl.valeur()) ) retour=symetrie;
-  else if ( sub_type(Neumann_sortie_libre, la_cl.valeur()) ) retour=sortie_libre;
-  else if ( sub_type(Dirichlet_entree_fluide, la_cl.valeur()) ) retour=entree_fluide;
-  else if ( sub_type(Dirichlet_paroi_fixe, la_cl.valeur()) ) retour=paroi_fixe;
-  else if ( sub_type(Dirichlet_paroi_defilante, la_cl.valeur()) ) retour=paroi_defilante;
-  else if ( sub_type(Neumann_paroi_adiabatique, la_cl.valeur()) ) retour=paroi_adiabatique;
+  // if ( sub_type(Symetrie,la_cl.valeur()) ) retour=symetrie;
+  // else if ( sub_type(Neumann_sortie_libre, la_cl.valeur()) ) retour=sortie_libre;
+  // else if ( sub_type(Dirichlet_entree_fluide, la_cl.valeur()) ) retour=entree_fluide;
+  // else if ( sub_type(Dirichlet_paroi_fixe, la_cl.valeur()) ) retour=paroi_fixe;
+  // else if ( sub_type(Dirichlet_paroi_defilante, la_cl.valeur()) ) retour=paroi_defilante;
+  // else 
+  if ( sub_type(Neumann_paroi_adiabatique, la_cl.valeur()) ) retour=paroi_adiabatique;
   else if ( sub_type(Neumann_paroi, la_cl.valeur()) ) retour=paroi;
   else if ( sub_type(Echange_externe_impose, la_cl.valeur()) ) retour=echange_externe_impose;
-  else if ( sub_type(Echange_global_impose, la_cl.valeur()) ) retour=echange_global_impose;
-  else if ( sub_type(Periodique, la_cl.valeur()) ) retour=periodique;
+  // else if ( sub_type(Echange_global_impose, la_cl.valeur()) ) retour=echange_global_impose;
+  // else if ( sub_type(Periodique, la_cl.valeur()) ) retour=periodique;
   return retour;
 }
 

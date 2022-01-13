@@ -23,15 +23,15 @@
 #ifndef CL_Types_include_included
 #define CL_Types_include_included
 
-#include <Dirichlet_paroi_defilante.h>
+// #include <Dirichlet_paroi_defilante.h>
 #include <Neumann_paroi_adiabatique.h>
-#include <Dirichlet_entree_fluide.h>
-#include <Echange_externe_impose.h>
-#include <Echange_global_impose.h>
-#include <Neumann_sortie_libre.h>
-#include <Dirichlet_paroi_fixe.h>
+// #include <Dirichlet_entree_fluide.h>
+ #include <Echange_externe_impose.h>
+// #include <Echange_global_impose.h>
+// #include <Neumann_sortie_libre.h>
+// #include <Dirichlet_paroi_fixe.h>
 #include <Neumann_paroi.h>
-#include <Periodique.h>
-#include <Symetrie.h>
+// #include <Periodique.h>
+// #include <Symetrie.h>
 
 #endif /* CL_Types_include_included */

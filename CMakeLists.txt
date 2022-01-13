@@ -11,6 +11,8 @@ add_subdirectory(src)
 
 set(sub_parts
     obj_ThSol
+    obj_thhydinc ## WTF !!!
+    obj_thhydinc_cond_lim
     obj_chpdis
     obj_utilitaires
     obj_noyau

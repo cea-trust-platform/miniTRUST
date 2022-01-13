@@ -174,12 +174,12 @@ Eval_Diff_VDF_Face<DERIVED_T>::flux_arete(const DoubleTab& inco, int fac1, int f
  * *********  POUR L'IMPLICITE ********** *
  * ************************************** */
 
-template <typename DERIVED_T> template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::SORTIE_LIBRE, void>
-Eval_Diff_VDF_Face<DERIVED_T>::coeffs_fa7(int , const Neumann_sortie_libre&, Type_Double& f1, Type_Double& f2) const
-{
-  assert(f1.size_array() == f2.size_array());
-  for (int k = 0; k < f1.size_array(); k++) f1(k) = f2(k) = 0.;
-}
+// template <typename DERIVED_T> template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::SORTIE_LIBRE, void>
+// Eval_Diff_VDF_Face<DERIVED_T>::coeffs_fa7(int , const Neumann_sortie_libre&, Type_Double& f1, Type_Double& f2) const
+// {
+//   assert(f1.size_array() == f2.size_array());
+//   for (int k = 0; k < f1.size_array(); k++) f1(k) = f2(k) = 0.;
+// }
 
 template <typename DERIVED_T> template<Type_Flux_Fa7 Fa7_Type, typename Type_Double> inline enable_if_t< Fa7_Type == Type_Flux_Fa7::ELEM, void>
 Eval_Diff_VDF_Face<DERIVED_T>::coeffs_fa7(int elem,int fac1, int fac2, Type_Double& f1, Type_Double& f2) const

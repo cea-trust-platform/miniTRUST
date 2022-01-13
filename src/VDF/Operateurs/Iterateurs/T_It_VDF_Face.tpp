@@ -416,7 +416,7 @@ DoubleTab& T_It_VDF_Face<_TYPE_>::ajouter_fa7_sortie_libre(const int ncomp, cons
       switch(type_cl(la_cl))
         {
         case sortie_libre :
-          ajouter_fa7_sortie_libre_<_TYPE_::CALC_FA7_SORTIE_LIB,Type_Flux_Fa7::SORTIE_LIBRE,Type_Double>(ndeb,nfin,ncomp,(const Neumann_sortie_libre&) la_cl.valeur(),inco,resu,tab_flux_bords);
+          // ajouter_fa7_sortie_libre_<_TYPE_::CALC_FA7_SORTIE_LIB,Type_Flux_Fa7::SORTIE_LIBRE,Type_Double>(ndeb,nfin,ncomp,(const Neumann_sortie_libre&) la_cl.valeur(),inco,resu,tab_flux_bords);
           break;
         case symetrie : /* fall through */
         case entree_fluide :
@@ -452,17 +452,17 @@ DoubleTab& T_It_VDF_Face<_TYPE_>::corriger_flux_fa7_elem_periodicite(const int n
   for (int num_cl = 0; num_cl < la_zone->nb_front_Cl(); num_cl++)
     {
       const Cond_lim& la_cl = la_zcl->les_conditions_limites(num_cl);
-      if (sub_type(Periodique,la_cl.valeur()))
-        {
-          const Periodique& la_cl_perio = ref_cast(Periodique,la_cl.valeur());
-          const Front_VF& le_bord = ref_cast(Front_VF,la_cl_perio.frontiere_dis());
-          int num_elem, signe, fac1, fac2, ndeb = le_bord.num_premiere_face(), nfin = ndeb + le_bord.nb_faces();
-          for (int face = ndeb; face < nfin; face++)
-            {
-              prepare_corriger_pour_periodicite(face,num_elem,signe,fac1,fac2);
-              corriger_flux_fa7_elem_periodicite_<Type_Double>(ncomp,num_elem,fac1,fac2,face,signe,inco,resu);
-            }
-        }
+      // if (sub_type(Periodique,la_cl.valeur()))
+      //   {
+      //     const Periodique& la_cl_perio = ref_cast(Periodique,la_cl.valeur());
+      //     const Front_VF& le_bord = ref_cast(Front_VF,la_cl_perio.frontiere_dis());
+      //     int num_elem, signe, fac1, fac2, ndeb = le_bord.num_premiere_face(), nfin = ndeb + le_bord.nb_faces();
+      //     for (int face = ndeb; face < nfin; face++)
+      //       {
+      //         prepare_corriger_pour_periodicite(face,num_elem,signe,fac1,fac2);
+      //         corriger_flux_fa7_elem_periodicite_<Type_Double>(ncomp,num_elem,fac1,fac2,face,signe,inco,resu);
+      //       }
+      //   }
     }
   return resu;
 }
@@ -652,21 +652,21 @@ void T_It_VDF_Face<_TYPE_>::ajouter_aretes_mixtes_(const int n_arete, const int 
     }
 }
 
-template <class _TYPE_> template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double>
-void T_It_VDF_Face<_TYPE_>::ajouter_fa7_sortie_libre_(const int ndeb, const int nfin, const int ncomp , const Neumann_sortie_libre& cl, const DoubleTab& inco, DoubleTab& resu, DoubleTab& tab_flux_bords) const
-{
-  if (should_calc_flux)
-    {
-      Type_Double flux(ncomp);
-      for (int face = ndeb; face < nfin; face++)
-        {
-          flux_evaluateur.template flux_fa7<Fa7_Type>(inco,face,cl,ndeb,flux);
-          if ( (elem(face,0)) > -1) for (int k=0; k<ncomp; k++) resu(face,k) += flux(k);
-          if ( (elem(face,1)) > -1) for (int k=0; k<ncomp; k++) resu(face,k) -= flux(k);
-          // if (!is_SCALAIRE) for (int k=0; k<ncomp; k++) if (face<n) tab_flux_bords(face,k) -= flux(k); // TODO : FIXME : Yannick help :/
-        }
-    }
-}
+// template <class _TYPE_> template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double>
+// void T_It_VDF_Face<_TYPE_>::ajouter_fa7_sortie_libre_(const int ndeb, const int nfin, const int ncomp , const Neumann_sortie_libre& cl, const DoubleTab& inco, DoubleTab& resu, DoubleTab& tab_flux_bords) const
+// {
+//   if (should_calc_flux)
+//     {
+//       Type_Double flux(ncomp);
+//       for (int face = ndeb; face < nfin; face++)
+//         {
+//           flux_evaluateur.template flux_fa7<Fa7_Type>(inco,face,cl,ndeb,flux);
+//           if ( (elem(face,0)) > -1) for (int k=0; k<ncomp; k++) resu(face,k) += flux(k);
+//           if ( (elem(face,1)) > -1) for (int k=0; k<ncomp; k++) resu(face,k) -= flux(k);
+//           // if (!is_SCALAIRE) for (int k=0; k<ncomp; k++) if (face<n) tab_flux_bords(face,k) -= flux(k); // TODO : FIXME : Yannick help :/
+//         }
+//     }
+// }
 
 template <class _TYPE_> template <Type_Flux_Fa7 Fa7_Type, typename Type_Double>
 void T_It_VDF_Face<_TYPE_>::ajouter_fa7_elem_(const int num_elem, const int ncomp, const DoubleTab& inco, DoubleTab& resu, DoubleTab& tab_flux_bords) const
@@ -785,7 +785,7 @@ void T_It_VDF_Face<_TYPE_>::ajouter_contribution_fa7_sortie_libre(const int ncom
       switch(type_cl(la_cl))
         {
         case sortie_libre :
-          ajouter_contribution_fa7_sortie_libre_<_TYPE_::CALC_FA7_SORTIE_LIB,Type_Flux_Fa7::SORTIE_LIBRE,Type_Double>(ndeb,nfin,ncomp,(const Neumann_sortie_libre&) la_cl.valeur(),matrice);
+          // ajouter_contribution_fa7_sortie_libre_<_TYPE_::CALC_FA7_SORTIE_LIB,Type_Flux_Fa7::SORTIE_LIBRE,Type_Double>(ndeb,nfin,ncomp,(const Neumann_sortie_libre&) la_cl.valeur(),matrice);
           break;
         case symetrie : /* fall through */
         case entree_fluide :
@@ -818,17 +818,17 @@ void T_It_VDF_Face<_TYPE_>::corriger_coeffs_fa7_elem_periodicite(const int ncomp
   for (int num_cl = 0; num_cl < la_zone->nb_front_Cl(); num_cl++)
     {
       const Cond_lim& la_cl = la_zcl->les_conditions_limites(num_cl);
-      if (sub_type(Periodique,la_cl.valeur()))
-        {
-          const Periodique& la_cl_perio = ref_cast(Periodique,la_cl.valeur());
-          const Front_VF& le_bord = ref_cast(Front_VF,la_cl_perio.frontiere_dis());
-          int num_elem, signe, fac1, fac2, ndeb = le_bord.num_premiere_face(), nfin = ndeb + le_bord.nb_faces();
-          for (int face = ndeb; face < nfin; face++)
-            {
-              prepare_corriger_pour_periodicite(face,num_elem,signe,fac1,fac2);
-              corriger_coeffs_fa7_elem_periodicite_<Type_Double>(ncomp,num_elem,fac1,fac2,face,signe,matrice);
-            }
-        }
+      // if (sub_type(Periodique,la_cl.valeur()))
+      //   {
+      //     const Periodique& la_cl_perio = ref_cast(Periodique,la_cl.valeur());
+      //     const Front_VF& le_bord = ref_cast(Front_VF,la_cl_perio.frontiere_dis());
+      //     int num_elem, signe, fac1, fac2, ndeb = le_bord.num_premiere_face(), nfin = ndeb + le_bord.nb_faces();
+      //     for (int face = ndeb; face < nfin; face++)
+      //       {
+      //         prepare_corriger_pour_periodicite(face,num_elem,signe,fac1,fac2);
+      //         corriger_coeffs_fa7_elem_periodicite_<Type_Double>(ncomp,num_elem,fac1,fac2,face,signe,matrice);
+      //       }
+      //   }
     }
 }
 
@@ -949,20 +949,20 @@ void T_It_VDF_Face<_TYPE_>::ajouter_contribution_aretes_mixtes_(const int n_aret
   ajouter_contribution_aretes_coins_<true,Arete_Type,Type_Double>(n_arete,ncomp,matrice); /* meme codage que le cas PERIODICITE */
 }
 
-template <class _TYPE_> template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double>
-void T_It_VDF_Face<_TYPE_>::ajouter_contribution_fa7_sortie_libre_(const int ndeb, const int nfin, const int ncomp, const Neumann_sortie_libre& cl, Matrice_Morse& matrice) const
-{
-  if (should_calc_flux)
-    {
-      Type_Double aii(ncomp), ajj(ncomp);
-      for (int face = ndeb; face < nfin; face++)
-        {
-          flux_evaluateur.template coeffs_fa7<Fa7_Type>(face,cl, aii, ajj);
-          if ( (elem(face,0)) > -1) for (int i = 0; i < ncomp; i++ ) fill_coeff_matrice_morse<Type_Double>(face,i,ncomp,1,aii,matrice);
-          if ( (elem(face,1)) > -1) for (int i = 0; i < ncomp; i++ ) fill_coeff_matrice_morse<Type_Double>(face,i,ncomp,1,ajj,matrice);
-        }
-    }
-}
+// template <class _TYPE_> template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double>
+// void T_It_VDF_Face<_TYPE_>::ajouter_contribution_fa7_sortie_libre_(const int ndeb, const int nfin, const int ncomp, const Neumann_sortie_libre& cl, Matrice_Morse& matrice) const
+// {
+//   if (should_calc_flux)
+//     {
+//       Type_Double aii(ncomp), ajj(ncomp);
+//       for (int face = ndeb; face < nfin; face++)
+//         {
+//           flux_evaluateur.template coeffs_fa7<Fa7_Type>(face,cl, aii, ajj);
+//           if ( (elem(face,0)) > -1) for (int i = 0; i < ncomp; i++ ) fill_coeff_matrice_morse<Type_Double>(face,i,ncomp,1,aii,matrice);
+//           if ( (elem(face,1)) > -1) for (int i = 0; i < ncomp; i++ ) fill_coeff_matrice_morse<Type_Double>(face,i,ncomp,1,ajj,matrice);
+//         }
+//     }
+// }
 
 template <class _TYPE_> template <Type_Flux_Fa7 Fa7_Type, typename Type_Double>
 void T_It_VDF_Face<_TYPE_>::ajouter_contribution_fa7_elem_(const int num_elem, const int ncomp, Matrice_Morse& matrice) const
@@ -1091,7 +1091,7 @@ void T_It_VDF_Face<_TYPE_>::contribuer_au_second_membre_fa7_sortie_libre(const i
       switch(type_cl(la_cl))
         {
         case sortie_libre :
-          contribuer_au_second_membre_fa7_sortie_libre_<_TYPE_::CALC_FA7_SORTIE_LIB,Type_Flux_Fa7::SORTIE_LIBRE,Type_Double>(ndeb,nfin,ncomp,(const Neumann_sortie_libre&) la_cl.valeur(),resu);
+          // contribuer_au_second_membre_fa7_sortie_libre_<_TYPE_::CALC_FA7_SORTIE_LIB,Type_Flux_Fa7::SORTIE_LIBRE,Type_Double>(ndeb,nfin,ncomp,(const Neumann_sortie_libre&) la_cl.valeur(),resu);
           break;
         case symetrie : /* fall through */
         case entree_fluide :
@@ -1124,17 +1124,17 @@ void T_It_VDF_Face<_TYPE_>::corriger_secmem_fa7_elem_periodicite(const int ncomp
   for (int num_cl = 0; num_cl < la_zone->nb_front_Cl(); num_cl++)
     {
       const Cond_lim& la_cl = la_zcl->les_conditions_limites(num_cl);
-      if (sub_type(Periodique,la_cl.valeur()))
-        {
-          const Periodique& la_cl_perio = ref_cast(Periodique,la_cl.valeur());
-          const Front_VF& le_bord = ref_cast(Front_VF,la_cl_perio.frontiere_dis());
-          int num_elem, signe, fac1, fac2, ndeb = le_bord.num_premiere_face(), nfin = ndeb + le_bord.nb_faces();
-          for (int face = ndeb; face < nfin; face++)
-            {
-              prepare_corriger_pour_periodicite(face,num_elem,signe,fac1,fac2);
-              corriger_secmem_fa7_elem_periodicite_<Type_Double>(ncomp,num_elem,fac1,fac2,face,signe,resu);
-            }
-        }
+      // if (sub_type(Periodique,la_cl.valeur()))
+      //   {
+      //     const Periodique& la_cl_perio = ref_cast(Periodique,la_cl.valeur());
+      //     const Front_VF& le_bord = ref_cast(Front_VF,la_cl_perio.frontiere_dis());
+      //     int num_elem, signe, fac1, fac2, ndeb = le_bord.num_premiere_face(), nfin = ndeb + le_bord.nb_faces();
+      //     for (int face = ndeb; face < nfin; face++)
+      //       {
+      //         prepare_corriger_pour_periodicite(face,num_elem,signe,fac1,fac2);
+      //         corriger_secmem_fa7_elem_periodicite_<Type_Double>(ncomp,num_elem,fac1,fac2,face,signe,resu);
+      //       }
+      //   }
     }
 }
 
@@ -1243,20 +1243,20 @@ void T_It_VDF_Face<_TYPE_>::contribuer_au_second_membre_aretes_mixtes_(const int
   contribuer_au_second_membre_aretes_internes_<should_calc_flux,Arete_Type,Type_Double>(n_arete,ncomp,resu);
 }
 
-template <class _TYPE_> template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double>
-void T_It_VDF_Face<_TYPE_>::contribuer_au_second_membre_fa7_sortie_libre_(const int ndeb, const int nfin, const int ncomp, const Neumann_sortie_libre& cl, DoubleTab& resu) const
-{
-  if (should_calc_flux)
-    {
-      Type_Double flux(ncomp);
-      for (int face = ndeb; face < nfin; face++)
-        {
-          flux_evaluateur.template secmem_fa7<Fa7_Type>(face,cl, ndeb, flux);
-          if ( (elem(face,0)) > -1) for (int k = 0; k < ncomp; k++) resu(face,k) += flux(k);
-          if ( (elem(face,1)) > -1) for (int k = 0; k < ncomp; k++) resu(face,k) -= flux(k);
-        }
-    }
-}
+// template <class _TYPE_> template <bool should_calc_flux, Type_Flux_Fa7 Fa7_Type, typename Type_Double>
+// void T_It_VDF_Face<_TYPE_>::contribuer_au_second_membre_fa7_sortie_libre_(const int ndeb, const int nfin, const int ncomp, const Neumann_sortie_libre& cl, DoubleTab& resu) const
+// {
+//   if (should_calc_flux)
+//     {
+//       Type_Double flux(ncomp);
+//       for (int face = ndeb; face < nfin; face++)
+//         {
+//           flux_evaluateur.template secmem_fa7<Fa7_Type>(face,cl, ndeb, flux);
+//           if ( (elem(face,0)) > -1) for (int k = 0; k < ncomp; k++) resu(face,k) += flux(k);
+//           if ( (elem(face,1)) > -1) for (int k = 0; k < ncomp; k++) resu(face,k) -= flux(k);
+//         }
+//     }
+// }
 
 template <class _TYPE_> template <Type_Flux_Fa7 Fa7_Type, typename Type_Double>
 void T_It_VDF_Face<_TYPE_>::contribuer_au_second_membre_fa7_elem_(const int num_elem, const int ncomp, DoubleTab& resu) const

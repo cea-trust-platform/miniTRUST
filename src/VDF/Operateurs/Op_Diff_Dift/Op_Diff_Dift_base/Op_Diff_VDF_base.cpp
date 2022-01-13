@@ -222,32 +222,32 @@ void Op_Diff_VDF_base::contribuer_au_second_membre(DoubleTab& resu) const
             {
               const Cond_lim& la_cl = zclvdf.les_conditions_limites(n_bord);
 
-              if (sub_type(Dirichlet,la_cl.valeur()))
-                {
-                  const Dirichlet& la_cl_diri = ref_cast(Dirichlet,la_cl.valeur());
-                  const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
-                  ndeb = le_bord.num_premiere_face();
-                  nfin = ndeb + le_bord.nb_faces();
-                  double r_2,coef;
-                  for (num_face=ndeb; num_face<nfin; num_face++)
-                    {
-                      if (ori(num_face) == 0)
-                        {
-                          int elem1=face_voisins(num_face,0);
-                          int elem2=face_voisins(num_face,1);
-                          if(elem1==-1)
-                            db_diffusivite=diffu_tot(elem2);
-                          else
-                            {
-                              assert (elem2==-1);
-                              db_diffusivite=diffu_tot(elem1);
-                            }
-                          r_2 = xv(num_face,0)*xv(num_face,0);
-                          coef = volumes_entrelaces(num_face)/r_2;
-                          resu(num_face) -= (la_cl_diri.val_imp(num_face-ndeb)*coef)*db_diffusivite;
-                        }
-                    }
-                }
+              // if (sub_type(Dirichlet,la_cl.valeur()))
+              //   {
+              //     const Dirichlet& la_cl_diri = ref_cast(Dirichlet,la_cl.valeur());
+              //     const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
+              //     ndeb = le_bord.num_premiere_face();
+              //     nfin = ndeb + le_bord.nb_faces();
+              //     double r_2,coef;
+              //     for (num_face=ndeb; num_face<nfin; num_face++)
+              //       {
+              //         if (ori(num_face) == 0)
+              //           {
+              //             int elem1=face_voisins(num_face,0);
+              //             int elem2=face_voisins(num_face,1);
+              //             if(elem1==-1)
+              //               db_diffusivite=diffu_tot(elem2);
+              //             else
+              //               {
+              //                 assert (elem2==-1);
+              //                 db_diffusivite=diffu_tot(elem1);
+              //               }
+              //             r_2 = xv(num_face,0)*xv(num_face,0);
+              //             coef = volumes_entrelaces(num_face)/r_2;
+              //             resu(num_face) -= (la_cl_diri.val_imp(num_face-ndeb)*coef)*db_diffusivite;
+              //           }
+              //       }
+              //   }
             }
         }
     }

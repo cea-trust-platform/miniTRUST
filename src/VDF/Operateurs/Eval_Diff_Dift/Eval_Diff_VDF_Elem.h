@@ -23,8 +23,8 @@
 #ifndef Eval_Diff_VDF_Elem_included
 #define Eval_Diff_VDF_Elem_included
 
-#include <Champ_front_calc_interne.h>
-#include <Echange_interne_impose.h>
+//#include <Champ_front_calc_interne.h>
+//#include <Echange_interne_impose.h>
 #include <CL_Types_include.h>
 #include <Evaluateur_VDF.h>
 #include <Eval_VDF_Elem.h>
@@ -72,12 +72,12 @@ public:
   inline void flux_face(const DoubleTab&, const int, const BC&, int, Type_Double& ) const { /* Do nothing */ }
 
   // To overload
-  template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const Dirichlet_entree_fluide&, const int, Type_Double& ) const;
+  // template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const Dirichlet_entree_fluide&, const int, Type_Double& ) const;
   template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const Neumann_paroi&, const int, Type_Double& ) const;
-  template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const Periodique&, const int, Type_Double& ) const;
-  template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const Echange_global_impose&, const int, Type_Double& ) const;
-  template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const Dirichlet_paroi_fixe&, const int, Type_Double& ) const;
-  template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const int, const int, const Echange_externe_impose&, const int, Type_Double& ) const;
+  // template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const Periodique&, const int, Type_Double& ) const;
+  // template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const Echange_global_impose&, const int, Type_Double& ) const;
+  // template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const Dirichlet_paroi_fixe&, const int, Type_Double& ) const;
+   template <typename Type_Double> inline void flux_face(const DoubleTab&, const int, const int, const int, const Echange_externe_impose&, const int, Type_Double& ) const;
   template <typename Type_Double> inline void flux_faces_interne(const DoubleTab&, const int, Type_Double& ) const;
 
   /* ************************************** *
@@ -88,11 +88,11 @@ public:
   inline void coeffs_face(const int, const int, const BC&, Type_Double&, Type_Double& ) const { /* Do nothing */ }
 
   // To overload
-  template <typename Type_Double> inline void coeffs_face(const int, const int, const Dirichlet_entree_fluide&, Type_Double&, Type_Double& ) const;
+  // template <typename Type_Double> inline void coeffs_face(const int, const int, const Dirichlet_entree_fluide&, Type_Double&, Type_Double& ) const;
   template <typename Type_Double> inline void coeffs_face(const int, const int, const Neumann_paroi&, Type_Double&, Type_Double& ) const;
-  template <typename Type_Double> inline void coeffs_face(const int, const int, const Periodique&, Type_Double&, Type_Double& ) const;
-  template <typename Type_Double> inline void coeffs_face(const int, const int, const Echange_global_impose&, Type_Double&, Type_Double& ) const;
-  template <typename Type_Double> inline void coeffs_face(const int, const int, const Dirichlet_paroi_fixe&, Type_Double&, Type_Double& ) const;
+  // template <typename Type_Double> inline void coeffs_face(const int, const int, const Periodique&, Type_Double&, Type_Double& ) const;
+  // template <typename Type_Double> inline void coeffs_face(const int, const int, const Echange_global_impose&, Type_Double&, Type_Double& ) const;
+  // template <typename Type_Double> inline void coeffs_face(const int, const int, const Dirichlet_paroi_fixe&, Type_Double&, Type_Double& ) const;
   template <typename Type_Double> inline void coeffs_face(const int, const int, const int, const int, const Echange_externe_impose&, Type_Double&, Type_Double& ) const;
   template <typename Type_Double> inline void coeffs_faces_interne(const int, Type_Double&, Type_Double& ) const;
 
@@ -104,10 +104,10 @@ public:
   inline void secmem_face(const int, const BC&, const int, Type_Double& ) const { /* Do nothing */ }
 
   // To overload
-  template <typename Type_Double> inline void secmem_face(const int, const Dirichlet_entree_fluide&, const int, Type_Double& ) const;
+  // template <typename Type_Double> inline void secmem_face(const int, const Dirichlet_entree_fluide&, const int, Type_Double& ) const;
   template <typename Type_Double> inline void secmem_face(const int, const Neumann_paroi&, const int, Type_Double& ) const;
-  template <typename Type_Double> inline void secmem_face(const int, const Echange_global_impose&, const int, Type_Double& ) const;
-  template <typename Type_Double> inline void secmem_face(const int, const Dirichlet_paroi_fixe&, const int, Type_Double& ) const;
+  // template <typename Type_Double> inline void secmem_face(const int, const Echange_global_impose&, const int, Type_Double& ) const;
+  // template <typename Type_Double> inline void secmem_face(const int, const Dirichlet_paroi_fixe&, const int, Type_Double& ) const;
   template <typename Type_Double> inline void secmem_face(const int, const int, const int, const Echange_externe_impose&, const int, Type_Double& ) const;
   template <typename Type_Double> inline void secmem_faces_interne(const int, Type_Double& ) const;
 
