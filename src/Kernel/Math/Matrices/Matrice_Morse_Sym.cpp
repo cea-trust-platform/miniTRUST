@@ -1037,8 +1037,9 @@ void Matrice_Morse_Sym::renumerote() const
   // renumerotation des noeuds
   // subroutine perphn(n,ja,ia,init,iperm,mask,maskval,nlev,riord,levels)
   // SPARSKIT2/ORDERINGS/levset.f
-  F77NAME(PERPHN)(&n, tab2tmp, tab1tmp, &init,  mask, &maskval,
-                  &nlev, tab_iperm.addr(), level);
+  throw;
+  // F77NAME(PERPHN)(&n, tab2tmp, tab1tmp, &init,  mask, &maskval,
+  //                 &nlev, tab_iperm.addr(), level);
 
 
   delete []masktmp;
@@ -1069,7 +1070,8 @@ void Matrice_Morse_Sym::renumerote() const
 
   // subroutine dperm (nrow,a,ja,ia,ao,jao,iao,perm,qperm,job)
   // SPARSKIT2/FORMATS/unary.f
-  F77NAME(DPERM) (&n, a, ja, ia, ao, jao, iao, perm, perm_inv, &job);
+  throw;
+  // F77NAME(DPERM) (&n, a, ja, ia, ao, jao, iao, perm, perm_inv, &job);
 
   matrice.transpose(matrice2);
   for (int i=0; i<mon_ordre; i++) matrice2(i, i) = 0.;

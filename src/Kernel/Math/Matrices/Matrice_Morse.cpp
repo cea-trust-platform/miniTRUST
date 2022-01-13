@@ -872,9 +872,10 @@ Matrice_Morse& Matrice_Morse::diagmulmat(const DoubleVect& x)
       exit();
     }
 #ifndef CRAY
-  F77NAME(DIAMUA)(&m ,&l,
-                  coeff_.addr(),tab2_.addr(),tab1_.addr(),x.addr(),
-                  coeff_.addr(),tab2_.addr(),tab1_.addr());
+throw;
+  // F77NAME(DIAMUA)(&m ,&l,
+  //                 coeff_.addr(),tab2_.addr(),tab1_.addr(),x.addr(),
+  //                 coeff_.addr(),tab2_.addr(),tab1_.addr());
 #else
   Cerr << "Matrice_Morse::diagmulmat DIAMUA call invalid for CRAY"<<finl;
   exit();
@@ -1128,10 +1129,11 @@ Matrice_Morse operator+(const Matrice_Morse& A , const Matrice_Morse& B )
   // https://software.intel.com/en-us/mkl-developer-reference-c-mkl-sparse-add
   int nzmax = A.has_same_morse_matrix_structure(B) ? A.nb_coeff() : A.nb_coeff()+B.nb_coeff();
   C.dimensionner(nrow, ncol, nzmax);
-  F77NAME(APLB) (&nrow, &ncol, &job, A.get_coeff().addr(), A.get_tab2().addr(), A.get_tab1().addr(),
-                 B.get_coeff().addr(), B.get_tab2().addr(), B.get_tab1().addr(), C.get_set_coeff().addr(),
-                 C.get_set_tab2().addr(), C.get_set_tab1().addr(),
-                 &nzmax,iw.addr(),&ierr);
+  throw;
+  // F77NAME(APLB) (&nrow, &ncol, &job, A.get_coeff().addr(), A.get_tab2().addr(), A.get_tab1().addr(),
+  //                B.get_coeff().addr(), B.get_tab2().addr(), B.get_tab1().addr(), C.get_set_coeff().addr(),
+  //                C.get_set_tab2().addr(), C.get_set_tab1().addr(),
+  //                &nzmax,iw.addr(),&ierr);
 
   const int nnz = C.tab1_[nrow] - 1;
   C.get_set_tab2().resize( nnz );
@@ -1234,10 +1236,11 @@ precond :
 
         //Cerr << "  ****  Preconditionnement ILUT de la matrice de pression  ****" << finl;
 #ifndef CRAY
-        F77NAME(ILUT)(&nn, coeff_.addr(), tab2_.addr(), tab1_.addr(), &lf,
-                      &to, alu.addr(), jlu.addr(), ju.addr(),
-                      &iw, w.addr(),
-                      jw.addr(), &ie);
+throw;
+        // F77NAME(ILUT)(&nn, coeff_.addr(), tab2_.addr(), tab1_.addr(), &lf,
+        //               &to, alu.addr(), jlu.addr(), ju.addr(),
+        //               &iw, w.addr(),
+        //               jw.addr(), &ie);
         //         to=0;
         //         wu=0.0;
         //         wl=0.0;
@@ -1332,9 +1335,10 @@ precond :
     int maxits = max(10, nn);
     int io = 0;                                // fichier de sortie
 #ifndef CRAY
-    F77NAME(PGMRES)(&nn, &ima, toto.addr(), solution.addr(), vv.addr(), &coeff_seuilr,
-                    &maxits, &io, coeff_.addr(), tab2_.addr(), tab1_.addr(),
-                    alu.addr(), jlu.addr(), ju.addr(), &ie);
+throw;
+    // F77NAME(PGMRES)(&nn, &ima, toto.addr(), solution.addr(), vv.addr(), &coeff_seuilr,
+    //                 &maxits, &io, coeff_.addr(), tab2_.addr(), tab1_.addr(),
+    //                 alu.addr(), jlu.addr(), ju.addr(), &ie);
 
 #else
     Cerr << "Matrice_Morse::inverse PGMRES call invalid for CRAY"<<finl;
@@ -1432,10 +1436,11 @@ int Matrice_Morse::inverse(const DoubleVect& secmem, DoubleVect& solution,
 
         //Cerr << "  ****  Preconditionnement ILUT de la matrice de pression  ****" << finl;
 #ifndef CRAY
-        F77NAME(ILUT)(&nn, coeff_.addr(), tab2_.addr(), tab1_.addr(), &lf,
-                      &to, alu.addr(), jlu.addr(), ju.addr(),
-                      &iw, w.addr(),
-                      jw.addr(), &ie);
+throw;
+        // F77NAME(ILUT)(&nn, coeff_.addr(), tab2_.addr(), tab1_.addr(), &lf,
+        //               &to, alu.addr(), jlu.addr(), ju.addr(),
+        //               &iw, w.addr(),
+        //               jw.addr(), &ie);
 #else
         Cerr << "Matrice_Morse::inverse ILUT call invalid for CRAY"<<finl;
         exit();
@@ -1516,9 +1521,10 @@ int Matrice_Morse::inverse(const DoubleVect& secmem, DoubleVect& solution,
     int maxits = max(10, max_iter);
     int io = 0;                                // fichier de sortie
 #ifndef CRAY
-    F77NAME(PGMRES)(&nn, &ima, toto.addr(), solution.addr(), vv.addr(), &coeff_seuilr,
-                    &maxits, &io, coeff_.addr(), tab2_.addr(), tab1_.addr(),
-                    alu.addr(), jlu.addr(), ju.addr(), &ie);
+throw;
+    // F77NAME(PGMRES)(&nn, &ima, toto.addr(), solution.addr(), vv.addr(), &coeff_seuilr,
+    //                 &maxits, &io, coeff_.addr(), tab2_.addr(), tab1_.addr(),
+    //                 alu.addr(), jlu.addr(), ju.addr(), &ie);
 #else
     Cerr << "Matrice_Morse::inverse PGMRES call invalid for CRAY"<<finl;
     exit();
