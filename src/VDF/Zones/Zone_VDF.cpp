@@ -26,9 +26,9 @@
 #include <Hexaedre.h>
 #include <Faces_VDF.h>
 #include <Aretes.h>
-#include <Periodique.h>
-#include <Dirichlet_entree_fluide.h>
-#include <Neumann_sortie_libre.h>
+// #include <Periodique.h>
+// #include <Dirichlet_entree_fluide.h>
+// #include <Neumann_sortie_libre.h>
 #include <EcrFicCollecte.h>
 #include <math.h>
 #include <IntTrav.h>
@@ -685,292 +685,292 @@ void Zone_VDF::modifier_pour_Cl(const Conds_lim& conds_lim)
       // for cl ...
       //Journal() << "On traite la cl num : " << num_cond_lim << finl;
       const Cond_lim_base& cl = conds_lim[num_cond_lim].valeur();
-      if (sub_type(Periodique, cl))
-        {
-          // if cl perio
-
-          // Modification du tableau Qdm_ pour les aretes de type periodicite
-
-          const Zone_Cl_VDF& zone_Cl_VDF = ref_cast(Zone_Cl_VDF,cl.zone_Cl_dis());
-
-          int ndeb_arete = premiere_arete_bord();
-          int fac1,fac2,sign,num_face,elem1,n_type;
-          for (int n_arete=ndeb_arete; n_arete<ndeb_arete+nb_aretes_bord(); n_arete++)
-            {
-              // for n_arete
-              n_type=zone_Cl_VDF.type_arete_bord(n_arete-ndeb_arete);
-
-              if (n_type == TypeAreteBordVDF::PERIO_PERIO) // arete de type periodicite
-                {
-                  //if arete perio
-                  fac1 = Qdm_(n_arete,0);
-                  fac2 = Qdm_(n_arete,1);
-                  fac3 = Qdm_(n_arete,2);
-                  sign = Qdm_(n_arete,3);
-
-                  const Front_VF& la_frontiere_dis = ref_cast(Front_VF,cl.frontiere_dis());
-                  int ndeb = la_frontiere_dis.num_premiere_face();
-                  int nfin = ndeb + la_frontiere_dis.nb_faces();
-                  if ( ( ( ndeb <= fac1) && (fac1 < nfin) ) ||
-                       ( ( ndeb <= fac2) && (fac2 < nfin) )
-                     )
-                    {
-                      if (sign == 1)
-                        elem1 = face_voisins(fac1,1);
-                      else
-                        elem1 = face_voisins(fac1,0);
-                      num_face = dimension+orientation_[fac3];
-
-                      if (sign == -1)
-                        {
-                          Qdm_(n_arete,3) = fac3;
-                          Qdm_(n_arete,2) = elem_faces(elem1,num_face);
-                        }
-                      else
-                        Qdm_(n_arete,3) = elem_faces(elem1,num_face);
-                    }
-                }
-            }
-          // prise  en compte des aretes coin
-          int ndeb_arete_coin = premiere_arete_coin();
-          Cerr << "Modifications de Qdm pour les aretes coins  num_cond_lim=" << num_cond_lim <<  finl;
-          int fac4;
-
-          for (int n_arete=ndeb_arete_coin; n_arete<ndeb_arete_coin+nb_aretes_coin(); n_arete++)
-            {
-              if (aretes_coin_traitees[n_arete] != 1)
-                {
-                  fac1 = Qdm_(n_arete,0);
-                  fac2 = Qdm_(n_arete,1);
-                  fac3 = Qdm_(n_arete,2);
-                  fac4 = Qdm_(n_arete,3);
-
-                  // On recupere le numero des faces qui ne sont pas egales a -1
-                  IntVect f(2);
-                  f = -2;
-                  int i=0;
-                  if (fac1 != -1)
-                    {
-                      f(i) = fac1;
-                      i++;
-                    }
-                  if (fac2 != -1)
-                    {
-                      f(i) = fac2;
-                      i++;
-                    }
-                  if (fac3 != -1)
-                    {
-                      f(i) = fac3;
-                      i++;
-                    }
-                  if (fac4 != -1)
-                    {
-                      f(i) = fac4;
-                      i++;
-                    }
-
-                  // On regarde si la face est une face de periodicite
-
-                  const Front_VF& la_frontiere_dis = ref_cast(Front_VF,cl.frontiere_dis());
-                  int ndeb = la_frontiere_dis.num_premiere_face();
-                  int nfin = ndeb + la_frontiere_dis.nb_faces();
-                  int  elem, fac,dim0,dim1,indic_f0=-100,indic_f1=-100;
-
-                  n_type=zone_Cl_VDF.type_arete_coin(n_arete-ndeb_arete_coin);
-                  dim1 = orientation_[f(1)];
-                  dim0 = orientation_[f(0)];
-
-                  for (int j=0; j<2; j++)
-                    for (int k=0; k<2; k++)
-                      if ((face_voisins(f(0),j) == face_voisins(f(1),k))  && (face_voisins(f(0),j)!=-1) )
-                        {
-                          indic_f0 = j;
-                          indic_f1 = k;
-                        }
-
-                  if ((n_type == TypeAreteCoinVDF::PERIO_PAROI) || (n_type == TypeAreteCoinVDF::PERIO_FLUIDE))// arete coin perio-paroi
-                    {
-                      if ((f(0) >= ndeb)&&(f(0) < nfin))
-                        {
-                          Qdm_(n_arete,2)=f(0);
-                          Qdm_(n_arete,indic_f0)=f(1);
-
-                          elem = face_voisins(f(0),1-indic_f0);
-                          fac = elem_faces(elem,dim1+(1-indic_f1)*dimension);
-                          Qdm_(n_arete,1-indic_f0)=fac;
-
-                          Qdm_(n_arete,3)=1-2*indic_f1;
-
-                          //                          Cerr << "n_arete=" << n_arete << "  OK!!" << finl;
-                          aretes_coin_traitees[n_arete] = 1;
-                        }
-                      else
-                        {
-                          if ((f(1) >= ndeb)&&(f(1) < nfin))
-                            {
-                              Qdm_(n_arete,2)=f(1);
-                              Qdm_(n_arete,indic_f1)=f(0);
-
-                              elem = face_voisins(f(1),1-indic_f1);
-                              fac = elem_faces(elem,dim0+(1-indic_f0)*dimension);
-                              Qdm_(n_arete,1-indic_f1)=fac;
-
-                              Qdm_(n_arete,3)=1-2*indic_f0;
-
-                              //                              Cerr << "n_arete=" << n_arete << "  OK!!" << finl;
-                              aretes_coin_traitees[n_arete] = 1;
-                            }
-                          else
-                            {
-                              // Cerr<<"Attention cas non traite lors du remplissage du tableau Qdm"<<finl;
-                              // exit();
-                              ;
-                            }
-                        }
-                    }
-                  else if (n_type == TypeAreteCoinVDF::PERIO_PERIO) // arete coin perio-perio
-                    {
-                      if ((f(0) >= ndeb)&&(f(0) < nfin))
-                        {
-                          Qdm_(n_arete,2+indic_f1)=f(0);
-                          Qdm_(n_arete,indic_f0)=f(1);
-
-                          elem = face_voisins(f(0),1-indic_f0);
-                          fac = elem_faces(elem,dim1+(1-indic_f1)*dimension);
-                          Qdm_(n_arete,1-indic_f0)=fac;
-
-                          elem = face_voisins(f(1),1-indic_f1);
-                          fac = elem_faces(elem,dim0+(1-indic_f0)*dimension);
-                          Qdm_(n_arete,3-indic_f1)=fac;
-
-                          //                            Cerr << "n_arete=" << n_arete << "  OK!!" << finl;
-                          aretes_coin_traitees[n_arete] = 1;
-                        }
-                      else
-                        {
-                          if ((f(1) >= ndeb)&&(f(1) < nfin))
-                            {
-                              Qdm_(n_arete,2+indic_f0)=f(1);
-                              Qdm_(n_arete,indic_f1)=f(0);
-
-                              elem = face_voisins(f(1),1-indic_f1);
-                              fac = elem_faces(elem,dim0+(1-indic_f0)*dimension);
-                              Qdm_(n_arete,1-indic_f1)=fac;
-
-                              elem = face_voisins(f(0),1-indic_f0);
-                              fac = elem_faces(elem,dim1+(1-indic_f1)*dimension);
-                              Qdm_(n_arete,3-indic_f0)=fac;
-
-                              //                                Cerr << "n_arete=" << n_arete << "  OK!!" << finl;
-                              aretes_coin_traitees[n_arete] = 1;
-                            }
-                        }
-                    }
-
-                  else
-                    {
-                      Cerr << "Attention : les cas concernant d autres types d aretes coin "  << finl;
-                      Cerr << "que perio-perio ou perio-paroi ne sont pas traites!!" << finl;
-                    }
-                }
-            }
-        }
-
-      // Modif OC 01/2005 pour traiter les coins de type paroi/fluide
-      else if (sub_type(Dirichlet_entree_fluide, cl) || sub_type(Neumann_sortie_libre, cl) )
-        {
-          // if cl de type paroi
-
-          const Zone_Cl_VDF& zone_Cl_VDF = ref_cast(Zone_Cl_VDF,cl.zone_Cl_dis());
-
-          int fac1,fac2,n_type;
-          int ndeb_arete_coin = premiere_arete_coin();
-          Cerr << "Modifications de Qdm pour les aretes coins touchant une paroi num_cond_lim=" << num_cond_lim <<  finl;
-          int fac4;
-
-          for (int n_arete=ndeb_arete_coin; n_arete<ndeb_arete_coin+nb_aretes_coin(); n_arete++)
-            {
-              if (aretes_coin_traitees[n_arete] != 1)
-                {
-                  fac1 = Qdm_(n_arete,0);
-                  fac2 = Qdm_(n_arete,1);
-                  fac3 = Qdm_(n_arete,2);
-                  fac4 = Qdm_(n_arete,3);
-
-                  // On recupere le numero des faces qui ne sont pas egales a -1
-                  IntVect f(2);
-                  f = -2;
-                  int i=0;
-                  if (fac1 != -1)
-                    {
-                      f(i) = fac1;
-                      i++;
-                    }
-                  if (fac2 != -1)
-                    {
-                      f(i) = fac2;
-                      i++;
-                    }
-                  if (fac3 != -1)
-                    {
-                      f(i) = fac3;
-                      i++;
-                    }
-                  if (fac4 != -1)
-                    {
-                      f(i) = fac4;
-                      i++;
-                    }
-
-                  // On regarde si la face est une face de type paroi
-
-                  const Front_VF& la_frontiere_dis = ref_cast(Front_VF,cl.frontiere_dis());
-                  int ndeb = la_frontiere_dis.num_premiere_face();
-                  int nfin = ndeb + la_frontiere_dis.nb_faces();
-                  int indic_f0=-100,indic_f1=-100;
-
-                  n_type=zone_Cl_VDF.type_arete_coin(n_arete-ndeb_arete_coin);
-
-                  for (int j=0; j<2; j++)
-                    for (int k=0; k<2; k++)
-                      if ((face_voisins(f(0),j) == face_voisins(f(1),k)) && (face_voisins(f(0),j)!=-1) )
-                        {
-                          indic_f0 = j;
-                          indic_f1 = k;
-                        }
-
-                  if ((n_type == TypeAreteCoinVDF::PAROI_FLUIDE) || (n_type == TypeAreteCoinVDF::FLUIDE_PAROI) || (n_type == TypeAreteCoinVDF::FLUIDE_FLUIDE))// arete coin paroi-fluide
-                    {
-                      if ((f(0) >= ndeb)&&(f(0) < nfin))
-                        {
-                          Qdm_(n_arete,0)=f(1);
-                          Qdm_(n_arete,1)=f(1);
-                          Qdm_(n_arete,2)=f(0);
-                          Qdm_(n_arete,3)=1-2*indic_f1;
-                          aretes_coin_traitees[n_arete] = 1;
-                        }
-                      else
-                        {
-                          if ((f(1) >= ndeb)&&(f(1) < nfin))
-                            {
-                              Qdm_(n_arete,0)=f(0);
-                              Qdm_(n_arete,1)=f(0);
-                              Qdm_(n_arete,2)=f(1);
-                              Qdm_(n_arete,3)=1-2*indic_f0;
-                              aretes_coin_traitees[n_arete] = 1;
-                            }
-                          else
-                            {
-                              // Cerr<<"Attention cas non traite lors du remplissage du tableau Qdm"<<finl;
-                              // exit();
-                              ;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//      if (sub_type(Periodique, cl))
+//        {
+//          // if cl perio
+//
+//          // Modification du tableau Qdm_ pour les aretes de type periodicite
+//
+//          const Zone_Cl_VDF& zone_Cl_VDF = ref_cast(Zone_Cl_VDF,cl.zone_Cl_dis());
+//
+//          int ndeb_arete = premiere_arete_bord();
+//          int fac1,fac2,sign,num_face,elem1,n_type;
+//          for (int n_arete=ndeb_arete; n_arete<ndeb_arete+nb_aretes_bord(); n_arete++)
+//            {
+//              // for n_arete
+//              n_type=zone_Cl_VDF.type_arete_bord(n_arete-ndeb_arete);
+//
+//              if (n_type == TypeAreteBordVDF::PERIO_PERIO) // arete de type periodicite
+//                {
+//                  //if arete perio
+//                  fac1 = Qdm_(n_arete,0);
+//                  fac2 = Qdm_(n_arete,1);
+//                  fac3 = Qdm_(n_arete,2);
+//                  sign = Qdm_(n_arete,3);
+//
+//                  const Front_VF& la_frontiere_dis = ref_cast(Front_VF,cl.frontiere_dis());
+//                  int ndeb = la_frontiere_dis.num_premiere_face();
+//                  int nfin = ndeb + la_frontiere_dis.nb_faces();
+//                  if ( ( ( ndeb <= fac1) && (fac1 < nfin) ) ||
+//                       ( ( ndeb <= fac2) && (fac2 < nfin) )
+//                     )
+//                    {
+//                      if (sign == 1)
+//                        elem1 = face_voisins(fac1,1);
+//                      else
+//                        elem1 = face_voisins(fac1,0);
+//                      num_face = dimension+orientation_[fac3];
+//
+//                      if (sign == -1)
+//                        {
+//                          Qdm_(n_arete,3) = fac3;
+//                          Qdm_(n_arete,2) = elem_faces(elem1,num_face);
+//                        }
+//                      else
+//                        Qdm_(n_arete,3) = elem_faces(elem1,num_face);
+//                    }
+//                }
+//            }
+//          // prise  en compte des aretes coin
+//          int ndeb_arete_coin = premiere_arete_coin();
+//          Cerr << "Modifications de Qdm pour les aretes coins  num_cond_lim=" << num_cond_lim <<  finl;
+//          int fac4;
+//
+//          for (int n_arete=ndeb_arete_coin; n_arete<ndeb_arete_coin+nb_aretes_coin(); n_arete++)
+//            {
+//              if (aretes_coin_traitees[n_arete] != 1)
+//                {
+//                  fac1 = Qdm_(n_arete,0);
+//                  fac2 = Qdm_(n_arete,1);
+//                  fac3 = Qdm_(n_arete,2);
+//                  fac4 = Qdm_(n_arete,3);
+//
+//                  // On recupere le numero des faces qui ne sont pas egales a -1
+//                  IntVect f(2);
+//                  f = -2;
+//                  int i=0;
+//                  if (fac1 != -1)
+//                    {
+//                      f(i) = fac1;
+//                      i++;
+//                    }
+//                  if (fac2 != -1)
+//                    {
+//                      f(i) = fac2;
+//                      i++;
+//                    }
+//                  if (fac3 != -1)
+//                    {
+//                      f(i) = fac3;
+//                      i++;
+//                    }
+//                  if (fac4 != -1)
+//                    {
+//                      f(i) = fac4;
+//                      i++;
+//                    }
+//
+//                  // On regarde si la face est une face de periodicite
+//
+//                  const Front_VF& la_frontiere_dis = ref_cast(Front_VF,cl.frontiere_dis());
+//                  int ndeb = la_frontiere_dis.num_premiere_face();
+//                  int nfin = ndeb + la_frontiere_dis.nb_faces();
+//                  int  elem, fac,dim0,dim1,indic_f0=-100,indic_f1=-100;
+//
+//                  n_type=zone_Cl_VDF.type_arete_coin(n_arete-ndeb_arete_coin);
+//                  dim1 = orientation_[f(1)];
+//                  dim0 = orientation_[f(0)];
+//
+//                  for (int j=0; j<2; j++)
+//                    for (int k=0; k<2; k++)
+//                      if ((face_voisins(f(0),j) == face_voisins(f(1),k))  && (face_voisins(f(0),j)!=-1) )
+//                        {
+//                          indic_f0 = j;
+//                          indic_f1 = k;
+//                        }
+//
+//                  if ((n_type == TypeAreteCoinVDF::PERIO_PAROI) || (n_type == TypeAreteCoinVDF::PERIO_FLUIDE))// arete coin perio-paroi
+//                    {
+//                      if ((f(0) >= ndeb)&&(f(0) < nfin))
+//                        {
+//                          Qdm_(n_arete,2)=f(0);
+//                          Qdm_(n_arete,indic_f0)=f(1);
+//
+//                          elem = face_voisins(f(0),1-indic_f0);
+//                          fac = elem_faces(elem,dim1+(1-indic_f1)*dimension);
+//                          Qdm_(n_arete,1-indic_f0)=fac;
+//
+//                          Qdm_(n_arete,3)=1-2*indic_f1;
+//
+//                          //                          Cerr << "n_arete=" << n_arete << "  OK!!" << finl;
+//                          aretes_coin_traitees[n_arete] = 1;
+//                        }
+//                      else
+//                        {
+//                          if ((f(1) >= ndeb)&&(f(1) < nfin))
+//                            {
+//                              Qdm_(n_arete,2)=f(1);
+//                              Qdm_(n_arete,indic_f1)=f(0);
+//
+//                              elem = face_voisins(f(1),1-indic_f1);
+//                              fac = elem_faces(elem,dim0+(1-indic_f0)*dimension);
+//                              Qdm_(n_arete,1-indic_f1)=fac;
+//
+//                              Qdm_(n_arete,3)=1-2*indic_f0;
+//
+//                              //                              Cerr << "n_arete=" << n_arete << "  OK!!" << finl;
+//                              aretes_coin_traitees[n_arete] = 1;
+//                            }
+//                          else
+//                            {
+//                              // Cerr<<"Attention cas non traite lors du remplissage du tableau Qdm"<<finl;
+//                              // exit();
+//                              ;
+//                            }
+//                        }
+//                    }
+//                  else if (n_type == TypeAreteCoinVDF::PERIO_PERIO) // arete coin perio-perio
+//                    {
+//                      if ((f(0) >= ndeb)&&(f(0) < nfin))
+//                        {
+//                          Qdm_(n_arete,2+indic_f1)=f(0);
+//                          Qdm_(n_arete,indic_f0)=f(1);
+//
+//                          elem = face_voisins(f(0),1-indic_f0);
+//                          fac = elem_faces(elem,dim1+(1-indic_f1)*dimension);
+//                          Qdm_(n_arete,1-indic_f0)=fac;
+//
+//                          elem = face_voisins(f(1),1-indic_f1);
+//                          fac = elem_faces(elem,dim0+(1-indic_f0)*dimension);
+//                          Qdm_(n_arete,3-indic_f1)=fac;
+//
+//                          //                            Cerr << "n_arete=" << n_arete << "  OK!!" << finl;
+//                          aretes_coin_traitees[n_arete] = 1;
+//                        }
+//                      else
+//                        {
+//                          if ((f(1) >= ndeb)&&(f(1) < nfin))
+//                            {
+//                              Qdm_(n_arete,2+indic_f0)=f(1);
+//                              Qdm_(n_arete,indic_f1)=f(0);
+//
+//                              elem = face_voisins(f(1),1-indic_f1);
+//                              fac = elem_faces(elem,dim0+(1-indic_f0)*dimension);
+//                              Qdm_(n_arete,1-indic_f1)=fac;
+//
+//                              elem = face_voisins(f(0),1-indic_f0);
+//                              fac = elem_faces(elem,dim1+(1-indic_f1)*dimension);
+//                              Qdm_(n_arete,3-indic_f0)=fac;
+//
+//                              //                                Cerr << "n_arete=" << n_arete << "  OK!!" << finl;
+//                              aretes_coin_traitees[n_arete] = 1;
+//                            }
+//                        }
+//                    }
+//
+//                  else
+//                    {
+//                      Cerr << "Attention : les cas concernant d autres types d aretes coin "  << finl;
+//                      Cerr << "que perio-perio ou perio-paroi ne sont pas traites!!" << finl;
+//                    }
+//                }
+//            }
+//        }
+//
+//      // Modif OC 01/2005 pour traiter les coins de type paroi/fluide
+//      else if (sub_type(Dirichlet_entree_fluide, cl) || sub_type(Neumann_sortie_libre, cl) )
+//        {
+//          // if cl de type paroi
+//
+//          const Zone_Cl_VDF& zone_Cl_VDF = ref_cast(Zone_Cl_VDF,cl.zone_Cl_dis());
+//
+//          int fac1,fac2,n_type;
+//          int ndeb_arete_coin = premiere_arete_coin();
+//          Cerr << "Modifications de Qdm pour les aretes coins touchant une paroi num_cond_lim=" << num_cond_lim <<  finl;
+//          int fac4;
+//
+//          for (int n_arete=ndeb_arete_coin; n_arete<ndeb_arete_coin+nb_aretes_coin(); n_arete++)
+//            {
+//              if (aretes_coin_traitees[n_arete] != 1)
+//                {
+//                  fac1 = Qdm_(n_arete,0);
+//                  fac2 = Qdm_(n_arete,1);
+//                  fac3 = Qdm_(n_arete,2);
+//                  fac4 = Qdm_(n_arete,3);
+//
+//                  // On recupere le numero des faces qui ne sont pas egales a -1
+//                  IntVect f(2);
+//                  f = -2;
+//                  int i=0;
+//                  if (fac1 != -1)
+//                    {
+//                      f(i) = fac1;
+//                      i++;
+//                    }
+//                  if (fac2 != -1)
+//                    {
+//                      f(i) = fac2;
+//                      i++;
+//                    }
+//                  if (fac3 != -1)
+//                    {
+//                      f(i) = fac3;
+//                      i++;
+//                    }
+//                  if (fac4 != -1)
+//                    {
+//                      f(i) = fac4;
+//                      i++;
+//                    }
+//
+//                  // On regarde si la face est une face de type paroi
+//
+//                  const Front_VF& la_frontiere_dis = ref_cast(Front_VF,cl.frontiere_dis());
+//                  int ndeb = la_frontiere_dis.num_premiere_face();
+//                  int nfin = ndeb + la_frontiere_dis.nb_faces();
+//                  int indic_f0=-100,indic_f1=-100;
+//
+//                  n_type=zone_Cl_VDF.type_arete_coin(n_arete-ndeb_arete_coin);
+//
+//                  for (int j=0; j<2; j++)
+//                    for (int k=0; k<2; k++)
+//                      if ((face_voisins(f(0),j) == face_voisins(f(1),k)) && (face_voisins(f(0),j)!=-1) )
+//                        {
+//                          indic_f0 = j;
+//                          indic_f1 = k;
+//                        }
+//
+//                  if ((n_type == TypeAreteCoinVDF::PAROI_FLUIDE) || (n_type == TypeAreteCoinVDF::FLUIDE_PAROI) || (n_type == TypeAreteCoinVDF::FLUIDE_FLUIDE))// arete coin paroi-fluide
+//                    {
+//                      if ((f(0) >= ndeb)&&(f(0) < nfin))
+//                        {
+//                          Qdm_(n_arete,0)=f(1);
+//                          Qdm_(n_arete,1)=f(1);
+//                          Qdm_(n_arete,2)=f(0);
+//                          Qdm_(n_arete,3)=1-2*indic_f1;
+//                          aretes_coin_traitees[n_arete] = 1;
+//                        }
+//                      else
+//                        {
+//                          if ((f(1) >= ndeb)&&(f(1) < nfin))
+//                            {
+//                              Qdm_(n_arete,0)=f(0);
+//                              Qdm_(n_arete,1)=f(0);
+//                              Qdm_(n_arete,2)=f(1);
+//                              Qdm_(n_arete,3)=1-2*indic_f0;
+//                              aretes_coin_traitees[n_arete] = 1;
+//                            }
+//                          else
+//                            {
+//                              // Cerr<<"Attention cas non traite lors du remplissage du tableau Qdm"<<finl;
+//                              // exit();
+//                              ;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
       //   Cerr << "Qdm : " << Qdm_ << finl;
       //   Cerr << "aretes_coin_traitees : " << aretes_coin_traitees << finl;
@@ -1005,17 +1005,17 @@ void Zone_VDF::creer_elements_fictifs(const Zone_Cl_dis_base& zcldisbase)
         {
           const Cond_lim& la_cl = zclvdf.les_conditions_limites(n_bord);
           const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
-          if ( (sub_type(Dirichlet_entree_fluide,la_cl.valeur())) ||
-               (sub_type(Neumann_sortie_libre,la_cl.valeur())) )
-            {
-              ndeb = le_bord.num_premiere_face();
-              nfin = ndeb + le_bord.nb_faces();
-              for (face=ndeb; face<nfin; face++)
-                if (face_voisins(face,0) != -1)
-                  face_voisins_fictifs_(face,1) = compteur++;
-                else
-                  face_voisins_fictifs_(face,0) = compteur++ ;
-            }
+          // if ( (sub_type(Dirichlet_entree_fluide,la_cl.valeur())) ||
+          //      (sub_type(Neumann_sortie_libre,la_cl.valeur())) )
+          //   {
+          //     ndeb = le_bord.num_premiere_face();
+          //     nfin = ndeb + le_bord.nb_faces();
+          //     for (face=ndeb; face<nfin; face++)
+          //       if (face_voisins(face,0) != -1)
+          //         face_voisins_fictifs_(face,1) = compteur++;
+          //       else
+          //         face_voisins_fictifs_(face,0) = compteur++ ;
+          //   }
         }
     }
   Cerr << "taille "<<face_voisins_fictifs_.size()-nb_elem()<<finl;

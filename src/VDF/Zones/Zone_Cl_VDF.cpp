@@ -22,17 +22,17 @@
 
 #include <Zone_Cl_VDF.h>
 #include <Zone_VDF.h>
-#include <Dirichlet_paroi_fixe.h>
-#include <Dirichlet_paroi_defilante.h>
-#include <Dirichlet_entree_fluide.h>
-#include <Sortie_libre_pression_imposee.h>
-#include <Symetrie.h>
-#include <Periodique.h>
+// #include <Dirichlet_paroi_fixe.h>
+// #include <Dirichlet_paroi_defilante.h>
+// #include <Dirichlet_entree_fluide.h>
+// #include <Sortie_libre_pression_imposee.h>
+// #include <Symetrie.h>
+// #include <Periodique.h>
 #include <Champ_Inc.h>
 #include <Champ_P0_VDF.h>
 #include <Champ_Face.h>
 #include <Option_VDF.h>
-#include <Champ_front_var_instationnaire.h>
+//#include <Champ_front_var_instationnaire.h>
 #include <Debog.h>
 
 Implemente_instanciable(Zone_Cl_VDF,"Zone_Cl_VDF",Zone_Cl_dis_base);
@@ -104,16 +104,16 @@ void Zone_Cl_VDF::completer(const Zone_dis& une_zone_dis)
 
           int numero_cl = 0;
 
-          if ( (sub_type(Dirichlet_paroi_fixe,la_cl)) ||
-               (sub_type(Dirichlet_paroi_defilante,la_cl)) )
-            numero_cl = 0;
-          else if ( (sub_type(Dirichlet_entree_fluide,la_cl)) ||
-                    (sub_type(Neumann_sortie_libre,la_cl)) )
-            numero_cl = 1;
-          else if (sub_type(Symetrie,la_cl))
-            numero_cl = 2;
-          else if (sub_type(Periodique,la_cl))
-            numero_cl = 3;
+//          if ( (sub_type(Dirichlet_paroi_fixe,la_cl)) ||
+//               (sub_type(Dirichlet_paroi_defilante,la_cl)) )
+//            numero_cl = 0;
+//          else if ( (sub_type(Dirichlet_entree_fluide,la_cl)) ||
+//                    (sub_type(Neumann_sortie_libre,la_cl)) )
+//            numero_cl = 1;
+//          else if (sub_type(Symetrie,la_cl))
+//            numero_cl = 2;
+//          else if (sub_type(Periodique,la_cl))
+//            numero_cl = 3;
 
           const Frontiere& fr = la_cl.frontiere_dis().frontiere();
           const int ndeb = fr.num_premiere_face();
@@ -391,72 +391,72 @@ void Zone_Cl_VDF::imposer_cond_lim(Champ_Inc& ch, double temps)
 
       for(int i=0; i<nb_cond_lim(); i++)
         {
-          const Cond_lim_base& la_cl = les_conditions_limites(i).valeur();
-          if (sub_type(Periodique,la_cl))
-            {
-              if (init == 0)
-                {
-                  // On fait en sorte que le champ ait la meme valeur
-                  // sur deux faces de periodicite qui sont en face l'une de l'autre
-                  const Periodique& la_cl_perio = ref_cast(Periodique,la_cl);
-                  const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
-                  ndeb = le_bord.num_premiere_face();
-                  nfin = ndeb + le_bord.nb_faces();
-                  int voisine;
-                  double moy;
-                  for (num_face=ndeb; num_face<nfin; num_face++)
-                    {
-                      voisine = la_cl_perio.face_associee(num_face-ndeb) + ndeb;
-                      if ( ch_tab[num_face] != ch_tab[voisine] )
-                        {
-                          //                           Cerr << "dans Zone_Cl_VDF::imposer_cond_lim : on reajuste les vitesses!! pour la face num=" << num_face << finl;
-                          //                           Cerr << "difference = ch_tab[num_face]-ch_tab[voisine]=" << ch_tab[num_face]-ch_tab[voisine] << finl;
-                          moy = 0.5*(ch_tab[num_face] + ch_tab[voisine]);
-                          ch_tab[num_face] = moy;
-                          ch_tab[voisine] = moy;
-                        }
-                    }
-                  // Il ne faut pas le faire a la premiere cl mais une fois toutes les cl faites une fois, cas multi perio avec ci non perio
-                  // init = 1;
-                }
-            }
-          else if( sub_type(Symetrie,la_cl) )
-            {
-              const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
-              ndeb = le_bord.num_premiere_face();
-              nfin = ndeb + le_bord.nb_faces();
-              for (num_face=ndeb; num_face<nfin; num_face++)
-                ch_tab[num_face] = 0;
-            }
-          else if ( sub_type(Dirichlet_entree_fluide,la_cl) )
-            {
-              const Dirichlet_entree_fluide& la_cl_diri = ref_cast(Dirichlet_entree_fluide,la_cl);
-              const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
-              ndeb = le_bord.num_premiere_face();
-              nfin = ndeb + le_bord.nb_faces();
+          // const Cond_lim_base& la_cl = les_conditions_limites(i).valeur();
+        //   if (sub_type(Periodique,la_cl))
+        //     {
+        //       if (init == 0)
+        //         {
+        //           // On fait en sorte que le champ ait la meme valeur
+        //           // sur deux faces de periodicite qui sont en face l'une de l'autre
+        //           const Periodique& la_cl_perio = ref_cast(Periodique,la_cl);
+        //           const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
+        //           ndeb = le_bord.num_premiere_face();
+        //           nfin = ndeb + le_bord.nb_faces();
+        //           int voisine;
+        //           double moy;
+        //           for (num_face=ndeb; num_face<nfin; num_face++)
+        //             {
+        //               voisine = la_cl_perio.face_associee(num_face-ndeb) + ndeb;
+        //               if ( ch_tab[num_face] != ch_tab[voisine] )
+        //                 {
+        //                   //                           Cerr << "dans Zone_Cl_VDF::imposer_cond_lim : on reajuste les vitesses!! pour la face num=" << num_face << finl;
+        //                   //                           Cerr << "difference = ch_tab[num_face]-ch_tab[voisine]=" << ch_tab[num_face]-ch_tab[voisine] << finl;
+        //                   moy = 0.5*(ch_tab[num_face] + ch_tab[voisine]);
+        //                   ch_tab[num_face] = moy;
+        //                   ch_tab[voisine] = moy;
+        //                 }
+        //             }
+        //           // Il ne faut pas le faire a la premiere cl mais une fois toutes les cl faites une fois, cas multi perio avec ci non perio
+        //           // init = 1;
+        //         }
+        //     }
+        //   else if( sub_type(Symetrie,la_cl) )
+        //     {
+        //       const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
+        //       ndeb = le_bord.num_premiere_face();
+        //       nfin = ndeb + le_bord.nb_faces();
+        //       for (num_face=ndeb; num_face<nfin; num_face++)
+        //         ch_tab[num_face] = 0;
+        //     }
+        //   else if ( sub_type(Dirichlet_entree_fluide,la_cl) )
+        //     {
+        //       const Dirichlet_entree_fluide& la_cl_diri = ref_cast(Dirichlet_entree_fluide,la_cl);
+        //       const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
+        //       ndeb = le_bord.num_premiere_face();
+        //       nfin = ndeb + le_bord.nb_faces();
 
-              for (num_face=ndeb; num_face<nfin; num_face++)
-                {
-                  // WEC : optimisable (pour chaque face recherche le bon temps !)
-                  ch_tab[num_face] = la_cl_diri.val_imp_au_temps(temps,num_face-ndeb,ma_zone_VDF.orientation(num_face));
-                }
-            }
-          else if ( sub_type(Dirichlet_paroi_fixe,la_cl) )
-            {
-              const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
-              ndeb = le_bord.num_premiere_face();
-              nfin = ndeb + le_bord.nb_faces();
-              for (num_face=ndeb; num_face<nfin; num_face++)
-                ch_tab[num_face] = 0;
-            }
-          else if ( sub_type(Dirichlet_paroi_defilante,la_cl) )
-            {
-              const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
-              ndeb = le_bord.num_premiere_face();
-              nfin = ndeb + le_bord.nb_faces();
-              for (num_face=ndeb; num_face<nfin; num_face++)
-                ch_tab[num_face] = 0;
-            }
+        //       for (num_face=ndeb; num_face<nfin; num_face++)
+        //         {
+        //           // WEC : optimisable (pour chaque face recherche le bon temps !)
+        //           ch_tab[num_face] = la_cl_diri.val_imp_au_temps(temps,num_face-ndeb,ma_zone_VDF.orientation(num_face));
+        //         }
+        //     }
+        //   else if ( sub_type(Dirichlet_paroi_fixe,la_cl) )
+        //     {
+        //       const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
+        //       ndeb = le_bord.num_premiere_face();
+        //       nfin = ndeb + le_bord.nb_faces();
+        //       for (num_face=ndeb; num_face<nfin; num_face++)
+        //         ch_tab[num_face] = 0;
+        //     }
+        //   else if ( sub_type(Dirichlet_paroi_defilante,la_cl) )
+        //     {
+        //       const Front_VF& le_bord = ref_cast(Front_VF,la_cl.frontiere_dis());
+        //       ndeb = le_bord.num_premiere_face();
+        //       nfin = ndeb + le_bord.nb_faces();
+        //       for (num_face=ndeb; num_face<nfin; num_face++)
+        //         ch_tab[num_face] = 0;
+        //     }
         }
       init = 1;
     }
@@ -475,11 +475,11 @@ int Zone_Cl_VDF::nb_faces_sortie_libre() const
   int compteur=0;
   for(int cl=0; cl<les_conditions_limites_.size(); cl++)
     {
-      if(sub_type(Sortie_libre_pression_imposee, les_conditions_limites_[cl].valeur()))
-        {
-          const Front_VF& le_bord=ref_cast(Front_VF,les_conditions_limites_[cl]->frontiere_dis());
-          compteur+=le_bord.nb_faces();
-        }
+      // if(sub_type(Sortie_libre_pression_imposee, les_conditions_limites_[cl].valeur()))
+      //   {
+      //     const Front_VF& le_bord=ref_cast(Front_VF,les_conditions_limites_[cl]->frontiere_dis());
+      //     compteur+=le_bord.nb_faces();
+      //   }
     }
   return compteur;
 }
