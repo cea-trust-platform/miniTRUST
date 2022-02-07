@@ -24,7 +24,7 @@
 #include <Domaine.h>
 #include <Deriv_Zone.h>
 #include <Debog.h>
-#include <NettoieNoeuds.h>
+//#include <NettoieNoeuds.h>
 #include <Scatter.h>
 
 Implemente_instanciable(Mailler,"Mailler",Interprete_geometrique_base);
@@ -193,7 +193,7 @@ Entree& Mailler::interpreter_(Entree& is)
   dom.zone(0).fixer_premieres_faces_frontiere();
 
 
-  NettoieNoeuds::nettoie(dom);
+//  NettoieNoeuds::nettoie(dom);
 
   Scatter::init_sequential_domain(dom);
   return is;
