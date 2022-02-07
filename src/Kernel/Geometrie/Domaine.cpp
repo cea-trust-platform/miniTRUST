@@ -418,14 +418,13 @@ void Domaine::reordonner()
 void Domaine::construire_renum_som_perio(const Conds_lim& les_cl,
                                          const Zone_dis& zone_dis)
 {
-  throw;
-  // Noms bords_perio;
-  // const int nb_bords = les_cl.size();
-  // for (int n_bord = 0; n_bord < nb_bords; n_bord++)
-  //   {
-  //     // if (sub_type(Periodique, les_cl[n_bord].valeur()))
-  //     //   bords_perio.add(les_cl[n_bord].frontiere_dis().frontiere().le_nom());
-  //   }
+  Noms bords_perio;
+  const int nb_bords = les_cl.size();
+  for (int n_bord = 0; n_bord < nb_bords; n_bord++)
+    {
+      // if (sub_type(Periodique, les_cl[n_bord].valeur()))
+      //   bords_perio.add(les_cl[n_bord].frontiere_dis().frontiere().le_nom());
+    }
 
   // Reordonner_faces_periodiques::renum_som_perio(*this, bords_perio, renum_som_perio,
   //                                               1 /* Calculer les valeurs pour les sommets virtuels */);

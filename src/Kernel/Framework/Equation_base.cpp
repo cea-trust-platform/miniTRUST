@@ -382,7 +382,6 @@ int Equation_base::lire_motcle_non_standard(const Motcle& mot, Entree& is)
 // Postcondition:
 void Equation_base::ecrire_fichier_xyz() const
 {
-  throw;
   // for (int numero_champ_xyz=0; numero_champ_xyz<nombre_champ_xyz; numero_champ_xyz++)
   //   {
   //     Noms vide;
