@@ -27,8 +27,8 @@
 #include <Champ_Fonc_P1_base.h>
 #include <Zone_VF.h>
 #include <Champ_Uniforme.h>
-#include <Champ_Inc_Q1_base.h>
-#include <Champ_Fonc_Q1_base.h>
+//#include <Champ_Inc_Q1_base.h>
+//#include <Champ_Fonc_Q1_base.h>
 #include <Equation_base.h>
 #include <Synonyme_info.h>
 #include <Param.h>
@@ -481,8 +481,10 @@ const Motcle Champ_Generique_refChamp::get_directive_pour_discr() const
       //    assert(localisation_=="ELEMENTS");
     }
   else if (sub_type(Champ_Inc_P1_base,ch) || sub_type(Champ_Fonc_P1_base,ch)
-           || sub_type(Champ_Inc_P1_base,ch) || sub_type(Champ_Inc_Q1_base,ch)
-           || sub_type(Champ_Fonc_Q1_base,ch))
+           || sub_type(Champ_Inc_P1_base,ch)
+//           || sub_type(Champ_Inc_Q1_base,ch)
+//           || sub_type(Champ_Fonc_Q1_base,ch)
+           )
     {
       directive = "champ_sommets";
       //   assert(localisation_=="SOMMETS");

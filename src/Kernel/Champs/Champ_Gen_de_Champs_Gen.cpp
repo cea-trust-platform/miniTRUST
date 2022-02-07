@@ -26,6 +26,9 @@
 #include <Discretisation_base.h>
 #include <Param.h>
 
+#include <Probleme_base.h>
+#include <Champ_Fonc.h>
+
 Implemente_base(Champ_Gen_de_Champs_Gen,"Champ_Gen_de_Champs_Gen",Champ_Generique_base);
 
 //cf Champ_Generique_base::readOn
