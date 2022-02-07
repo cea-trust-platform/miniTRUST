@@ -50,3 +50,6 @@ endforeach()
 
 add_executable(miniTRUST ${tgt_obj})
 
+
+add_test(NAME conduc COMMAND ${CMAKE_SOURCE_DIR}/tests/basic/conduc.sh  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests/basic)
+
