@@ -30,18 +30,18 @@
 #include <Schema_Comm.h>
 #include <Faces_builder.h>
 #include <Zone_VF.h>
-#include <Reordonner_faces_periodiques.h>
-#include <Postraitement_lata.h>
+//#include <Reordonner_faces_periodiques.h>
+//#include <Postraitement_lata.h>
 #include <communications.h>
 #include <MD_Vector_tools.h>
 #include <MD_Vector_std.h>
 #include <unistd.h> // PGI
 #include <Poly_geom_base.h>
 
-#include <Entree_Brute.h>
-#include <hdf5.h>
+//#include <Entree_Brute.h>
+//#include <hdf5.h>
 #include <Comm_Group_MPI.h>
-#include <FichierHDFPar.h>
+//#include <FichierHDFPar.h>
 #include <LecFicDiffuse.h>
 
 #include <EFichierBin.h>
@@ -100,44 +100,44 @@ Domaine& Scatter::domaine()
 
 static void dump_lata(const Domaine& dom)
 {
-  const Zone& zone = dom.zone(0);
-  const int nb_joints = zone.nb_joints();
-
-  const Comm_Group *cg = 0;
-  Nom nom_fichier_lata("espaces_virtuels");
-  Postraitement_lata::Format format = Postraitement_lata::BINAIRE;
-  Postraitement_lata::ecrire_entete(nom_fichier_lata,
-                                    "Discretisation_inconnue",
-                                    format, cg);
-  Postraitement_lata::ecrire_zone(nom_fichier_lata,
-                                  zone,
-                                  format, cg);
-
-  Postraitement_lata::ecrire_temps(nom_fichier_lata,
-                                   0.,
-                                   format, cg);
-  const int n = zone.nb_elem();
-  DoubleTab data(n);
-  for(int ij = 0; ij < nb_joints; ij++)
-    {
-      const ArrOfInt& t1 = zone.joint(ij).joint_item(Joint::ELEMENT).items_distants();
-      data = 0.;
-      {
-        const int nt1 = t1.size_array();
-        for (int i = 0; i < nt1; i++)
-          data(t1[i]) += 1;
-      }
-      Postraitement_lata::ecrire_champ(nom_fichier_lata,
-                                       Nom("partition") + Nom(zone.joint(ij).PEvoisin()),
-                                       Postraitement_lata::CHAMP,
-                                       'I',
-                                       dom.le_nom(),
-                                       "pb",
-                                       0., /* temps */
-                                       Postraitement_base::ELEMENTS,
-                                       data,
-                                       format);
-    }
+//  const Zone& zone = dom.zone(0);
+//  const int nb_joints = zone.nb_joints();
+//
+//  const Comm_Group *cg = 0;
+//  Nom nom_fichier_lata("espaces_virtuels");
+//  Postraitement_lata::Format format = Postraitement_lata::BINAIRE;
+//  Postraitement_lata::ecrire_entete(nom_fichier_lata,
+//                                    "Discretisation_inconnue",
+//                                    format, cg);
+//  Postraitement_lata::ecrire_zone(nom_fichier_lata,
+//                                  zone,
+//                                  format, cg);
+//
+//  Postraitement_lata::ecrire_temps(nom_fichier_lata,
+//                                   0.,
+//                                   format, cg);
+//  const int n = zone.nb_elem();
+//  DoubleTab data(n);
+//  for(int ij = 0; ij < nb_joints; ij++)
+//    {
+//      const ArrOfInt& t1 = zone.joint(ij).joint_item(Joint::ELEMENT).items_distants();
+//      data = 0.;
+//      {
+//        const int nt1 = t1.size_array();
+//        for (int i = 0; i < nt1; i++)
+//          data(t1[i]) += 1;
+//      }
+//      Postraitement_lata::ecrire_champ(nom_fichier_lata,
+//                                       Nom("partition") + Nom(zone.joint(ij).PEvoisin()),
+//                                       Postraitement_lata::CHAMP,
+//                                       'I',
+//                                       dom.le_nom(),
+//                                       "pb",
+//                                       0., /* temps */
+//                                       Postraitement_base::ELEMENTS,
+//                                       data,
+//                                       format);
+//    }
 }
 
 // Description:
@@ -512,194 +512,194 @@ void Scatter::mergeDomains(Domaine& dom, Domaine& dom_to_add)
 //  La zone est renommee comme le domaine (pour lance_test_seq_par)
 void Scatter::lire_domaine(Nom& nomentree, Noms& liste_bords_periodiques)
 {
-  // On determine si le fichier est au nouveau format ou a l'ancien
-  if (Process::je_suis_maitre())
-    Cerr << "Reading geometry from .Zones file(s) ..." << finl;
-  barrier(); // Attendre que le message soit affiche
-
-  Domaine& dom = domaine();
-
-  Nom copy(nomentree);
-  copy = copy.nom_me(Process::nproc(), "p", 1);
-
-  //bool is_hdf = FichierHDF::is_hdf5(copy);
-  LecFicDiffuse test;
-  bool is_hdf = test.ouvrir(copy) && FichierHDF::is_hdf5(copy);
-
-  static Stat_Counter_Id stats = statistiques().new_counter(0 /* Level */, "Scatter::lire_domaine", 0 /* Group */);
-
-  statistiques().begin_count(stats);
-  ArrOfInt mergedZones(Process::nproc());
-  mergedZones = 0;
-  bool domain_not_built = true;
-  if (is_hdf)
-    {
-      FichierHDFPar fic_hdf;
-      //FichierHDF fic_hdf;
-      nomentree = copy;
-      fic_hdf.open(nomentree, true);
-
-      std::string dname = "/zone_"  + std::to_string(Process::me());
-      bool ok = fic_hdf.exists(dname.c_str());
-      if(!ok)
-        {
-          mergedZones = 1;
-          for(int i=0; i<Process::nproc(); i++)
-            {
-              Entree_Brute data_part;
-              Domaine part_dom;
-              std::string tmp = dname + "_" + std::to_string(i);
-
-              bool exists = fic_hdf.exists(tmp.c_str());
-              if(exists)
-                {
-                  Nom dataset_name(dname.c_str());
-                  fic_hdf.read_dataset(dataset_name, i, data_part);
-                  readDomainWithoutCollComm( part_dom, data_part );
-                  mergeDomains(dom, part_dom);
-
-                  // Renseigne dans quel fichier le domaine a ete lu
-                  dom.set_fichier_lu(nomentree);
-                  data_part >> liste_bords_periodiques;
-                  domain_not_built = false;
-                }
-              else
-                break;
-
-            }
-        }
-      else
-        {
-          Entree_Brute data;
-          fic_hdf.read_dataset("/zone", Process::me(), data);
-
-          // Feed TRUST objects:
-          readDomainWithoutCollComm(dom, data);
-          dom.zones().associer_domaine(dom);
-          dom.set_fichier_lu(nomentree);
-          data >> liste_bords_periodiques;
-          domain_not_built = false;
-        }
-
-      fic_hdf.close();
-    }
-  else
-    {
-      LecFicDistribueBin fichier_binaire;
-      int isSingleZone = fichier_binaire.ouvrir(nomentree);
-      if (!isSingleZone)
-        {
-          mergedZones = 1;
-          Nom nomentree_with_suffix=nomentree.nom_me(Process::me());
-          for(int i=0; i<Process::nproc(); i++)
-            {
-              EFichierBin fichier_binaire_part;
-              Domaine part_dom;
-              std::string tmp = nomentree_with_suffix.getPrefix(".Zones").getString();
-              tmp += "_";
-              tmp += std::to_string(i);
-              tmp += ".Zones";
-              Nom nomentree_part(tmp.c_str());
-              int ok = fichier_binaire_part.ouvrir(nomentree_part);
-              if(ok)
-                {
-                  readDomainWithoutCollComm( part_dom, fichier_binaire_part );
-                  mergeDomains(dom, part_dom);
-
-                  // Renseigne dans quel fichier le domaine a ete lu
-                  dom.set_fichier_lu(nomentree);
-                  fichier_binaire_part >> liste_bords_periodiques;
-                  fichier_binaire_part.close();
-                  domain_not_built = false;
-                }
-              else
-                break;
-            }
-        }
-      else
-        {
-          readDomainWithoutCollComm(dom, fichier_binaire );
-
-          dom.zones().associer_domaine(dom);
-          // Renseigne dans quel fichier le domaine a ete lu
-          dom.set_fichier_lu(nomentree);
-          fichier_binaire >> liste_bords_periodiques;
-          fichier_binaire.close();
-          domain_not_built = false;
-        }
-    }
-
-  if(domain_not_built)
-    {
-      Cerr << "Error in Scatter::lire_domaine\n";
-      Cerr << "The domain on the current process hasn't been built" << finl;
-      Cerr << "The number of processes you mentionned is probaly higher than the number of zones" << finl;
-      Process::exit();
-    }
-
-  // Verification sanitaire: nombre de processeurs = nombre de zones
-  // (on verifie qu'il n'y a pas de joint avec un processeur inexistant)
-  // (le check precedent n'est pas suffisant:
-  // il verifie seulement que le nombre de processeurs n'est pas superieur au nombre de zones)
-  {
-
-    const Joints& joints = dom.zone(0).faces_joint();
-    const int nb_joints = joints.size();
-    int max_pe_voisin = 0;
-    for (int i = 0; i < nb_joints; i++)
-      {
-        const int pe_voisin = joints[i].PEvoisin();
-        if (pe_voisin >= max_pe_voisin)
-          max_pe_voisin = pe_voisin;
-      }
-
-    max_pe_voisin = (int) mp_max(max_pe_voisin);
-    double ok=1;
-    if (max_pe_voisin >= nproc()) ok=0;
-    if (!ok)
-      {
-        Cerr << "Error in Scatter::lire_domaine\n"
-             << "The domain has been partitioned with at least " << max_pe_voisin << " "
-             << "zones whereas the number of processes asked is " << Process::nproc() << "." << finl;
-        Cerr << "The number of zones and number of processes must match." << finl;
-        exit();
-      }
-  }
-
-  //tri des joints dans l'ordre croissant des procs
-  Joints& joints = dom.zone(0).faces_joint();
-  trier_les_joints(joints);
-  envoyer_all_to_all(mergedZones, mergedZones);
-  check_consistancy_remote_items( dom, mergedZones );
-  dom.zone(0).check_zone();
-
-  // PL : pas tout a fait exact le nombre affiche de sommets, on compte plusieurs fois les sommets des joints...
-  int nbsom = mp_sum(dom.les_sommets().dimension(0));
-  Cerr << " Number of nodes: " << nbsom << finl;
-
-  init_sequential_domain(dom);
-
-  // merged zones need to reorder faces of periodic borders
-  const int myZoneWasMerged = mergedZones[Process::me()];
-  if(myZoneWasMerged)
-    {
-      for(int bord_perio = 0; bord_perio < liste_bords_periodiques.size(); bord_perio++)
-        {
-          Nom bp_nom = liste_bords_periodiques(bord_perio);
-          Bord& bord = dom.zone(0).bord(bp_nom);
-          if(bord.nb_faces() == 0)
-            continue;
-
-          ArrOfDouble direction_perio(dimension);
-          Reordonner_faces_periodiques::chercher_direction_perio(direction_perio, dom, bp_nom);
-          IntTab& faces = bord.faces().les_sommets();
-          double epsilon = precision_geom;
-          Reordonner_faces_periodiques::reordonner_faces_periodiques(dom, faces, direction_perio, epsilon);
-        }
-    }
-
-  statistiques().end_count(stats);
-  barrier();
+//  // On determine si le fichier est au nouveau format ou a l'ancien
+//  if (Process::je_suis_maitre())
+//    Cerr << "Reading geometry from .Zones file(s) ..." << finl;
+//  barrier(); // Attendre que le message soit affiche
+//
+//  Domaine& dom = domaine();
+//
+//  Nom copy(nomentree);
+//  copy = copy.nom_me(Process::nproc(), "p", 1);
+//
+//  //bool is_hdf = FichierHDF::is_hdf5(copy);
+//  LecFicDiffuse test;
+//  bool is_hdf = test.ouvrir(copy) && FichierHDF::is_hdf5(copy);
+//
+//  static Stat_Counter_Id stats = statistiques().new_counter(0 /* Level */, "Scatter::lire_domaine", 0 /* Group */);
+//
+//  statistiques().begin_count(stats);
+//  ArrOfInt mergedZones(Process::nproc());
+//  mergedZones = 0;
+//  bool domain_not_built = true;
+//  if (is_hdf)
+//    {
+//      FichierHDFPar fic_hdf;
+//      //FichierHDF fic_hdf;
+//      nomentree = copy;
+//      fic_hdf.open(nomentree, true);
+//
+//      std::string dname = "/zone_"  + std::to_string(Process::me());
+//      bool ok = fic_hdf.exists(dname.c_str());
+//      if(!ok)
+//        {
+//          mergedZones = 1;
+//          for(int i=0; i<Process::nproc(); i++)
+//            {
+//              Entree_Brute data_part;
+//              Domaine part_dom;
+//              std::string tmp = dname + "_" + std::to_string(i);
+//
+//              bool exists = fic_hdf.exists(tmp.c_str());
+//              if(exists)
+//                {
+//                  Nom dataset_name(dname.c_str());
+//                  fic_hdf.read_dataset(dataset_name, i, data_part);
+//                  readDomainWithoutCollComm( part_dom, data_part );
+//                  mergeDomains(dom, part_dom);
+//
+//                  // Renseigne dans quel fichier le domaine a ete lu
+//                  dom.set_fichier_lu(nomentree);
+//                  data_part >> liste_bords_periodiques;
+//                  domain_not_built = false;
+//                }
+//              else
+//                break;
+//
+//            }
+//        }
+//      else
+//        {
+//          Entree_Brute data;
+//          fic_hdf.read_dataset("/zone", Process::me(), data);
+//
+//          // Feed TRUST objects:
+//          readDomainWithoutCollComm(dom, data);
+//          dom.zones().associer_domaine(dom);
+//          dom.set_fichier_lu(nomentree);
+//          data >> liste_bords_periodiques;
+//          domain_not_built = false;
+//        }
+//
+//      fic_hdf.close();
+//    }
+//  else
+//    {
+//      LecFicDistribueBin fichier_binaire;
+//      int isSingleZone = fichier_binaire.ouvrir(nomentree);
+//      if (!isSingleZone)
+//        {
+//          mergedZones = 1;
+//          Nom nomentree_with_suffix=nomentree.nom_me(Process::me());
+//          for(int i=0; i<Process::nproc(); i++)
+//            {
+//              EFichierBin fichier_binaire_part;
+//              Domaine part_dom;
+//              std::string tmp = nomentree_with_suffix.getPrefix(".Zones").getString();
+//              tmp += "_";
+//              tmp += std::to_string(i);
+//              tmp += ".Zones";
+//              Nom nomentree_part(tmp.c_str());
+//              int ok = fichier_binaire_part.ouvrir(nomentree_part);
+//              if(ok)
+//                {
+//                  readDomainWithoutCollComm( part_dom, fichier_binaire_part );
+//                  mergeDomains(dom, part_dom);
+//
+//                  // Renseigne dans quel fichier le domaine a ete lu
+//                  dom.set_fichier_lu(nomentree);
+//                  fichier_binaire_part >> liste_bords_periodiques;
+//                  fichier_binaire_part.close();
+//                  domain_not_built = false;
+//                }
+//              else
+//                break;
+//            }
+//        }
+//      else
+//        {
+//          readDomainWithoutCollComm(dom, fichier_binaire );
+//
+//          dom.zones().associer_domaine(dom);
+//          // Renseigne dans quel fichier le domaine a ete lu
+//          dom.set_fichier_lu(nomentree);
+//          fichier_binaire >> liste_bords_periodiques;
+//          fichier_binaire.close();
+//          domain_not_built = false;
+//        }
+//    }
+//
+//  if(domain_not_built)
+//    {
+//      Cerr << "Error in Scatter::lire_domaine\n";
+//      Cerr << "The domain on the current process hasn't been built" << finl;
+//      Cerr << "The number of processes you mentionned is probaly higher than the number of zones" << finl;
+//      Process::exit();
+//    }
+//
+//  // Verification sanitaire: nombre de processeurs = nombre de zones
+//  // (on verifie qu'il n'y a pas de joint avec un processeur inexistant)
+//  // (le check precedent n'est pas suffisant:
+//  // il verifie seulement que le nombre de processeurs n'est pas superieur au nombre de zones)
+//  {
+//
+//    const Joints& joints = dom.zone(0).faces_joint();
+//    const int nb_joints = joints.size();
+//    int max_pe_voisin = 0;
+//    for (int i = 0; i < nb_joints; i++)
+//      {
+//        const int pe_voisin = joints[i].PEvoisin();
+//        if (pe_voisin >= max_pe_voisin)
+//          max_pe_voisin = pe_voisin;
+//      }
+//
+//    max_pe_voisin = (int) mp_max(max_pe_voisin);
+//    double ok=1;
+//    if (max_pe_voisin >= nproc()) ok=0;
+//    if (!ok)
+//      {
+//        Cerr << "Error in Scatter::lire_domaine\n"
+//             << "The domain has been partitioned with at least " << max_pe_voisin << " "
+//             << "zones whereas the number of processes asked is " << Process::nproc() << "." << finl;
+//        Cerr << "The number of zones and number of processes must match." << finl;
+//        exit();
+//      }
+//  }
+//
+//  //tri des joints dans l'ordre croissant des procs
+//  Joints& joints = dom.zone(0).faces_joint();
+//  trier_les_joints(joints);
+//  envoyer_all_to_all(mergedZones, mergedZones);
+//  check_consistancy_remote_items( dom, mergedZones );
+//  dom.zone(0).check_zone();
+//
+//  // PL : pas tout a fait exact le nombre affiche de sommets, on compte plusieurs fois les sommets des joints...
+//  int nbsom = mp_sum(dom.les_sommets().dimension(0));
+//  Cerr << " Number of nodes: " << nbsom << finl;
+//
+//  init_sequential_domain(dom);
+//
+//  // merged zones need to reorder faces of periodic borders
+//  const int myZoneWasMerged = mergedZones[Process::me()];
+//  if(myZoneWasMerged)
+//    {
+//      for(int bord_perio = 0; bord_perio < liste_bords_periodiques.size(); bord_perio++)
+//        {
+////          Nom bp_nom = liste_bords_periodiques(bord_perio);
+////          Bord& bord = dom.zone(0).bord(bp_nom);
+////          if(bord.nb_faces() == 0)
+////            continue;
+////
+////          ArrOfDouble direction_perio(dimension);
+////          Reordonner_faces_periodiques::chercher_direction_perio(direction_perio, dom, bp_nom);
+////          IntTab& faces = bord.faces().les_sommets();
+////          double epsilon = precision_geom;
+////          Reordonner_faces_periodiques::reordonner_faces_periodiques(dom, faces, direction_perio, epsilon);
+//        }
+//    }
+//
+//  statistiques().end_count(stats);
+//  barrier();
 }
 
 // Description:
@@ -1299,8 +1299,8 @@ void Scatter::calculer_espace_distant_sommets(Domaine& dom, const Noms& liste_bo
   // Initialisation du tableau renum_som_perio
   for (int i = 0; i < nb_sommets_reels; i++)
     renum_som_perio[i] = i;
-  Reordonner_faces_periodiques::renum_som_perio(dom, liste_bords_perio, renum_som_perio,
-                                                0 /* ne pas calculer pour les sommets virtuels */);
+//  Reordonner_faces_periodiques::renum_som_perio(dom, liste_bords_perio, renum_som_perio,
+//                                                0 /* ne pas calculer pour les sommets virtuels */);
 
   calculer_espace_distant_item(zone,
                                Joint::SOMMET,
