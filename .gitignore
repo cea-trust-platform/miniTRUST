@@ -3,4 +3,4 @@ clang/
 llvm/
 .*project
 .settings
-
+*.o

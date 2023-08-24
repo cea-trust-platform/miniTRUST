@@ -1,0 +1,22 @@
+diff --git a/src/MAIN/mon_main.cpp b/src/MAIN/mon_main.cpp
+index 728f21ca4..7dda5e7e4 100644
+--- a/src/MAIN/mon_main.cpp
++++ b/src/MAIN/mon_main.cpp
+@@ -15,7 +15,7 @@
+ 
+ #include <mon_main.h>
+ #include <LecFicDiffuse_JDD.h>
+-#include <instancie_appel.h>
++//#include <instancie_appel.h>
+ #include <SFichier.h>
+ #include <Comm_Group_MPI.h>
+ #include <PE_Groups.h>
+@@ -302,7 +302,7 @@ void mon_main::dowork(const Nom& nom_du_cas)
+   if (Objet_U::nom_du_cas()=="nul")
+     {
+       Cerr<<"Chargement des modules:"<<finl;
+-#include <instancie_appel_c.h>
++//#include <instancie_appel_c.h>
+       Cerr<<"Fin chargement des modules "<<finl;
+     }
+ 

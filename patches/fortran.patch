@@ -1,0 +1,235 @@
+diff --git a/src/Kernel/Geometrie/DomaineCutter.cpp b/src/Kernel/Geometrie/DomaineCutter.cpp
+index f34729d52..5c2f2d41a 100644
+--- a/src/Kernel/Geometrie/DomaineCutter.cpp
++++ b/src/Kernel/Geometrie/DomaineCutter.cpp
+@@ -22,7 +22,7 @@
+ #include <Scatter.h>
+ #include <TRUSTArrays.h>
+ #include <Sous_Domaine.h>
+-#include <Sparskit.h>
++//#include <Sparskit.h>
+ #include <Poly_geom_base.h>
+ #include <Sortie_Brute.h>
+ #include <TRUSTVect.h>
+@@ -1594,7 +1594,8 @@ void DomaineCutter::ecrire_domaines(const Nom& basename, const Decouper::Domaine
+             mask[i_part] = maskval;
+           int init=1;
+           int nlev;
+-          F77NAME(PERPHN)(&nb_parties_, ja.addr(), ia.addr(), &init, mask.addr(), &maskval, &nlev, riord.addr(), levels.addr());
++//          F77NAME(PERPHN)(&nb_parties_, ja.addr(), ia.addr(), &init, mask.addr(), &maskval, &nlev, riord.addr(), levels.addr());
++          throw;
+ 
+           // Renumber the elem_part array:
+           ArrOfInt renum(nb_parties_);
+diff --git a/src/Kernel/Math/Matrices/Matrice_Morse.cpp b/src/Kernel/Math/Matrices/Matrice_Morse.cpp
+index 6d2cdbf75..957ce128f 100644
+--- a/src/Kernel/Math/Matrices/Matrice_Morse.cpp
++++ b/src/Kernel/Math/Matrices/Matrice_Morse.cpp
+@@ -14,7 +14,7 @@
+ *****************************************************************************/
+ 
+ #include <Matrice_Morse.h>
+-#include <Sparskit.h>
++//#include <Sparskit.h>
+ #include <Matrice_Morse_Sym.h>
+ #include <Check_espace_virtuel.h>
+ #include <SFichier.h>
+@@ -793,9 +793,10 @@ Matrice_Morse& Matrice_Morse::diagmulmat(const DoubleVect& x)
+       exit();
+     }
+ #ifndef CRAY
+-  F77NAME(DIAMUA)(&m ,&l,
+-                  coeff_.addr(),tab2_.addr(),tab1_.addr(),x.addr(),
+-                  coeff_.addr(),tab2_.addr(),tab1_.addr());
++//  F77NAME(DIAMUA)(&m ,&l,
++//                  coeff_.addr(),tab2_.addr(),tab1_.addr(),x.addr(),
++//                  coeff_.addr(),tab2_.addr(),tab1_.addr());
++  throw;
+ #else
+   Cerr << "Matrice_Morse::diagmulmat DIAMUA call invalid for CRAY"<<finl;
+   exit();
+@@ -1012,10 +1013,10 @@ Matrice_Morse operator+(const Matrice_Morse& A , const Matrice_Morse& B )
+   // https://software.intel.com/en-us/mkl-developer-reference-c-mkl-sparse-add
+   int nzmax = A.has_same_morse_matrix_structure(B) ? A.nb_coeff() : A.nb_coeff()+B.nb_coeff();
+   C.dimensionner(nrow, ncol, nzmax);
+-  F77NAME(APLB) (&nrow, &ncol, &job, A.get_coeff().addr(), A.get_tab2().addr(), A.get_tab1().addr(),
+-                 B.get_coeff().addr(), B.get_tab2().addr(), B.get_tab1().addr(), C.get_set_coeff().addr(),
+-                 C.get_set_tab2().addr(), C.get_set_tab1().addr(),
+-                 &nzmax,iw.addr(),&ierr);
++//  F77NAME(APLB) (&nrow, &ncol, &job, A.get_coeff().addr(), A.get_tab2().addr(), A.get_tab1().addr(),
++//                 B.get_coeff().addr(), B.get_tab2().addr(), B.get_tab1().addr(), C.get_set_coeff().addr(),
++//                 C.get_set_tab2().addr(), C.get_set_tab1().addr(),
++//                 &nzmax,iw.addr(),&ierr);
+ 
+   const int nnz = C.tab1_[nrow] - 1;
+   C.get_set_tab2().resize( nnz );
+@@ -1104,10 +1105,11 @@ precond :
+ 
+         //Cerr << "  ****  Preconditionnement ILUT de la matrice de pression  ****" << finl;
+ #ifndef CRAY
+-        F77NAME(ILUT)(&nn, coeff_.addr(), tab2_.addr(), tab1_.addr(), &lf,
+-                      &to, alu.addr(), jlu.addr(), ju.addr(),
+-                      &iw, w.addr(),
+-                      jw.addr(), &ie);
++//        F77NAME(ILUT)(&nn, coeff_.addr(), tab2_.addr(), tab1_.addr(), &lf,
++//                      &to, alu.addr(), jlu.addr(), ju.addr(),
++//                      &iw, w.addr(),
++//                      jw.addr(), &ie);
++        throw;
+         //         to=0;
+         //         wu=0.0;
+         //         wl=0.0;
+@@ -1203,10 +1205,10 @@ precond :
+     int maxits = std::max(minits, nn);
+     int io = 0;                                // fichier de sortie
+ #ifndef CRAY
+-    F77NAME(PGMRES)(&nn, &ima, toto.addr(), solution.addr(), vv.addr(), &coeff_seuilr,
+-                    &maxits, &io, coeff_.addr(), tab2_.addr(), tab1_.addr(),
+-                    alu.addr(), jlu.addr(), ju.addr(), &ie);
+-
++//    F77NAME(PGMRES)(&nn, &ima, toto.addr(), solution.addr(), vv.addr(), &coeff_seuilr,
++//                    &maxits, &io, coeff_.addr(), tab2_.addr(), tab1_.addr(),
++//                    alu.addr(), jlu.addr(), ju.addr(), &ie);
++    throw;
+ #else
+     Cerr << "Matrice_Morse::inverse PGMRES call invalid for CRAY"<<finl;
+     exit();
+@@ -1304,10 +1306,11 @@ int Matrice_Morse::inverse(const DoubleVect& secmem, DoubleVect& solution,
+ 
+         //Cerr << "  ****  Preconditionnement ILUT de la matrice de pression  ****" << finl;
+ #ifndef CRAY
+-        F77NAME(ILUT)(&nn, coeff_.addr(), tab2_.addr(), tab1_.addr(), &lf,
+-                      &to, alu.addr(), jlu.addr(), ju.addr(),
+-                      &iw, w.addr(),
+-                      jw.addr(), &ie);
++//        F77NAME(ILUT)(&nn, coeff_.addr(), tab2_.addr(), tab1_.addr(), &lf,
++//                      &to, alu.addr(), jlu.addr(), ju.addr(),
++//                      &iw, w.addr(),
++//                      jw.addr(), &ie);
++        throw;
+ #else
+         Cerr << "Matrice_Morse::inverse ILUT call invalid for CRAY"<<finl;
+         exit();
+@@ -1389,9 +1392,10 @@ int Matrice_Morse::inverse(const DoubleVect& secmem, DoubleVect& solution,
+     int maxits = std::max(minits, max_iter);
+     int io = 0;                                // fichier de sortie
+ #ifndef CRAY
+-    F77NAME(PGMRES)(&nn, &ima, toto.addr(), solution.addr(), vv.addr(), &coeff_seuilr,
+-                    &maxits, &io, coeff_.addr(), tab2_.addr(), tab1_.addr(),
+-                    alu.addr(), jlu.addr(), ju.addr(), &ie);
++//    F77NAME(PGMRES)(&nn, &ima, toto.addr(), solution.addr(), vv.addr(), &coeff_seuilr,
++//                    &maxits, &io, coeff_.addr(), tab2_.addr(), tab1_.addr(),
++//                    alu.addr(), jlu.addr(), ju.addr(), &ie);
++    throw;
+ #else
+     Cerr << "Matrice_Morse::inverse PGMRES call invalid for CRAY"<<finl;
+     exit();
+diff --git a/src/Kernel/Math/Matrices/Matrice_Morse_Sym.cpp b/src/Kernel/Math/Matrices/Matrice_Morse_Sym.cpp
+index 1d87c538e..c0aa12bbd 100644
+--- a/src/Kernel/Math/Matrices/Matrice_Morse_Sym.cpp
++++ b/src/Kernel/Math/Matrices/Matrice_Morse_Sym.cpp
+@@ -18,7 +18,7 @@
+ #include <Array_tools.h>
+ #include <TRUSTTabs.h>
+ 
+-#include <Sparskit.h>
++//#include <Sparskit.h>
+ #include <Noms.h>
+ 
+ Implemente_instanciable_sans_constructeur(Matrice_Morse_Sym,"Matrice_Morse_Sym",Matrice_Morse);
+@@ -840,9 +840,9 @@ void Matrice_Morse_Sym::renumerote() const
+   // renumerotation des noeuds
+   // subroutine perphn(n,ja,ia,init,iperm,mask,maskval,nlev,riord,levels)
+   // SPARSKIT2/ORDERINGS/levset.f
+-  F77NAME(PERPHN)(&n, tab2tmp, tab1tmp, &init,  mask, &maskval,
+-                  &nlev, tab_iperm.addr(), level);
+-
++//  F77NAME(PERPHN)(&n, tab2tmp, tab1tmp, &init,  mask, &maskval,
++//                  &nlev, tab_iperm.addr(), level);
++  throw;
+ 
+   delete []masktmp;
+   delete []level;
+@@ -872,7 +872,8 @@ void Matrice_Morse_Sym::renumerote() const
+ 
+   // subroutine dperm (nrow,a,ja,ia,ao,jao,iao,perm,qperm,job)
+   // SPARSKIT2/FORMATS/unary.f
+-  F77NAME(DPERM) (&n, a, ja, ia, ao, jao, iao, perm, perm_inv, &job);
++//  F77NAME(DPERM) (&n, a, ja, ia, ao, jao, iao, perm, perm_inv, &job);
++  throw;
+ 
+   matrice.transpose(matrice2);
+   for (int i=0; i<mon_ordre; i++) matrice2(i, i) = 0.;
+diff --git a/src/Kernel/Math/SolvSys/Solv_GCP.cpp b/src/Kernel/Math/SolvSys/Solv_GCP.cpp
+index 7cf80e87f..d8bdc3313 100644
+--- a/src/Kernel/Math/SolvSys/Solv_GCP.cpp
++++ b/src/Kernel/Math/SolvSys/Solv_GCP.cpp
+@@ -17,7 +17,7 @@
+ #include <SSOR.h>
+ #include <Param.h>
+ #include <Matrice_Bloc_Sym.h>
+-#include <Sparskit.h>
++//#include <Sparskit.h>
+ #include <MD_Vector_base.h>
+ #include <MD_Vector_tools.h>
+ #include <communications.h>
+diff --git a/src/Kernel/Math/TRUSTArray_tools.tpp b/src/Kernel/Math/TRUSTArray_tools.tpp
+index 4a0a8823f..a388e582d 100644
+--- a/src/Kernel/Math/TRUSTArray_tools.tpp
++++ b/src/Kernel/Math/TRUSTArray_tools.tpp
+@@ -186,7 +186,8 @@ _TYPE_ dotproduct_array(const TRUSTArray<_TYPE_>& dx, const TRUSTArray<_TYPE_>&
+       integer incx = 1;
+       dx.checkDataOnHost();
+       dy.checkDataOnHost();
+-      resultat = F77NAME(DDOT)(&n, dx.addr(), &incx, dy.addr(), &incx);
++//      resultat = F77NAME(DDOT)(&n, dx.addr(), &incx, dy.addr(), &incx);
++      for (int i = 0; i < size; i++)
++        resultat += dx[i]*dy[i];
+     }
+   return resultat;
+ }
+@@ -204,7 +205,8 @@ _TYPE_ norme_array(const TRUSTArray<_TYPE_>& dx)
+     {
+       integer incx = 1;
+       dx.checkDataOnHost();
+-      resultat = F77NAME(DNRM2)(&n, &dx[0], &incx);
++//      resultat = F77NAME(DNRM2)(&n, &dx[0], &incx);
++      for (int i = 0; i < n; i++)
++        resultat += dx[i]*dx[i];
++      resultat = sqrt(resultat);
+     }
+   return resultat;
+ }
+diff --git a/src/Kernel/VF/Geometrie/Domaine_Poly_tools.h b/src/Kernel/VF/Geometrie/Domaine_Poly_tools.h
+index 1a399d99b..0b6e6f531 100644
+--- a/src/Kernel/VF/Geometrie/Domaine_Poly_tools.h
++++ b/src/Kernel/VF/Geometrie/Domaine_Poly_tools.h
+@@ -50,7 +50,8 @@ static inline double kersol(const DoubleTab& M, DoubleTab& b, double eps, Double
+   //lapack en mode Fortran -> on decompose en fait Mt!!
+   DoubleTab A = M, U(m, m), Vt(n, n), W(w), iS(n, m);
+   S.resize(k);
+-  F77NAME(dgesvd)(&a, &a, &n, &m, A.addr(), &n, S.addr(), Vt.addr(), &n, U.addr(), &m, W.addr(), &w, &info);
++//  F77NAME(dgesvd)(&a, &a, &n, &m, A.addr(), &n, S.addr(), Vt.addr(), &n, U.addr(), &m, W.addr(), &w, &info);
++  throw;
+   for (i = 0, nk = n; i < k && S(i) > eps * S(0); i++) nk--;
+   if (P) P->resize(n, nk);
+   for (i = 0, jP = -1; i < n; i++)
+diff --git a/src/ThHyd/Multiphase/Schemas_Temps/SETS.cpp b/src/ThHyd/Multiphase/Schemas_Temps/SETS.cpp
+index 7924480e6..311aaeca7 100644
+--- a/src/ThHyd/Multiphase/Schemas_Temps/SETS.cpp
++++ b/src/ThHyd/Multiphase/Schemas_Temps/SETS.cpp
+@@ -669,9 +669,11 @@ int SETS::eliminer(const std::vector<std::set<std::pair<std::string, int>>> ordr
+ 
+             /* factorisation et resolution */
+             // DoubleTrav D_back = D;
+-            F77NAME(dgetrf)(&nb, &nb, &D(0, 0), &nb, &piv(0), &infoo);
++            throw;
++//            F77NAME(dgetrf)(&nb, &nb, &D(0, 0), &nb, &piv(0), &infoo);
+             if (infoo > 0) return 0; //singularite rencontree -> on sort avant de diviser par 0
+-            F77NAME(dgetrs)(&trans, &nb, &nc, &D(0, 0), &nb, &piv(0), &S(0, 0), &nb, &infoo);
++//            F77NAME(dgetrs)(&trans, &nb, &nc, &D(0, 0), &nb, &piv(0), &S(0, 0), &nb, &infoo);
++
+ 
+             /* stockage : S(0, .) dans b_p, S(1..nc, .) dans A_p */
+             for (j = 0; j < nv; j++)
+
