@@ -5,6 +5,11 @@ set(CMAKE_CXX_COMPILER_LAUNCHER ccache)
 
 project(miniTRUST CXX)
 
+##
+## Always build in Debug for now
+##
+set(CMAKE_BUILD_TYPE Debug)
+
 enable_testing()
 
 set(TRUST_ROOT ${CMAKE_SOURCE_DIR})

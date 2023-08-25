@@ -4,7 +4,7 @@ DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
 MINI_ROOT=$DIR
 export MINI_ROOT
 
-export exec=$MINI_ROOT/build/miniTRUST
+export exec=$MINI_ROOT/BUILD/miniTRUST
 
 alias mini=$exec
 

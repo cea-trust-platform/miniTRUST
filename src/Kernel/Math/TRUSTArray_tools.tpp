@@ -186,8 +186,9 @@ _TYPE_ dotproduct_array(const TRUSTArray<_TYPE_>& dx, const TRUSTArray<_TYPE_>& 
       integer incx = 1;
       dx.checkDataOnHost();
       dy.checkDataOnHost();
+      for (int i = 0; i < size; i++)
+        resultat += dx[i]*dy[i];
 //      resultat = F77NAME(DDOT)(&n, dx.addr(), &incx, dy.addr(), &incx);
-      throw;
     }
   return resultat;
 }
@@ -205,8 +206,10 @@ _TYPE_ norme_array(const TRUSTArray<_TYPE_>& dx)
     {
       integer incx = 1;
       dx.checkDataOnHost();
+      for (int i = 0; i < n; i++)
+        resultat += dx[i]*dx[i];
+      resultat = sqrt(resultat);
 //      resultat = F77NAME(DNRM2)(&n, &dx[0], &incx);
-      throw;
     }
   return resultat;
 }

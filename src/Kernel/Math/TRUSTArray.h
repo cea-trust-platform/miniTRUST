@@ -206,6 +206,13 @@ public:
   inline bool isKernelOnDevice(std::string kernel_name="??") const { return isKernelOnDevice(*this, kernel_name); }
   inline bool isKernelOnDevice(const TRUSTArray& arr, std::string kernel_name="??") { return isKernelOnDevice(*this, arr, kernel_name); }
 
+//  // Kokkos methods
+//  //   Accessor for a read-only view:
+//  inline ViewVect<_TYPE_> view_ro() {
+//    // For now a full copy everytime
+//  }
+
+  // Span methods
   inline virtual Span_ get_span() { return Span_(data_,size_array_); }
   inline virtual Span_ get_span_tot() { return Span_(data_,size_array_); }
   inline virtual const Span_ get_span() const { return Span_((_TYPE_*)data_, size_array_); }
