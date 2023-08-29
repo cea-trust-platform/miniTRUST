@@ -1,6 +1,7 @@
 file(GLOB srcs [A-Z|a-z]*.cpp [A-Z|a-z]*.c [A-Z|a-z]*.f)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}  ${TRUST_ROOT}/include/backward  ${TRUST_ROOT}/include/EOS  ${TRUST_ROOT}/include/CoolProp  ${TRUST_ROOT}/src/Kernel/Math  ${TRUST_ROOT}/src/Kernel/Utilitaires)
 add_library(obj_tppi OBJECT  ${srcs} )
+target_link_libraries(obj_tppi Kokkos::kokkos)
 set(listlibs ${listlibs} tppi PARENT_SCOPE    )
 add_custom_target(check_sources_tppi   COMMAND check_sources.sh ${CMAKE_CURRENT_SOURCE_DIR} ) #COMMENT  "checking code validity tppi" )
 #add_DEPENDENCIES(obj_tppi check_sources_tppi)

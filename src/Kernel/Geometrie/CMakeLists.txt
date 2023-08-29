@@ -1,6 +1,7 @@
 file(GLOB srcs [A-Z|a-z]*.cpp [A-Z|a-z]*.c [A-Z|a-z]*.f)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}  ${TRUST_ROOT}/include/backward  ${TRUST_ROOT}/src/Kernel/Framework  ${TRUST_ROOT}/src/Kernel/Math/Matrices  ${TRUST_ROOT}/src/Kernel/Math  ${TRUST_ROOT}/src/Kernel/MEDimpl  ${TRUST_ROOT}/src/Kernel/Utilitaires  ${TRUST_ROOT}/src/Kernel/VF/Geometrie  ${TRUST_ROOT}/src/Kernel/Geometrie/Decoupeur  ${TRUST_MED_ROOT}/include)
 add_library(obj_geom OBJECT  ${srcs} )
+target_link_libraries(obj_geom Kokkos::kokkos)
 set(listlibs ${listlibs} geom PARENT_SCOPE    )
 add_custom_target(check_sources_geom   COMMAND check_sources.sh ${CMAKE_CURRENT_SOURCE_DIR} ) #COMMENT  "checking code validity geom" )
 #add_DEPENDENCIES(obj_geom check_sources_geom)

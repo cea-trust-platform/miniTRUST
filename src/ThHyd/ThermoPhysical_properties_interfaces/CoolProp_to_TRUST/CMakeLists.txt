@@ -1,6 +1,7 @@
 file(GLOB srcs [A-Z|a-z]*.cpp [A-Z|a-z]*.c [A-Z|a-z]*.f)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}  ${TRUST_ROOT}/include/backward  ${TRUST_ROOT}/include/CoolProp  ${TRUST_ROOT}/src/Kernel/Math  ${TRUST_ROOT}/src/Kernel/Utilitaires  ${TRUST_ROOT}/src/ThHyd/ThermoPhysical_properties_interfaces)
 add_library(obj_coolprop2trust OBJECT  ${srcs} )
+target_link_libraries(obj_coolprop2trust Kokkos::kokkos)
 set(listlibs ${listlibs} coolprop2trust PARENT_SCOPE    )
 add_custom_target(check_sources_coolprop2trust   COMMAND check_sources.sh ${CMAKE_CURRENT_SOURCE_DIR} ) #COMMENT  "checking code validity coolprop2trust" )
 #add_DEPENDENCIES(obj_coolprop2trust check_sources_coolprop2trust)

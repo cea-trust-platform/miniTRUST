@@ -1,6 +1,7 @@
 file(GLOB srcs [A-Z|a-z]*.cpp [A-Z|a-z]*.c [A-Z|a-z]*.f)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}  ${TRUST_ROOT}/include/backward  ${MPI_INCLUDE}  ${TRUST_ROOT}/src/Kernel/Math  ${TRUST_ROOT}/src/Kernel/Utilitaires )
 add_library(obj_ag OBJECT  ${srcs} )
+target_link_libraries(obj_ag Kokkos::kokkos)
 set(listlibs ${listlibs} ag PARENT_SCOPE    )
 add_custom_target(check_sources_ag   COMMAND check_sources.sh ${CMAKE_CURRENT_SOURCE_DIR} ) #COMMENT  "checking code validity ag" )
 #add_DEPENDENCIES(obj_ag check_sources_ag)

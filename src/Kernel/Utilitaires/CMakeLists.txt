@@ -1,6 +1,7 @@
 file(GLOB srcs [A-Z|a-z]*.cpp [A-Z|a-z]*.c [A-Z|a-z]*.f)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}  ${TRUST_ROOT}/include/backward  ${MPI_INCLUDE}  ${PETSC_ROOT}/${TRUST_ARCH}${OPT}/include  ${TRUST_ROOT}/src/Kernel/Framework  ${TRUST_ROOT}/src/Kernel/VF/Geometrie  ${TRUST_ROOT}/src/Kernel/Geometrie  ${TRUST_ROOT}/src/Kernel/Math  ${TRUST_ROOT}/src/Kernel/Math/Matrices  ${TRUST_MED_ROOT}/include)
 add_library(obj_utilitaires OBJECT  ${srcs} )
+target_link_libraries(obj_utilitaires Kokkos::kokkos)
 set(listlibs ${listlibs} utilitaires PARENT_SCOPE    )
 add_custom_target(check_sources_utilitaires   COMMAND check_sources.sh ${CMAKE_CURRENT_SOURCE_DIR} ) #COMMENT  "checking code validity utilitaires" )
 #add_DEPENDENCIES(obj_utilitaires check_sources_utilitaires)
