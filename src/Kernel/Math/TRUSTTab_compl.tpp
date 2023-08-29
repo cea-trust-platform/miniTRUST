@@ -13,25 +13,43 @@
 *
 *****************************************************************************/
 
-#ifndef view_utils_included
-#define view_utils_included
+#ifndef TRUSTTab_compl_TPP_included
+#define TRUSTTab_compl_TPP_included
 
-#include <Kokkos_Core.hpp>
-#include <Kokkos_DualView.hpp>
+#include <view_utils.h>
 
-template<typename T>
-using DualViewTab = Kokkos::DualView<T **>;
+// Create internal DualView member, and populate it with current host data
+template<typename _TYPE_>
+inline void init_view() const
+{
+  assert(nb_dim() <= 2);
 
-// The memory space on the device if running on GPU, or on CPU otherwise:
-typedef std::conditional< \
-            std::is_same<ExecutionSpace, Kokkos::DefaultExecutionSpace>::value , \
-                         DualViewTab<double *>::memory_space, DualViewTab<double *>::host_mirror_space>::type \
-        memory_space;
+  using vt_host_t = typename ViewTab<T>::t_host;
+  using vt_size_t = typename ViewTab<T>::size_type;
 
-using host_mirror_space = DualViewTab<double *>::host_mirror_space;
+  // Allocate dual view with proper size:
+  dual_view_ = DualViewTab<_TYPE_>(le_nom(), dimension_tot(0), dimension_tot(1));
 
-// The actual view type that will be manipulated everywhere in the kernels:
-template<typename T>
-using ViewTab = Kokkos::View<T **, DualViewTab<T>::array_layout, memory_space, Kokkos::MemoryRandomAccess>;
+  // Highly inefficient!!! Should try to re-use existing allocated space:
+  // See https://kokkos.github.io/kokkos-core-wiki/API/core/view/view.html
+  // and View(pointer_type ptr, const IntType&... indices) (unmanaged data ctor)
+  // for avoiding copy
+  vt_host_t h_view = dual_view_.h_view;
+  for (vt_size_t i = 0; i < h_view.extent(0); i++)
+    for (vt_size_t j = 0; j < h_view.extent(1); j++)
+      h_view(i,j) = this(i, j);
+
+  // Mark data modified on host so it will be sync-ed to device later
+  dual_view_.modify<host_mirror_space>();
+}
+
+template<typename _TYPE_>
+inline ViewTab<TYPE_>& TRUSTTab<_TYPE_>::view_ro() const
+{
+  // Copy to device if needed (i.e. if modify() was called):
+  dual_view_.sync<memory_space>();
+  return dual_view_.h_view;
+}
+
 
 #endif

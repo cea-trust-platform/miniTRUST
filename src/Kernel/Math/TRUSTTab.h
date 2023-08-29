@@ -19,6 +19,7 @@
 #include <MD_Vector_base.h>
 #include <TRUSTVect.h>
 #include <math.h>
+#include <view_utils.h>
 
 /*! @brief : Tableau a n entrees pour n<= 4.
  *
@@ -249,6 +250,9 @@ public:
   inline void reset() override;
   inline void resize_tab(int n, Array_base::Resize_Options opt = Array_base::COPY_INIT) override;
 
+  inline void init_view() const;
+  inline DualViewTab<_TYPE_> view_ro() const;
+
 private:
   static constexpr int MAXDIM_TAB = 4;
   // Nombre de dimensions du tableau (nb_dim_>=1)
@@ -260,6 +264,11 @@ private:
   // Dimension totale (nombre de lignes du tableau) = nb lignes reeles + nb lignes virtuelles
   // Les dimensions dimension_tot(i>=1) sont implicitement egales a dimension(i)
   int dimension_tot_0_;
+
+  // Kokkos members
+#ifdef KOKKOS_
+  mutable DualViewTab<_TYPE_> dual_view_;
+#endif
 
   inline void verifie_MAXDIM_TAB() const
   {

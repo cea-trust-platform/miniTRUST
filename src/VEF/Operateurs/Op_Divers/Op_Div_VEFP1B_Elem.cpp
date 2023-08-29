@@ -37,6 +37,8 @@
 
 #include <view_utils.h>
 
+#include <TRUSTTab_compl.tpp>
+
 Implemente_instanciable(Op_Div_VEFP1B_Elem, "Op_Div_VEFPreP1B_P1NC|Op_Div_VEF_P1NC", Operateur_Div_base);
 
 Sortie& Op_Div_VEFP1B_Elem::printOn(Sortie& s) const { return s << que_suis_je() ; }
@@ -130,13 +132,11 @@ DoubleTab& Op_Div_VEFP1B_Elem::ajouter_elem(const DoubleTab& vit, DoubleTab& div
 
   end_timer(Objet_U::computeOnDevice, "Elem loop in Op_Div_VEFP1B_Elem::ajouter_elem");
 
-  using view_type = ViewTab<int>;
-  using memory_space = view_type::memory_space;
-  view_type elem_faces_v = build_view_ro(elem_faces);
-  Kokkos::View<view_type::const_data_type> elem_faces_dev = elem_faces_v.view<memory_space>();
+  elem_faces.init_view(); // TODO: to be moved inside TRUST tab or earlier in the code.
+  ViewTab elem_faces_v = elem_faces.view_ro();
 
   auto kern_ajout_elem = KOKKOS_LAMBDA(int elem, int &acc) {
-    acc += elem_faces_dev(elem, 0);
+    acc += elem_faces_v(elem, 0);
   };
 
   start_timer();
