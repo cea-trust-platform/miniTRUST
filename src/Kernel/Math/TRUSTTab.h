@@ -250,8 +250,13 @@ public:
   inline void reset() override;
   inline void resize_tab(int n, Array_base::Resize_Options opt = Array_base::COPY_INIT) override;
 
+  // Kokkos view accessors:
   inline void init_view() const;
-  inline DualViewTab<_TYPE_> view_ro() const;
+  inline ViewTab<_TYPE_> view_ro() const;  // Read-only
+  inline ViewTab<_TYPE_> view_wo();        // Write-only
+  inline ViewTab<_TYPE_> view_rw();        // Read-write
+
+  inline void sync_to_host() const;        // Synchronize back to host
 
 private:
   static constexpr int MAXDIM_TAB = 4;

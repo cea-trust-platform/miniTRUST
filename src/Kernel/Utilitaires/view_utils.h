@@ -20,18 +20,23 @@
 #include <Kokkos_DualView.hpp>
 
 template<typename T>
-using DualViewTab = Kokkos::DualView<T **>;
+using DualViewTab = Kokkos::DualView<T **, Kokkos::LayoutRight>;  /// hiiic - LayoutRight not good for GPU ...
+
+using execution_space = DualViewTab<double>::execution_space;
 
 // The memory space on the device if running on GPU, or on CPU otherwise:
 typedef std::conditional< \
-            std::is_same<ExecutionSpace, Kokkos::DefaultExecutionSpace>::value , \
-                         DualViewTab<double *>::memory_space, DualViewTab<double *>::host_mirror_space>::type \
+            std::is_same<execution_space, Kokkos::DefaultExecutionSpace>::value , \
+                         DualViewTab<double>::memory_space, DualViewTab<double>::host_mirror_space>::type \
         memory_space;
 
-using host_mirror_space = DualViewTab<double *>::host_mirror_space;
+using host_mirror_space = DualViewTab<double>::host_mirror_space;
 
 // The actual view type that will be manipulated everywhere in the kernels:
 template<typename T>
-using ViewTab = Kokkos::View<T **, DualViewTab<T>::array_layout, memory_space, Kokkos::MemoryRandomAccess>;
+using ViewTab = Kokkos::View<T **, DualViewTab<double>::array_layout, memory_space, Kokkos::MemoryRandomAccess>;
+
+using IntTabView = ViewTab<int>;
+using DoubleTabView = ViewTab<double>;
 
 #endif

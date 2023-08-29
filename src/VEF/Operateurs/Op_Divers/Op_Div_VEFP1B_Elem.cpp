@@ -107,7 +107,9 @@ DoubleTab& Op_Div_VEFP1B_Elem::ajouter_elem(const DoubleTab& vit, DoubleTab& div
   int nfe = domaine.nb_faces_elem();
   int nb_elem = domaine.nb_elem();
 
+  DoubleTab div_copy = div;
 
+//#ifdef TOTO
   const int *face_voisins_addr = mapToDevice(face_voisins);
   const double *face_normales_addr = mapToDevice(face_normales);
   const int *elem_faces_addr = mapToDevice(elem_faces);
@@ -132,24 +134,71 @@ DoubleTab& Op_Div_VEFP1B_Elem::ajouter_elem(const DoubleTab& vit, DoubleTab& div
 
   end_timer(Objet_U::computeOnDevice, "Elem loop in Op_Div_VEFP1B_Elem::ajouter_elem");
 
-  elem_faces.init_view(); // TODO: to be moved inside TRUST tab or earlier in the code.
-  ViewTab elem_faces_v = elem_faces.view_ro();
+//  #else
+//  elem_faces.init_view(); // TODO: to be moved inside TRUST tab or earlier in the code.
+//  IntTabView elem_faces_v = elem_faces.view_ro();
+//
+//  auto kern_tst = KOKKOS_LAMBDA(int elem, int &acc) {
+//    acc += elem_faces_v(elem, 0);
+//  };
+//
+//  start_timer();
+//    int result = 0;
+//  for (int i =0; i < 1000; i++)
+//    {
+//      result = 0;
+//  Kokkos::parallel_reduce("Op_Div_VEFP1B_Elem::ajouter_elem  - TEST KERNEL",
+//                          nb_elem,
+//                          kern_tst,
+//                          result);
+//    }
+//
+//  Cerr << "Result from GPU " << result << finl;
+//  int result2 = 0;
+//  for(int i= 0 ; i < nb_elem; i++) result2 += elem_faces(i, 0);
+//  Cerr << "Result from CPU " << result2 << finl;
+//  end_timer(Objet_U::computeOnDevice, "[KOKKOS] Elem loop in Op_Div_VEFP1B_Elem::ajouter_elem");
 
-  auto kern_ajout_elem = KOKKOS_LAMBDA(int elem, int &acc) {
-    acc += elem_faces_v(elem, 0);
+  // Initialisation -- will happen only once in the whole execution:
+  face_voisins.init_view();
+  face_normales.init_view();
+  elem_faces.init_view();
+  vit.init_view();
+  div_copy.init_view();
+
+  IntTabView face_voisins_v = face_voisins.view_ro();
+  DoubleTabView face_normales_v = face_normales.view_ro();
+  IntTabView elem_faces_v = elem_faces.view_ro();
+  DoubleTabView  vit_v = vit.view_ro();
+  DoubleTabView div_copy_v = div_copy.view_rw(); // read-write
+  int dim = Objet_U::dimension;  // Objet_U::dimension can not be read from Kernel.
+
+  // Full kernel
+  auto kern_ajouter = KOKKOS_LAMBDA(int elem) {
+    double pscf = 0;
+    for (int indice = 0; indice < nfe; indice++)
+        {
+          int face = elem_faces_v(elem, indice);
+          int signe = elem == face_voisins_v(face, 0) ? 1 : -1;
+          for (int comp = 0; comp < dim; comp++)
+            pscf += signe * vit_v(face, comp) * face_normales_v(face, comp);
+        }
+    div_copy_v(elem, 0) += pscf;
   };
 
   start_timer();
-  int result = 0;
-  Kokkos::parallel_reduce("Op_Div_VEFP1B_Elem::ajouter_elem",
-                          nb_elem,
-                          kern_ajout_elem,
-                          result);
-  Cerr << "Result from GPU " << result << finl;
-  int result2 = 0;
-  for(int i= 0 ; i < nb_elem; i++) result2 += elem_faces(i, 0);
-  Cerr << "Result from CPU " << result2 << finl;
+  Kokkos::parallel_for("[KOKKOS]Op_Div_VEFP1B_Elem::ajouter_elem", nb_elem, kern_ajouter);
+  div_copy.sync_to_host();  // "checkDataOnHost()"
   end_timer(Objet_U::computeOnDevice, "[KOKKOS] Elem loop in Op_Div_VEFP1B_Elem::ajouter_elem");
+//#endif
+
+  // Compare div and div_copy:
+  for (int i = 0; i < nb_elem; i++)
+    {
+      double diff = abs(div(i) - div_copy(i));
+      if (diff > 1.0e-10)
+        Cerr << i << " " << div(i) << " " << div_copy(i) << finl;
+    }
 
   assert_invalide_items_non_calcules(div);
   return div;

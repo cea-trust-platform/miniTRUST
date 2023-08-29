@@ -20,36 +20,82 @@
 
 // Create internal DualView member, and populate it with current host data
 template<typename _TYPE_>
-inline void init_view() const
+inline void TRUSTTab<_TYPE_>::init_view() const
 {
   assert(nb_dim() <= 2);
 
-  using vt_host_t = typename ViewTab<T>::t_host;
-  using vt_size_t = typename ViewTab<T>::size_type;
+  using t_host = typename DualViewTab<_TYPE_>::t_host;  // Host type
+  using t_dev = typename DualViewTab<_TYPE_>::t_dev;    // Device type
+  using size_type = typename DualViewTab<_TYPE_>::size_type;
 
-  // Allocate dual view with proper size:
-  dual_view_ = DualViewTab<_TYPE_>(le_nom(), dimension_tot(0), dimension_tot(1));
+  const std::string& nom = this->le_nom().getString();
+  int dims[2] = {this->dimension_tot(0), this->dimension_tot(1)};
 
-  // Highly inefficient!!! Should try to re-use existing allocated space:
-  // See https://kokkos.github.io/kokkos-core-wiki/API/core/view/view.html
-  // and View(pointer_type ptr, const IntType&... indices) (unmanaged data ctor)
-  // for avoiding copy
-  vt_host_t h_view = dual_view_.h_view;
-  for (vt_size_t i = 0; i < h_view.extent(0); i++)
-    for (vt_size_t j = 0; j < h_view.extent(1); j++)
-      h_view(i,j) = this(i, j);
+  // Re-use data already allocated on host to create host-view:
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!  WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //          This heavily relies on the LayoutRight defined for the DualView (which is not optimal
+  //          for GPU processing, but avoids having to explicitely copying the data ...)
+  t_host host_view = t_host((_TYPE_ *)this->addr(), dims[0], dims[1]);
+  // Empty view on device - just a memory allocation:
+  t_dev device_view = t_dev(nom, dims[0], dims[1]);
 
-  // Mark data modified on host so it will be sync-ed to device later
-  dual_view_.modify<host_mirror_space>();
+  // Dual view is made as an assembly of the two views:
+  dual_view_ = DualViewTab<_TYPE_>(device_view, host_view);
+
+//  // Allocate dual view with proper size - this allocates on both the host and the device
+//  dual_view_ = DualViewTab<_TYPE_>(, dims[0], dims[1]);
+//
+//  // Highly inefficient!!! Should try to re-use existing allocated space:
+//  // See https://kokkos.github.io/kokkos-core-wiki/API/core/view/view.html
+//  // and View(pointer_type ptr, const IntType&... indices) (unmanaged data ctor)
+//  // for avoiding copy
+//  t_host h_view = dual_view_.h_view;
+//  for (size_type i = 0; i < h_view.extent(0); i++)
+//    for (size_type j = 0; j < h_view.extent(1); j++)
+//      {
+//        h_view(i,j) != this->operator()(i, j);
+//      }
+
+  // Mark data modified on host so it will be sync-ed to device later on:
+  dual_view_.template modify<host_mirror_space>();
 }
 
 template<typename _TYPE_>
-inline ViewTab<TYPE_>& TRUSTTab<_TYPE_>::view_ro() const
+inline ViewTab<_TYPE_> TRUSTTab<_TYPE_>::view_ro() const
 {
   // Copy to device if needed (i.e. if modify() was called):
-  dual_view_.sync<memory_space>();
-  return dual_view_.h_view;
+  dual_view_.template sync<memory_space>();
+  // return *device* view:
+  return dual_view_.template view<memory_space>();
 }
 
+template<typename _TYPE_>
+inline ViewTab<_TYPE_> TRUSTTab<_TYPE_>::view_wo()
+{
+  // Mark the (device) data as modified, so that the next sync() (to host) will copy:
+  dual_view_.template modify<memory_space>();
+  // return *device* view:
+  return dual_view_.template view<memory_space>();
+}
+
+template<typename _TYPE_>
+inline ViewTab<_TYPE_> TRUSTTab<_TYPE_>::view_rw()
+{
+  // Copy to device (if needed) ...
+  dual_view_.template sync<memory_space>();
+  // ... and mark the (device) data as modified, so that the next sync() (to host) will copy:
+  dual_view_.template modify<memory_space>();
+  // return *device* view:
+  return dual_view_.template view<memory_space>();
+}
+
+template<typename _TYPE_>
+inline void TRUSTTab<_TYPE_>::sync_to_host() const
+{
+  // Copy to host (if needed) ...
+  dual_view_.template sync<host_mirror_space>();
+}
 
 #endif
