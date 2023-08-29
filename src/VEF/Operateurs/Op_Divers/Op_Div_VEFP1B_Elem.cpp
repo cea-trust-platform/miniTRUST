@@ -166,10 +166,10 @@ DoubleTab& Op_Div_VEFP1B_Elem::ajouter_elem(const DoubleTab& vit, DoubleTab& div
   vit.init_view();
   div_copy.init_view();
 
-  IntTabView face_voisins_v = face_voisins.view_ro();
-  DoubleTabView face_normales_v = face_normales.view_ro();
-  IntTabView elem_faces_v = elem_faces.view_ro();
-  DoubleTabView  vit_v = vit.view_ro();
+  CIntTabView face_voisins_v = face_voisins.view_ro();
+  CDoubleTabView face_normales_v = face_normales.view_ro();
+  CIntTabView elem_faces_v = elem_faces.view_ro();
+  CDoubleTabView  vit_v = vit.view_ro();
   DoubleTabView div_copy_v = div_copy.view_rw(); // read-write
   int dim = Objet_U::dimension;  // Objet_U::dimension can not be read from Kernel.
 

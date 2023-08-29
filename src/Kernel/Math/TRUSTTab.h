@@ -252,7 +252,7 @@ public:
 
   // Kokkos view accessors:
   inline void init_view() const;
-  inline ViewTab<_TYPE_> view_ro() const;  // Read-only
+  inline ConstViewTab<_TYPE_> view_ro() const;  // Read-only
   inline ViewTab<_TYPE_> view_wo();        // Write-only
   inline ViewTab<_TYPE_> view_rw();        // Read-write
 

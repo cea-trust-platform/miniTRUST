@@ -63,7 +63,7 @@ inline void TRUSTTab<_TYPE_>::init_view() const
 }
 
 template<typename _TYPE_>
-inline ViewTab<_TYPE_> TRUSTTab<_TYPE_>::view_ro() const
+inline ConstViewTab<_TYPE_> TRUSTTab<_TYPE_>::view_ro() const
 {
   // Copy to device if needed (i.e. if modify() was called):
   dual_view_.template sync<memory_space>();
