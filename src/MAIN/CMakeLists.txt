@@ -1,5 +1,5 @@
 file(GLOB srcs [A-Z|a-z]*.cpp [A-Z|a-z]*.c [A-Z|a-z]*.f)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}  ${TRUST_ROOT}/include/backward  ${MPI_INCLUDE}  ${PETSC_ROOT}/${TRUST_ARCH}${OPT}/include  ${TRUST_ROOT}/lib/src/LIBROCALUTION/include  ${TRUST_ROOT}/src/Kernel/Math  ${TRUST_ROOT}/src/Kernel/Utilitaires )
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}  ${TRUST_ROOT}/include/backward  ${MPI_INCLUDE}  ${PETSC_ROOT}/${TRUST_ARCH}${OPT}/include  ${TRUST_ROOT}/lib/src/LIBROCALUTION/include  ${TRUST_ROOT}/src/Kernel/Math  ${TRUST_ROOT}/src/Kernel/Utilitaires ${TRUST_ROOT}/src/Kernel/Framework)
 add_library(obj_main OBJECT  ${srcs} )
 target_link_libraries(obj_main Kokkos::kokkos)
 target_link_libraries(obj_main Kokkos::kokkos)

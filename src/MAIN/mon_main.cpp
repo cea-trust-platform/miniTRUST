@@ -35,6 +35,8 @@
 #include <Kokkos_Core.hpp>
 #endif
 
+#include <Domaine_dis_cache.h>
+
 // Initialisation des compteurs, dans stat_counters.cpp
 extern void declare_stat_counters();
 extern void end_stat_counters();
@@ -206,6 +208,9 @@ void mon_main::init_parallel(const int argc, char **argv, int with_mpi, int chec
 
 void mon_main::finalize()
 {
+  // Make sure all Kokkos views are de-allocated before Kokkos finalize:
+  Domaine_dis_cache::Clear();
+
 #ifdef KOKKOS_
   Kokkos::finalize();
 #endif
