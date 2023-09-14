@@ -24,13 +24,10 @@ add_definitions(-DKOKKOS_)
 
 cmake_policy(SET CMP0074 NEW)
 find_package(Kokkos REQUIRED)
-if(Kokkos_ENABLE_CUDA)
-  kokkos_check(OPTIONS CUDA_LAMBDA)
-endif()
+#if(Kokkos_ENABLE_CUDA)
+#   kokkos_check(OPTIONS CUDA_LAMBDA)
+#endif()
 
-# Seems necessary in a bigger project? Strange, since this works w/o on a simple hello-world ...
-set(Kokkos_INCLUDE_DIRECTORY $ENV{KOKKOS_ROOT_DIR}/include) 
-include_directories(${Kokkos_INCLUDE_DIRECTORY})
 
 add_subdirectory(src)
 
